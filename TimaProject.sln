@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimaProject", "TimaProject\TimaProject.csproj", "{B53D7E96-8B19-4E27-8555-673EAFB2472E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B53D7E96-8B19-4E27-8555-673EAFB2472E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B53D7E96-8B19-4E27-8555-673EAFB2472E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B53D7E96-8B19-4E27-8555-673EAFB2472E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B53D7E96-8B19-4E27-8555-673EAFB2472E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {002C2ABD-B226-42CD-9CE1-9448DCA8FAE4}
+	EndGlobalSection
+EndGlobal
