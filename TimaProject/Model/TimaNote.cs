@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace TimaProject.Model
 {
-    internal class TimaNote
+    public class TimaNote
     {
         public DateTimeOffset StartingTime { get; set; } 
 
-        public DateTimeOffset? EndingTime { get; set; } 
+        public DateTimeOffset? StoppingTime { get; set; } 
 
         public DateOnly Date { get; set; }
 
@@ -22,9 +22,9 @@ namespace TimaProject.Model
 
         // поля которые не пойдут в базу данных
 
-        public TimeSpan? Time => IsActive ? null: EndingTime - StartingTime;
+        public TimeSpan? Time => IsActive ? null: StoppingTime - StartingTime;
 
-        public bool IsActive => EndingTime is null;
+        public bool IsActive => StoppingTime is null;
 
     }
 }
