@@ -21,7 +21,7 @@ namespace TimaProject.View.Controls
     
     public partial class TimerControl : UserControl
     {
-        private const int  MILISECONDS_INTERVAL = 200;
+        private const int  MILISECONDS_INTERVAL = 100;
 
         public static readonly DependencyProperty StartingTimeProperty =
             DependencyProperty.Register("StartingTime", typeof(DateTimeOffset?), typeof(TimerControl), new PropertyMetadata(null, StartingTimePropertyChanged));
@@ -42,13 +42,19 @@ namespace TimaProject.View.Controls
         public static readonly RoutedEvent TimeStoppedEvent =
     EventManager.RegisterRoutedEvent("TimeStopped", RoutingStrategy.Bubble, typeof(RoutedPropertyChangedEventHandler<Tuple<DateTimeOffset?, DateTimeOffset?>>), typeof(TimerControl));
 
+        private DateTimeOffset? _startingTime;
+
+        private bool _isActive;
 
         private DispatcherTimer _timer;
 
         public DateTimeOffset? StartingTime
         {
             get { return (DateTimeOffset?)GetValue(StartingTimeProperty); }
-            set { SetValue(StartingTimeProperty, value); }
+            set { 
+                _startingTime = value;
+                SetValue(StartingTimeProperty, value);
+            }
         }
 
         public bool IsActive
@@ -59,6 +65,7 @@ namespace TimaProject.View.Controls
             }
             protected set
             {
+                _isActive = value;
                 SetValue(IsActivePropertyKey, value);
             }
         }
@@ -117,19 +124,24 @@ namespace TimaProject.View.Controls
         {
             var oldValue = StartingTime;
             StartingTime = startingTime;
-            Time = IsActive ? (TimeSpan)(DateTimeOffset.Now - StartingTime) : new TimeSpan(0);
+           // Time = _isActive ? (TimeSpan)(DateTimeOffset.Now - _startingTime) : new TimeSpan(0);
             _timer = new DispatcherTimer();
-            _timer.Tick += (s, e) => Time = IsActive ? (TimeSpan)(DateTimeOffset.Now - StartingTime) : new TimeSpan(0);
+            _timer.Tick += ChangeTime;
             _timer.Interval = new TimeSpan(0,0,0,0, MILISECONDS_INTERVAL);
             _timer.Start();
             RaiseEvent(new RoutedPropertyChangedEventArgs<DateTimeOffset?>(oldValue, startingTime, TimeStartedEvent));
         }
 
+        private void ChangeTime(object? sender, EventArgs e)
+        {
+            Time = _isActive ? (TimeSpan)(DateTimeOffset.Now - _startingTime) : new TimeSpan(0);
+        }
 
         protected void OnStoppingTime(DateTimeOffset stoppingTime)
         {
             Tuple<DateTimeOffset?, DateTimeOffset?> tuple = new Tuple<DateTimeOffset?, DateTimeOffset?>(StartingTime, stoppingTime);
             _timer.Stop();
+            _timer.Tick -= ChangeTime;
             StartingTime = null;
             Time = new TimeSpan(0);
             RaiseEvent(new RoutedPropertyChangedEventArgs<Tuple<DateTimeOffset?, DateTimeOffset?>>(null, tuple, TimeStoppedEvent));
