@@ -15,13 +15,13 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
-namespace TimaProject.View.Controls
+namespace TimaProject.Views.Controls
 {
 
-    
+
     public partial class TimerControl : UserControl
     {
-        private const int  MILISECONDS_INTERVAL = 100;
+        private const int  MILISECONDS_INTERVAL = 50;
 
         public static readonly DependencyProperty StartingTimeProperty =
             DependencyProperty.Register("StartingTime", typeof(DateTimeOffset?), typeof(TimerControl), new PropertyMetadata(null, StartingTimePropertyChanged));

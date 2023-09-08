@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,16 +12,15 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using TimaProject.Models;
 
-namespace TimaProject
+namespace TimaProject.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for TimerListingView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class TimerListingView : UserControl
     {
-        public MainWindow()
+        public TimerListingView()
         {
             InitializeComponent();
         }

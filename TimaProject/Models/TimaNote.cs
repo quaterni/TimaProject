@@ -4,21 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TimaProject.Model
+namespace TimaProject.Models
 {
-    public class TimaNote
+    public record TimaNote(DateTimeOffset StartingTime)
     {
-        public DateTimeOffset StartingTime { get; set; } 
+        public DateTimeOffset? StoppingTime { get; init; } 
 
-        public DateTimeOffset? StoppingTime { get; set; } 
+        public DateOnly Date { get; init; }
 
-        public DateOnly Date { get; set; }
+        public string? Title { get; init; } 
 
-        public string? Title { get; set; } 
+        public string? Text { get; init; } 
 
-        public string? Text { get; set; } 
-
-        public Project Project { get; set; } 
+        public Project? Project { get; init; } 
 
         // поля которые не пойдут в базу данных
 

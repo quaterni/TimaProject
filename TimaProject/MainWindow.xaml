@@ -4,9 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TimaProject"
+        xmlns:controls="clr-namespace:TimaProject.Views.Controls"
+        xmlns:viewModels="clr-namespace:TimaProject.ViewModels"
+        xmlns:model="clr-namespace:TimaProject.Models" xmlns:views="clr-namespace:TimaProject.Views"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="500">
     <Grid>
-
+        <Grid.Resources>
+            <DataTemplate DataType="{x:Type viewModels:TimerListingViewModel}">
+                <views:TimerListingView/>
+            </DataTemplate>
+        </Grid.Resources>
+        <ContentControl Content="{Binding CurrenViewModel}"/>
     </Grid>
 </Window>
