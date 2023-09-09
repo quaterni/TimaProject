@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TimaProject.Models
 {
-    public record TimaNote(DateTimeOffset StartingTime)
+    public record TimaNote(DateTimeOffset StartingTime, ulong Id)
     {
         public DateTimeOffset? StoppingTime { get; init; } 
 
