@@ -41,7 +41,7 @@ namespace TimaProject
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            NavigationServiceFactory<TimerListingViewModel>(_serviceProvider).Navigate();
+            NavigationServiceFactory<TimerListingViewModel>(_serviceProvider).Navigate(null);
             MainWindow = _serviceProvider.GetRequiredService<MainWindow>();
             MainWindow.Show();
             base.OnStartup(e);

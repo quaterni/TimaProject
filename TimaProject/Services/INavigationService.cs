@@ -8,6 +8,6 @@ namespace TimaProject.Services
 {
     internal interface INavigationService
     {
-        public void Navigate();
+        public void Navigate(object? parameter);
     }
 }
