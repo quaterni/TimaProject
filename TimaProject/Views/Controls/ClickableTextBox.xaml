@@ -12,8 +12,14 @@
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         </Grid.Resources>
         <TextBox LostFocus="TextBox_LostFocus"
+                 GotFocus="tb_GotFocus"
+                 x:Name="tb"
+                 Foreground="White" 
+                 Background="Transparent"
+                 CaretBrush="White"
                  Padding="5 2"
-                 Text="{Binding Text, RelativeSource={RelativeSource AncestorType=local:ClickableTextBox}}"
+                 Text="{Binding Text, 
+                                RelativeSource={RelativeSource AncestorType=local:ClickableTextBox}}"
                  Visibility="{Binding IsEditing, RelativeSource={RelativeSource AncestorType=local:ClickableTextBox}, Converter={StaticResource BooleanToVisibilityConverter}}">
         </TextBox>
         <Button d:Content="TEMPLATE TEXT"
@@ -22,6 +28,7 @@
                 <Style TargetType="{x:Type Button}">
                     <Setter Property="Focusable" Value="False"/>
                     <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="Foreground" Value="White"/>
                     <Setter Property="Content" 
                             Value="{Binding Text, 
                                             RelativeSource={RelativeSource AncestorType=local:ClickableTextBox}}"/>
@@ -55,7 +62,7 @@
 
                         <DataTrigger Binding="{Binding Text, RelativeSource={RelativeSource AncestorType=local:ClickableTextBox}}" Value="{x:Static system:String.Empty}">
                             <Setter Property="Content" Value="{Binding SuggestingText, RelativeSource={RelativeSource AncestorType=local:ClickableTextBox}}"/>
-                            <Setter Property="Foreground" Value="Gray"/>
+                            <Setter Property="Foreground" Value="#D9DADB"/>
                         </DataTrigger>
                         
                     </Style.Triggers>

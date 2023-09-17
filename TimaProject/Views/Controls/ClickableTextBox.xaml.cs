@@ -59,11 +59,17 @@ namespace TimaProject.Views.Controls
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             IsEditing = true;
+            tb.Focus();
         }
 
         private void TextBox_LostFocus(object sender, RoutedEventArgs e)
         {
             IsEditing = false;
+        }
+
+        private void tb_GotFocus(object sender, RoutedEventArgs e)
+        {
+            tb.CaretIndex = tb.Text.Length;
         }
     }
 }
