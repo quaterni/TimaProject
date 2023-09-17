@@ -8,8 +8,10 @@ using TimaProject.Models;
 
 namespace TimaProject.Repositories
 {
-    class TimaNoteRepository
+    class TimaNoteRepository : INoteRepository
     {
+        private static int st_idCounter;
+
         public List<TimaNote> _notes;
 
         public TimaNoteRepository()
@@ -29,12 +31,12 @@ namespace TimaProject.Repositories
                 Title = "Зарядка",
                 Date = new DateOnly(2023, 9, 12),
             });
-
+            st_idCounter = _notes.Count();
         }
 
         public int GetNewId()
         {
-            return _notes.Count + 1;
+            return st_idCounter;
         }
 
         public void AddNote(TimaNote note)
@@ -45,6 +47,7 @@ namespace TimaProject.Repositories
             }
             _notes.Add(note);
             OnNotesChanged();
+            st_idCounter++;
         }
 
         public void UpdateNote(TimaNote note)
@@ -59,9 +62,11 @@ namespace TimaProject.Repositories
             OnNotesChanged();
         }
 
-        internal IEnumerable<TimaNote> GetAllNotes()
+        public IEnumerable<TimaNote> GetAllNotes(Func<TimaNote, bool>? wherePredicate = null)
         {
-            return _notes.Where(t=> !t.IsActive);
+            if (wherePredicate == null)
+                return _notes;
+            return _notes.Where(wherePredicate);
         }
 
         public event EventHandler? NotesChanged;

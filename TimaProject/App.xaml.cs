@@ -34,7 +34,7 @@ namespace TimaProject
             services.AddSingleton<Func<Type, ViewModelBase>>(
                 s => type => (ViewModelBase)s.GetRequiredService(type));
 
-            services.AddSingleton<TimaNoteRepository>();
+            services.AddSingleton<INoteRepository, TimaNoteRepository>();
 
             services.AddTransient<TimerViewModel>();
 

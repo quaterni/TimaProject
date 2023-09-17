@@ -11,7 +11,7 @@ namespace TimaProject.ViewModels
 {
     internal class TimerListingViewModel :ViewModelBase
     {
-        private TimaNoteRepository _noteRepository;
+        private INoteRepository _noteRepository;
 
         private ObservableCollection<TimaNote> _notes;
 
@@ -27,16 +27,16 @@ namespace TimaProject.ViewModels
             }
         }
 
-        public TimerListingViewModel(TimaNoteRepository noteRepository)
+        public TimerListingViewModel(INoteRepository noteRepository)
         {
             _noteRepository = noteRepository;
-            _notes = new(_noteRepository.GetAllNotes().OrderByDescending(n => n.StoppingTime));
+            _notes = new(_noteRepository.GetAllNotes( t => !t.IsActive).OrderByDescending(n => n.StoppingTime));
             _noteRepository.NotesChanged += OnNotesChanged;
         }
 
         private void OnNotesChanged(object? sender, EventArgs e)
         {
-            Notes= new(_noteRepository.GetAllNotes().OrderByDescending(n => n.StoppingTime));           
+            Notes= new(_noteRepository.GetAllNotes(t => !t.IsActive).OrderByDescending(n => n.StoppingTime));           
         }
 
         public override void Dispose()

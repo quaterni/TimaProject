@@ -12,7 +12,7 @@ namespace TimaProject.ViewModels
     {
         private ulong? _timaNoteId;
 
-        private TimaNoteRepository _noteRepository;
+        private INoteRepository _noteRepository;
 
         private string _currentTitle;
 
@@ -58,7 +58,7 @@ namespace TimaProject.ViewModels
 
         public bool IsRunning => _timaNoteId != null;
 
-        public TimerViewModel(TimaNoteRepository noteRepository)
+        public TimerViewModel(INoteRepository noteRepository)
         {
              _currentTitle = string.Empty;
             _startingTime = DateTimeOffset.MinValue;
