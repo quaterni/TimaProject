@@ -15,7 +15,7 @@ namespace TimaProject.ViewModels
             if (object.Equals(member, value)) 
                 return;
             member = value;
-            OnPropertyChanged(nameof(propertyName));
+            OnPropertyChanged(propertyName);
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
