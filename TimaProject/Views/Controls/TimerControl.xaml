@@ -5,29 +5,46 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TimaProject.Views.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="50" d:DesignWidth="100">
+             d:DesignHeight="50" d:DesignWidth="100"
+             BorderThickness="0">
     <Grid>
-        <StackPanel Orientation="Horizontal">
-            <StackPanel Orientation="Horizontal"
+        <Grid >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0"
+                        Orientation="Horizontal"
                         Margin="10 5 05 5">
-                <TextBlock Text="{Binding Time, StringFormat={}{0:hh\\:mm\\:ss}, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"/>
+                <TextBlock Foreground="White"
+                           VerticalAlignment="Center"
+                           FontSize="16"
+                    Text="{Binding Time, StringFormat={}{0:hh\\:mm\\:ss}, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"/>
             </StackPanel>
-            <Button Click="Button_Click">
-                <Button.Style>
-                    <Style TargetType="{x:Type Button}">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsActive, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            <Border Grid.Column="1"
+                Width="40" Height="40"
+                    CornerRadius="20"
+                    Background="#E5C07B">
+                <Button Click="Button_Click" Background="Transparent"
+                    BorderThickness="0"
+                    Foreground="White">
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsActive, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                          Value="true">
-                                <Setter Property="Content" Value="Stop"/>
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding IsActive, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    <Setter Property="Content" Value="Stop"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsActive, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                          Value="false">
-                                <Setter Property="Content" Value="Start"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
-            </Button>
-        </StackPanel>
+                                    <Setter Property="Content" Value="Start"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </Border>
+
+        </Grid>
     </Grid>
 </UserControl>
