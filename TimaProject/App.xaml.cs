@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using TimaProject.Repositories;
 using TimaProject.Services;
 using TimaProject.Stores;
 using TimaProject.ViewModels;
@@ -24,7 +25,6 @@ namespace TimaProject
             IServiceCollection services = new ServiceCollection();
 
             services.AddSingleton<NavigationStore>();
-
             services.AddSingleton<MainWindow>(
                 s => new MainWindow()
                 {
@@ -34,6 +34,10 @@ namespace TimaProject
             services.AddSingleton<Func<Type, ViewModelBase>>(
                 s => type => (ViewModelBase)s.GetRequiredService(type));
 
+            services.AddSingleton<TimaNoteRepository>();
+
+            services.AddTransient<TimerViewModel>();
+
             services.AddTransient<TimerListingViewModel>();
 
             _serviceProvider = services.BuildServiceProvider();
@@ -41,7 +45,7 @@ namespace TimaProject
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            NavigationServiceFactory<TimerListingViewModel>(_serviceProvider).Navigate(null);
+            TimerLayoutNavigationServiceFactory<TimerListingViewModel>(_serviceProvider).Navigate(null);
             MainWindow = _serviceProvider.GetRequiredService<MainWindow>();
             MainWindow.Show();
             base.OnStartup(e);
@@ -52,6 +56,15 @@ namespace TimaProject
             return new NavigationService<ViewModelBase, TViewModel>(
                 serviceProvider.GetRequiredService<NavigationStore>(),
                 serviceProvider.GetRequiredService<Func<Type, ViewModelBase>>());
+        }
+
+        private NavigationService<ViewModelBase, TViewModel> TimerLayoutNavigationServiceFactory<TViewModel>(IServiceProvider serviceProvider) where TViewModel : ViewModelBase
+        {
+            return new NavigationService<ViewModelBase, TViewModel>(
+                serviceProvider.GetRequiredService<NavigationStore>(),
+                (t)=> new TimerLayoutViewModel(
+                    serviceProvider.GetRequiredService<TimerViewModel>(),
+                    (TViewModel)serviceProvider.GetRequiredService(t)));
         }
     }
 }

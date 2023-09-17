@@ -8,11 +8,19 @@
         xmlns:viewModels="clr-namespace:TimaProject.ViewModels"
         xmlns:model="clr-namespace:TimaProject.Models" xmlns:views="clr-namespace:TimaProject.Views"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="500">
+        Title="MainWindow" Height="450" Width="500"
+        Background="#20242B"
+        Foreground="White">
     <Grid>
         <Grid.Resources>
             <DataTemplate DataType="{x:Type viewModels:TimerListingViewModel}">
                 <views:TimerListingView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:TimerViewModel}">
+                <views:TimerView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:TimerLayoutViewModel}">
+                <views:TimerLayoutView/>
             </DataTemplate>
         </Grid.Resources>
         <ContentControl Content="{Binding CurrenViewModel}"/>
