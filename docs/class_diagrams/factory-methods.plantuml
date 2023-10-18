@@ -1,0 +1,19 @@
+@startuml
+
+class App
+
+entity TimeFormFactory
+entity ModalParameterizedNavigationService 
+entity ModalNavigationServiceFactory 
+entity TimerLayoutNavigationServiceFactory 
+entity NavigationServiceFactory
+entity TimerViewModelFactory 
+
+TimeFormFactory --* App
+ModalParameterizedNavigationService --* App
+ModalNavigationServiceFactory --* App
+TimerLayoutNavigationServiceFactory --* App
+NavigationServiceFactory --* App
+TimerViewModelFactory --* App
+
+@enduml

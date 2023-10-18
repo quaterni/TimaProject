@@ -1,0 +1,43 @@
+@startuml TimaProject
+
+left to right direction
+
+actor Пользователь as user
+
+(Создание tima) as crateNote
+
+(Удаление tima) as deleteNote
+
+(Изменение tima) as changeNote
+
+(Управление таймером) as timer
+
+(Запуск таймера) as startTime
+(Остановка таймера) as endTime
+
+user -- timer 
+
+timer ..> startTime
+timer ..> endTime
+startTime -- crateNote
+endTime -- changeNote
+
+user -- changeNote
+user -- deleteNote
+user --addition
+
+
+
+
+
+
+rectangle "Доп. функциональность" as addition {
+    (Подсказки при создании заголовка) as helper
+    helper ..> (по текущему времени)
+    helper ..> (по частоте использования)
+    helper ..> (по введенной строке)
+    (импорт из toggl)
+    (автозапуск в винде)
+}
+
+@enduml

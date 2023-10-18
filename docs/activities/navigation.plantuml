@@ -1,0 +1,23 @@
+@startuml
+
+
+start
+rectangle "INavigationService"{
+    :Navigate();
+}
+
+rectangle "INavigationStore" {
+    :Смена INavigationStore.CurrentViewModel;
+    :Вызов CurrentViewModelChanged;
+}
+rectangle "MainViewModel"{
+    :Вызов MainViewModel.PropertyChanged на смену CurrentViewModel;
+}
+rectangle "MainWindow"{
+:Отображение нового View в MainWindow с помощью DateTemplate;
+
+}
+
+end
+
+@enduml

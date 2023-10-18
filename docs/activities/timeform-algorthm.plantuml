@@ -1,0 +1,63 @@
+
+@startuml Алгоритм формы изменения даты и времени в TimaNoteVM
+
+start
+rectangle TimaNoteView {
+:нажатие кнопку в TimaNoteView;
+}
+
+rectangle OpenTimeFormCommand {
+:копирование полей StartTime, EndTime, Time, Date в новую TimaNoteVM;
+:созадние TimeFormVM с созданной TimaNoteVM;
+:назначение TimeFormVM внутри старой TimaNoteVM (той на которой был вызов);
+}
+
+rectangle TimeNoteVM {
+
+:привязывание к событию TimeFormVM.PropertyChanged;
+:привязывание к события TimeFormVM.Closed;
+
+}
+rectangle OpenTimeFormCommand {
+:навигация TimeFormVM в ModalVM;
+}
+
+while (TimeFormVM not close) is (not closed)
+
+rectangle TimeFormVM {
+
+if (изменились StartTime, EndTime или Date) then (да)
+    if (данные валидны) then (да)
+        :вызвать PropertyChanged;
+    else (нет)
+        :вернуть старые значения;
+        :показать ошибку;
+    endif
+endif
+if (изменилось Time) then (yes)
+    if (данные валидны) then (да)
+        :установить StartTime = EndTime - Time;
+        :вызвать PropertyChanged;
+    else (нет)
+        :вернуть старые значения;
+    endif
+endif
+}
+
+rectangle TimeNoteVM {
+    if (TimeFormVM.PropertyChanged вызван) then (да)
+    :установить измененые значения к себе;
+    endif
+}
+
+
+endwhile (TimeFormVM.Closed)
+
+rectangle TimeNoteVM {
+    :отписаться от события TimeFormVM.PropertyChanged;
+    :отписаться от события TimeFormVM.TimeFormVM.Closed;
+    :обнулить поле TimeForm;
+}
+
+end
+@enduml
