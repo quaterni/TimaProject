@@ -7,11 +7,11 @@ using TimaProject.Repositories;
 
 namespace TimaProject.Services
 {
-    internal class ListingNotesService
+    public class ListingRecordsService
     {
-        private INoteRepository _noteRepository;
+        private IRecordRepository _noteRepository;
 
-        public ListingNotesService()
+        public ListingRecordsService()
         {
             
         }

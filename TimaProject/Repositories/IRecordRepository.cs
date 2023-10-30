@@ -7,15 +7,15 @@ using TimaProject.Models;
 
 namespace TimaProject.Repositories
 {
-    internal interface INoteRepository
+    public interface IRecordRepository
     {
         public int GetNewId();
 
-        public void AddNote(TimaNote note);
+        public void AddNote(Record note);
 
-        public void UpdateNote(TimaNote note);
+        public void UpdateNote(Record note);
 
-        public IEnumerable<TimaNote> GetAllNotes(Func<TimaNote, bool>? wherePredicate = null);
+        public IEnumerable<Record> GetAllNotes(Func<Record, bool>? wherePredicate = null);
 
         public event EventHandler? NotesChanged;
     }

@@ -4,25 +4,31 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TimaProject"
-        xmlns:controls="clr-namespace:TimaProject.Views.Controls"
+        xmlns:controls="clr-namespace:ControlTools;assembly=ControlTools"
         xmlns:viewModels="clr-namespace:TimaProject.ViewModels"
-        xmlns:model="clr-namespace:TimaProject.Models" xmlns:views="clr-namespace:TimaProject.Views"
+        xmlns:containers="clr-namespace:TimaProject.ViewModels.Containers"
+        xmlns:model="clr-namespace:TimaProject.Models" 
+        xmlns:views="clr-namespace:TimaProject.Views"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="500"
         Background="#20242B"
         Foreground="White">
     <Grid>
         <Grid.Resources>
-            <DataTemplate DataType="{x:Type viewModels:TimerListingViewModel}">
+            <DataTemplate DataType="{x:Type viewModels:ListingRecordViewModel}">
                 <views:TimerListingView/>
             </DataTemplate>
             <DataTemplate DataType="{x:Type viewModels:TimerViewModel}">
                 <views:TimerView/>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type viewModels:TimerLayoutViewModel}">
+            <DataTemplate DataType="{x:Type containers:TimerLayoutViewModel}">
                 <views:TimerLayoutView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:TimeFormViewModel}">
+                <views:TimeFormView/>
+            </DataTemplate>
         </Grid.Resources>
-        <ContentControl Content="{Binding CurrenViewModel}"/>
+        <controls:ModalView DataContext="{Binding CurrentModalViewModel}" Panel.ZIndex="5"/>
+        <ContentControl Content="{Binding CurrentViewModel}"/>
     </Grid>
 </Window>

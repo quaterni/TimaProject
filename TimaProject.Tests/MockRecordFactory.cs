@@ -10,24 +10,23 @@ using TimaProject.ViewModels;
 
 namespace TimaProject.Tests
 {
-    internal class MockNoteFactory : INoteFactory
+    internal class MockRecordFactory : IRecordFactory
     {
-        public Note Create(NoteViewModel timeNoteViewModel)
+        public Record Create(RecordViewModel timeNoteViewModel)
         {
             var startTime = DateTimeOffset.Parse(timeNoteViewModel.StartTime);
             DateOnly date = DateOnly.Parse(timeNoteViewModel.Date);
 
-            return new Note(startTime, 1)
+            return new Record(startTime, 1)
             {
                 EndTime = null,
                 Title = timeNoteViewModel.Title,
                 Project = timeNoteViewModel.Project,
-                Text = timeNoteViewModel.Text,
                 Date = date
             };
         }
 
-        public Note CreateActiveNote(NoteViewModel timeNoteViewModel)
+        public Record CreateActiveNote(RecordViewModel timeNoteViewModel)
         {
             throw new NotImplementedException();
         }

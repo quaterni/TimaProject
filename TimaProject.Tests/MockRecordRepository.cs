@@ -8,20 +8,20 @@ using TimaProject.Repositories;
 
 namespace TimaProject.Tests
 {
-    internal class MockNoteRepository : INoteRepository
+    internal class MockRecordRepository : IRecordRepository
     {
-        private readonly List<Note> _notes = new();
+        private readonly List<Record> _notes = new();
 
-        public List<Note> Notes => _notes;
+        public List<Record> Notes => _notes;
 
         public event EventHandler? NotesChanged;
 
-        public void AddNote(Note note)
+        public void AddNote(Record note)
         {
             _notes.Add(note);
         }
 
-        public IEnumerable<Note> GetAllNotes(Func<Note, bool>? wherePredicate = null)
+        public IEnumerable<Record> GetAllNotes(Func<Record, bool>? wherePredicate = null)
         {
             throw new NotImplementedException();
         }
@@ -31,9 +31,9 @@ namespace TimaProject.Tests
             return 1;
         }
 
-        public void UpdateNote(Note note)
+        public void UpdateNote(Record note)
         {
-            throw new NotImplementedException();
+            _notes[0] = note;
         }
     }
 }

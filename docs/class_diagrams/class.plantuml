@@ -1,118 +1,52 @@
 @startuml
 
-class "App" as app
-interface "IServicePrivider" as di
-di -> app :diContainer
-
-class "MainWindow" as mainWindow
-
 rectangle ViewModels {
-        class "ViewModelBase" as vm {
-            # SetValue(ref member, value, propertyName)
-            + PropertyChanged
-            # OnPropertyChanged()
-            + Dispose()
-        }
 
     rectangle Containers {
-        class "MainViewModel" as mainVM {
-            - _navigationStore : INavigationStore<ViewModelBase>
-            - _modalStore : INavigationStore<ModalViewModel>
-            + CurrentViewModel
-            + CurrentModalViewModel
-            - OnCurrentModalChanged()
-            - OnCurrentViewModelChanged()
-            + override Dispose()
-        }
-
-        class "ModalViewModel" as modalVM {
-            + ContentViewModel
-            + IsOpen
-        }
-
         class "TimerLayoutViewModel" as timerLayout {
             + TimerViewModel : ViewModelBase
             + CurrentViewModel : ViewModelBase
         }
-
-        mainVM --o mainWindow
-        mainVM --> di
-        modalVM --|> vm
-        vm --o modalVM : as content
-        vm --o timerLayout :as timer
-        vm --o timerLayout :as content
     }
+
+    class "TimerViewModel" as timerVM{
+
+    }
+
+    class "TimeFormViewModel" as timeForm{
+
+    }
+
+    class "ProjectFromViewModel" as projectForm{
+
+    }
+
+    class "RecordViewModelWithEdit" as recordEdit{
+
+    }
+
+    class "RecordViewModel" as recordVM{
+
+    }
+
+    class "EditableRecordViewModel" as editableRecordVM{
+
+    }
+
+    class "ListingRecordViewModel" as listing {
+
+    }
+    timerVM --|> recordEdit
+    recordEdit --|> recordVM
+    editableRecordVM --|> recordEdit
+
+    timerLayout o-- timerVM
+    recordEdit o-- timeForm
+    recordEdit o-- projectForm
+
+    timerLayout o-- listing
+
+    listing "1"  --> "*" editableRecordVM
 
 }
-
-
-mainWindow --o app
-mainWindow --> di
-
-
-rectangle "Services" {
-
-    rectangle "Navigation" {
-
-        class "NavigationService<TStoreViewModel>" as navService{
-            - navigationStore : INavigationStore<TStoreViewModel>
-            - viewModelFactory : Func<Type, TStoreViewModel>
-            + void Navigate(object? parameter)
-        }
-
-        interface "INavigationService" as InavService {
-            + void Navigate(object? parameter)
-        }
-
-        class CloseModalNavigationService
-        class OpenModalNavigationService
-        class CompositeNavigationService
-        class ParameterizedNavigationService
-
-    }
-
-}
-
-
-rectangle Stores {
-    interface "INavigationStore<TViewModel>" as InavStore {
-        + CurrentViewModel : TViewModel?
-        + CurrentViewModelChanged : EventHandler
-    }
-
-    class "NavigationStore" as navStore {
-        - OnCurrentViewModelChanged()
-    }
-
-    class "ModalStore" as modalStore {
-        + Close()
-        + Open()
-        + OnCurrentViewModelChanged
-    }
-
-    navStore --|> InavStore :ViewModelBase
-    modalStore --|> InavStore :ModalViewModel
-    navStore ..> vm :change current vm
-    
-    InavStore --o mainVM : as navigation store
-    InavStore --o mainVM : as modal store
-
-    modalStore ..> modalVM :change current vm
-
-}
-
-
-
-
-navService ..> InavStore
-
-
-navService --> app : "navigate to note lisitng"
-
-navService ..> app
-
-navService --|> InavService
-
-mainVM --|> vm
-
 @enduml

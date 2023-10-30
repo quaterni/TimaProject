@@ -1,4 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using MvvmTools.Base;
+using MvvmTools.Navigation.Services;
+using MvvmTools.Navigation.Stores;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -7,9 +10,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using TimaProject.Repositories;
-using TimaProject.Services;
+using TimaProject.Services.Factories;
 using TimaProject.Stores;
 using TimaProject.ViewModels;
+using TimaProject.ViewModels.Containers;
+using TimaProject.ViewModels.Validators;
 
 namespace TimaProject
 {
@@ -25,27 +30,54 @@ namespace TimaProject
             IServiceCollection services = new ServiceCollection();
 
             services.AddSingleton<NavigationStore>();
+            services.AddSingleton<ModalStore>();
+
+            services.AddTransient<CloseModalService>();
+            services.AddTransient<OpenModalService>();
+
+            services.AddTransient<RecordValidator>();
+
             services.AddSingleton<MainWindow>(
                 s => new MainWindow()
                 {
-                    DataContext = new MainViewModel(s.GetRequiredService<NavigationStore>())
+                    DataContext = new MainViewModel(s.GetRequiredService<NavigationStore>(), s.GetRequiredService<ModalStore>())
                 });
 
             services.AddSingleton<Func<Type, ViewModelBase>>(
                 s => type => (ViewModelBase)s.GetRequiredService(type));
 
-            services.AddSingleton<INoteRepository, TimaNoteRepository>();
+            services.AddSingleton<IRecordRepository, RecordRepository>();
 
-            services.AddTransient<TimerViewModel>();
+            services.AddSingleton<IDateStore, TodayDateStore>();
 
-            services.AddTransient<TimerListingViewModel>();
+            services.AddTransient<RecordFactory>();
+
+            services.AddTransient(s => TimerViewModelFactory(s));
+
+            services.AddTransient<ListingRecordViewModel>();
+
+            services.AddTransient<TimerLayoutViewModel>(
+                s => new TimerLayoutViewModel(
+                    s.GetRequiredService<TimerViewModel>(),
+                    s.GetRequiredService<ListingRecordViewModel>()));
 
             _serviceProvider = services.BuildServiceProvider();
         }
 
+        private TimerViewModel TimerViewModelFactory(IServiceProvider s)
+        {
+            return new TimerViewModel(
+                            s.GetRequiredService<IRecordRepository>(),
+                            s.GetRequiredService<RecordFactory>(),
+                            new CompositeNavigationService(ModalParameterizedNavigationService<TimeFormViewModel>(s),
+                                                           s.GetRequiredService<OpenModalService>()),
+                            TimeFormFactory,
+                            s.GetRequiredService<RecordValidator>());
+        }
+
         protected override void OnStartup(StartupEventArgs e)
         {
-            TimerLayoutNavigationServiceFactory<TimerListingViewModel>(_serviceProvider).Navigate(null);
+            NavigationServiceFactory<TimerLayoutViewModel>(_serviceProvider).Navigate(null);
             MainWindow = _serviceProvider.GetRequiredService<MainWindow>();
             MainWindow.Show();
             base.OnStartup(e);
@@ -66,5 +98,25 @@ namespace TimaProject
                     serviceProvider.GetRequiredService<TimerViewModel>(),
                     (TViewModel)serviceProvider.GetRequiredService(t)));
         }
+
+        private NavigationService<ModalViewModel, TViewModel> ModalNavigationServiceFactory<TViewModel>(IServiceProvider service) where TViewModel : ViewModelBase
+        {
+            return new NavigationService<ModalViewModel, TViewModel>(
+                service.GetRequiredService<ModalStore>(),
+                (t) => new ModalViewModel((TViewModel)service.GetRequiredService(t)));
+        }
+
+        private ParameterizedNavigationService<ModalViewModel, TViewModel> ModalParameterizedNavigationService<TViewModel>(IServiceProvider service) where TViewModel : ViewModelBase
+        {
+            return new ParameterizedNavigationService<ModalViewModel, TViewModel>(
+                service.GetRequiredService<ModalStore>(),
+                (t) => new ModalViewModel(t));
+        }
+
+        private TimeFormViewModel TimeFormFactory()
+        {
+            return new TimeFormViewModel(_serviceProvider.GetRequiredService<RecordValidator>(), _serviceProvider.GetRequiredService<CloseModalService>());
+        }
+
     }
 }

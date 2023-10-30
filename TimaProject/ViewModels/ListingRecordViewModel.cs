@@ -1,21 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using MvvmTools.Base;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TimaProject.Models;
 using TimaProject.Repositories;
 
 namespace TimaProject.ViewModels
 {
-    internal class TimerListingViewModel :ViewModelBase
+    internal class ListingRecordViewModel :ViewModelBase
     {
-        private INoteRepository _noteRepository;
+        private IRecordRepository _noteRepository;
 
-        private ObservableCollection<TimaNote> _notes;
+        private ObservableCollection<Record> _notes;
 
-        public ObservableCollection<TimaNote> Notes
+        public ObservableCollection<Record> Notes
         {
             get
             {
@@ -27,16 +25,16 @@ namespace TimaProject.ViewModels
             }
         }
 
-        public TimerListingViewModel(INoteRepository noteRepository)
+        public ListingRecordViewModel(IRecordRepository noteRepository)
         {
             _noteRepository = noteRepository;
-            _notes = new(_noteRepository.GetAllNotes( t => !t.IsActive).OrderByDescending(n => n.StoppingTime));
+            _notes = new(_noteRepository.GetAllNotes( t => !t.IsActive).OrderByDescending(n => n.EndTime));
             _noteRepository.NotesChanged += OnNotesChanged;
         }
 
         private void OnNotesChanged(object? sender, EventArgs e)
         {
-            Notes= new(_noteRepository.GetAllNotes(t => !t.IsActive).OrderByDescending(n => n.StoppingTime));           
+            Notes= new(_noteRepository.GetAllNotes(t => !t.IsActive).OrderByDescending(n => n.EndTime));           
         }
 
         public override void Dispose()

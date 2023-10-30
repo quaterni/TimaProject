@@ -1,43 +1,41 @@
-@startuml TimaProject
+@startuml timaproject-use-case
 
 left to right direction
 
 actor Пользователь as user
 
-(Создание tima) as crateNote
+(изменение record из таймера) as changeRecordTimer
+(запуск таймера) as startTimer
 
-(Удаление tima) as deleteNote
-
-(Изменение tima) as changeNote
-
-(Управление таймером) as timer
-
-(Запуск таймера) as startTime
-(Остановка таймера) as endTime
-
-user -- timer 
-
-timer ..> startTime
-timer ..> endTime
-startTime -- crateNote
-endTime -- changeNote
-
-user -- changeNote
-user -- deleteNote
-user --addition
+(создание record) as changeRecord
 
 
 
+user -- changeRecordTimer
+
+user -- startTimer
+
+startTimer ..> changeRecord
+
+changeRecordTimer ..> (изменение заголовка) 
+changeRecordTimer ..> (изменение StartTime)
+changeRecordTimer ..> (изменение проекта)
+
+user -- (остановка таймера)
+
+(остановка таймера) ..> (запись EndTime в record)
 
 
+user -- (удаление record)
+user -- (создание record без таймера)
+user -- (изменение record из списка)
+(изменение record из списка) ..> (изменение заголовка) 
+(изменение record из списка) ..> (изменение проекта)
+(изменение record из списка) ..> (изменение времени record)
+(изменение времени record) ..> (изменение StartTime)
+(изменение времени record) ..> (изменение EndTime)
+(изменение времени record) ..> (изменение свойства Time)
+(изменение record из списка) ..> (добавление заметок к завершенным записям)
 
-rectangle "Доп. функциональность" as addition {
-    (Подсказки при создании заголовка) as helper
-    helper ..> (по текущему времени)
-    helper ..> (по частоте использования)
-    helper ..> (по введенной строке)
-    (импорт из toggl)
-    (автозапуск в винде)
-}
 
 @enduml

@@ -3,9 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:TimaProject.Views" xmlns:controls="clr-namespace:TimaProject.Views.Controls"
+             xmlns:local="clr-namespace:TimaProject.Views" 
+             xmlns:converters="clr-namespace:TimaProject.Views.Convertors" 
+             xmlns:controls="clr-namespace:ControlTools;assembly=ControlTools"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converters:DateTimeOffsetToString x:Key="DateTimeOffsetToString"/>
+    </UserControl.Resources>
     <Grid Margin="0 5" MaxWidth="800">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -18,7 +23,7 @@
                                    FontSize="16"
                                    Foreground="White"
                                    SuggestingText="Add title"
-                                   Text="{Binding CurrentTitle, 
+                                   Text="{Binding Title, 
                                                   Mode=TwoWay}"
                                    Background="#20242B"/>
         <Button Grid.Column="1"
@@ -26,13 +31,31 @@
                 Background="Transparent"
                 BorderThickness="0"
                 Foreground="#61AFEF"/>
-        <controls:TimerControl Grid.Column="2"
+        <Grid Grid.Column="2">
+            <controls:TimerControl Grid.Column="2"
                                BorderThickness="0"
-                               StartingTime="{Binding StartingTime, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"
+                               x:Name="timer"
+                               StartingTime="{Binding StartTime,
+                                                    Converter={StaticResource DateTimeOffsetToString},
+                                                    Mode=TwoWay, 
+                                                    UpdateSourceTrigger=PropertyChanged}"
                                TimeStarted="TimerControl_TimeStarted"
-                               TimeStopped="TimerControl_TimeStopped">
+                               TimeStopped="TimerControl_TimeStopped"
+                              />
 
-        </controls:TimerControl>
+            <Grid Background="#272B34"
+                  HorizontalAlignment="Left" 
+                  Width="70"
+                  VerticalAlignment="Center">
+                <Button Content="{Binding ElementName=timer,
+                    Path=Time, StringFormat={}{0:hh\\:mm\\:ss}}"
+                        Background="{x:Null}"
+                        Command="{Binding OpenTimeForm}"
+                        IsEnabled="{Binding IsActive}"/>
+            </Grid>
+
+        </Grid>
+
 
     </Grid>
 </UserControl>

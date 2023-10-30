@@ -8,7 +8,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.7.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="ControlTools">
+      <HintPath>..\..\..\MyWpfTools\ControlTools\bin\Release\net6.0-windows\publish\ControlTools.dll</HintPath>
+    </Reference>
+    <Reference Include="MvvmTools">
+      <HintPath>..\..\..\MyWpfTools\MvvmTools\bin\Release\net6.0\publish\MvvmTools.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

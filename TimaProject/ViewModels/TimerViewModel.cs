@@ -1,106 +1,130 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FluentValidation;
+using MvvmTools.Navigation.Services;
+using System;
+using System.ComponentModel;
 using TimaProject.Models;
 using TimaProject.Repositories;
+using TimaProject.Services.Factories;
+
 
 namespace TimaProject.ViewModels
 {
-    class TimerViewModel :ViewModelBase
+    public class TimerViewModel: RecordViewModelWithEdit
     {
-        private ulong? _timaNoteId;
+        private Record? _record;
 
-        private INoteRepository _noteRepository;
+        private readonly IRecordRepository _noteRepository;
 
-        private string _currentTitle;
+        private readonly IRecordFactory _factory;
 
-        public string CurrentTitle
+        private bool _isActive;
+
+        public bool IsActive
         {
             get
             {
-                return _currentTitle;
+                return _isActive;
             }
             set
             {
-                SetValue(ref _currentTitle, value, nameof(CurrentTitle));
+                SetValue(ref _isActive, value);
             }
         }
 
-        private DateTimeOffset _startingTime;
-
-        public DateTimeOffset StartingTime 
+        public TimerViewModel(IRecordRepository noteRepository, 
+            IRecordFactory factory,
+            INavigationService timeFormNavigationService,
+            Func<TimeFormViewModel> timeFormFactory,
+            AbstractValidator<RecordViewModel> validator): base(timeFormNavigationService, timeFormFactory, validator)
         {
-            get 
-            {
-                return _startingTime;
-            }
-            set
-            {
-                SetValue(ref _startingTime, value);
-            }
-        }
-
-        private Project? _project;
-
-        public Project? Project
-        {
-            get
-            {
-                return _project;
-            }
-            set
-            {
-                SetValue(ref _project, value);
-            }
-        }
-
-        public bool IsRunning => _timaNoteId != null;
-
-        public TimerViewModel(INoteRepository noteRepository)
-        {
-             _currentTitle = string.Empty;
-            _startingTime = DateTimeOffset.MinValue;
             _noteRepository = noteRepository;
+            _factory = factory;
+            SetDafultValues();
+            PropertyChanged += OnRecordUpdated;
+        }
+
+        private void OnRecordUpdated(object? sender, PropertyChangedEventArgs e)
+        {
+            if(_record is null)
+            {
+                return;
+            }
+
+            foreach (var error in GetErrors(e.PropertyName))
+            {
+                if(error is not null)
+                {
+                    return;
+                }
+            }
+            switch (e.PropertyName)
+            {
+                case nameof(Title):
+                    {
+                        _record = _record with { Title = Title };
+                        _noteRepository.UpdateNote(_record);
+                        break;
+                    }
+                case nameof(Project):
+                    {
+                        _record = _record with { Project = Project };
+                        _noteRepository.UpdateNote(_record);
+                        break;
+                    }
+                case nameof(StartTime):
+                    {
+                        var startTime = DateTimeOffset.Parse(StartTime);
+                        if (startTime == DateTimeOffset.MinValue)
+                            break;
+                        _record = _record with { StartTime = startTime };
+                        _noteRepository.UpdateNote(_record);
+                        break;
+                    }
+            }
+
         }
 
         public void OnStartingTime()
         {
-            ulong id = (ulong)_noteRepository.GetNewId();
-
-            var newNote = new TimaNote(StartingTime, id) 
-            { 
-                Title = CurrentTitle,
-                Project = Project
+            var recordViewModel = new RecordViewModel(_validator)
+            {
+                Title = PropertyHasErrors(nameof(Title)) ? string.Empty : Title,
+                Project = Project,
+                StartTime = PropertyHasErrors(nameof(StartTime)) ?
+                            DateTimeOffset.Now.ToString() : StartTime,
+                Date = PropertyHasErrors(nameof(Date)) ?
+                       DateOnly.FromDateTime(DateTime.Today).ToString() : Date
             };
-            _timaNoteId = id;
+
+            var newNote = _factory.Create(recordViewModel);
+            _record = newNote;
             _noteRepository.AddNote(newNote);
+            IsActive = true;
+
         }
 
         public void OnEndingTime()
         {
-            if(_timaNoteId is not null)
+            if(IsActive)
             {
-                var newNote = new TimaNote(StartingTime, _timaNoteId.Value)
+                var updatedNote = _record! with
                 {
-                    Title = CurrentTitle,
-                    StoppingTime = DateTimeOffset.UtcNow,
-                    Project = Project,
-                    Date = DateOnly.FromDateTime(DateTime.UtcNow)
+                    EndTime = DateTimeOffset.UtcNow,
                 };
-                _noteRepository.UpdateNote(newNote);
-                SetDafultValues();
+                _noteRepository.UpdateNote(updatedNote);
+                IsActive = false;
 
+                SetDafultValues();
             }
         }
 
         private void SetDafultValues()
         {
-            _timaNoteId = null;
-            CurrentTitle = string.Empty;
-            StartingTime = DateTimeOffset.MinValue;
-            Project = null;
+            _record = null;
+            Title = string.Empty;
+            StartTime = DateTimeOffset.MinValue.ToString();
+            EndTime = null;
+            Project = Project.Empty;
         }
     }
 }

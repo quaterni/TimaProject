@@ -21,4 +21,10 @@
     <ProjectReference Include="..\TimaProject\TimaProject.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="MvvmTools">
+      <HintPath>..\..\..\MyWpfTools\MvvmTools\bin\Release\net6.0\publish\MvvmTools.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

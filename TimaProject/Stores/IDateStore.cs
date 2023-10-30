@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TimaProject.Services
+namespace TimaProject.Stores
 {
-    internal interface INavigationService
+    public interface IDateStore
     {
-        public void Navigate(object? parameter);
+        public DateOnly Date { get; }
+
     }
 }
