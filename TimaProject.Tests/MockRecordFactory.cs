@@ -17,12 +17,11 @@ namespace TimaProject.Tests
             var startTime = DateTimeOffset.Parse(timeNoteViewModel.StartTime);
             DateOnly date = DateOnly.Parse(timeNoteViewModel.Date);
 
-            return new Record(startTime, 1)
+            return new Record(startTime, date, 1)
             {
                 EndTime = null,
                 Title = timeNoteViewModel.Title,
-                Project = timeNoteViewModel.Project,
-                Date = date
+                Project = timeNoteViewModel.Project
             };
         }
 

@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace TimaProject.Models
 {
-    public record Record(DateTimeOffset StartTime, ulong Id)
+    public record Record(DateTimeOffset StartTime, DateOnly Date, ulong Id)
     {
         public DateTimeOffset? EndTime { get; init; } 
-
-        public DateOnly Date { get; init; }
 
         public string Title { get; init; } = string.Empty;
 
