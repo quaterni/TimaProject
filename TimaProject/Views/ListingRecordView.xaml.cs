@@ -6,9 +6,9 @@ namespace TimaProject.Views
     /// <summary>
     /// Interaction logic for TimerListingView.xaml
     /// </summary>
-    public partial class TimerListingView : UserControl
+    public partial class ListingRecordView : UserControl
     {
-        public TimerListingView()
+        public ListingRecordView()
         {
             InitializeComponent();
         }

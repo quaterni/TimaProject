@@ -10,7 +10,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-        <converters:DateTimeOffsetToString x:Key="DateTimeOffsetToString"/>
+        <converters:DateTimeToString x:Key="DateTimeToString"/>
     </UserControl.Resources>
     <Grid Margin="0 5" MaxWidth="800">
         <Grid.ColumnDefinitions>
@@ -26,14 +26,6 @@
                                    Text="{Binding Title, 
                                                   Mode=TwoWay}"
                                    Background="#20242B"/>
-        <!--<controls:ClickableTextBox Grid.Column="0"
-                                   Margin="0 10 10 5"
-                                   FontSize="16"
-                                   Foreground="White"
-                                   SuggestingText="Add title"
-                                   Text="{Binding Title, 
-                                                  Mode=TwoWay}"
-                                   Background="#20242B"/> -->
         <Button Grid.Column="1"
                 Content="project"
                 Background="Transparent"
@@ -44,7 +36,7 @@
                                BorderThickness="0"
                                x:Name="timer"
                                StartingTime="{Binding StartTime,
-                                                    Converter={StaticResource DateTimeOffsetToString},
+                                                    Converter={StaticResource DateTimeToString},
                                                     Mode=TwoWay, 
                                                     UpdateSourceTrigger=PropertyChanged}"
                                TimeStarted="TimerControl_TimeStarted"
@@ -58,7 +50,7 @@
                 <Button Content="{Binding ElementName=timer,
                     Path=Time, StringFormat={}{0:hh\\:mm\\:ss}}"
                         Background="{x:Null}"
-                        Command="{Binding OpenTimeForm}"
+                        Command="{Binding OpenTimeFormCommand}"
                         IsEnabled="{Binding IsActive}"/>
             </Grid>
 

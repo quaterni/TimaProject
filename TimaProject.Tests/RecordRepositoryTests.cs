@@ -18,8 +18,8 @@ namespace TimaProject.Tests
         private readonly IRecordRepository _sutForFiltration;
 
         private readonly DateOnly _filterDate;
-        private readonly DateTimeOffset _toTime;
-        private readonly DateTimeOffset _fromTime;
+        private readonly DateTime _toTime;
+        private readonly DateTime _fromTime;
 
         private readonly Project[] _expectedProjects = new Project[]
         {
@@ -33,8 +33,8 @@ namespace TimaProject.Tests
         public RecordRepositoryTests()
         {
             _filterDate = DateOnly.Parse("02.11.2023");
-            _toTime = DateTimeOffset.Parse("2.11.2023 20:00");
-            _fromTime = DateTimeOffset.Parse("01.11.2023 20:00");
+            _toTime = DateTime.Parse("2.11.2023 20:00");
+            _fromTime = DateTime.Parse("01.11.2023 20:00");
 
 
             _expectedRecords = new Models.Record[]
@@ -204,7 +204,7 @@ namespace TimaProject.Tests
         [Fact]
         public void GetRecordsSould_ReturnAllNotActiveRecords_WhenFilterArgsByDefault()
         {
-            var activeRecord = new Models.Record(DateTimeOffset.Now,_filterDate, 5);
+            var activeRecord = new Models.Record(DateTime.Now,_filterDate, 5);
 
             _sutForFiltration.AddRecord(activeRecord);
             
@@ -256,7 +256,7 @@ namespace TimaProject.Tests
                 IsActive = true
             };
 
-            var activeRecord = new Models.Record(DateTimeOffset.Now, _filterDate, 5);
+            var activeRecord = new Models.Record(DateTime.Now, _filterDate, 5);
 
             _sutForFiltration.AddRecord(activeRecord);
 

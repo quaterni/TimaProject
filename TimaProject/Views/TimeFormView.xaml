@@ -18,19 +18,25 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0">
             <TextBlock Text="StartTime"  />
-            <cliclable:ClickableTextBox Text="{Binding StartTime,
-                ValidatesOnDataErrors=True}"/>
+            <cliclable:ClickableTextBox
+                Text="{Binding StartTime,
+                    Mode=TwoWay,
+                    ValidatesOnDataErrors=True}"/>
         </StackPanel>
         <StackPanel Grid.Row="1">
             <TextBlock Text="EndTime"  />
-            <cliclable:ClickableTextBox Text="{Binding EndTime,
-                ValidatesOnDataErrors=True}"
-                     IsEnabled="{Binding IsEndTimeEnabled}"/>
+            <cliclable:ClickableTextBox
+                Text="{Binding EndTime,
+                    Mode=TwoWay,
+                    ValidatesOnDataErrors=True}"
+                IsEnabled="{Binding IsEndTimeEnabled}"/>
         </StackPanel>
         <StackPanel Grid.Row="2">
             <TextBlock Text="Time"  />
-            <cliclable:ClickableTextBox Text="{Binding Time,
-                                    ValidatesOnDataErrors=True}"/>
+            <cliclable:ClickableTextBox
+                Text="{Binding Time,
+                    Mode=TwoWay,
+                    ValidatesOnDataErrors=True}"/>
         </StackPanel>
         <StackPanel Grid.Row="3">
             <Button Command="{Binding CloseCommand}"

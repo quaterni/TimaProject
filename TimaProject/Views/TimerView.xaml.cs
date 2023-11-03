@@ -26,7 +26,7 @@ namespace TimaProject.Views
             InitializeComponent();
         }
 
-        private void TimerControl_TimeStarted(object sender, RoutedPropertyChangedEventArgs<DateTimeOffset> e)
+        private void TimerControl_TimeStarted(object sender, RoutedPropertyChangedEventArgs<DateTime> e)
         {
             if(DataContext is TimerViewModel vm)
             {
@@ -34,7 +34,7 @@ namespace TimaProject.Views
             }
         }
 
-        private void TimerControl_TimeStopped(object sender, RoutedPropertyChangedEventArgs<Tuple<DateTimeOffset, DateTimeOffset>> e)
+        private void TimerControl_TimeStopped(object sender, RoutedPropertyChangedEventArgs<Tuple<DateTime, DateTime>> e)
         {
             if (DataContext is TimerViewModel vm)
             {

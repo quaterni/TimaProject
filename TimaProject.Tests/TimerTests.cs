@@ -167,14 +167,14 @@ namespace TimaProject.Tests
         }
 
         [Fact]
-        public void OnEndingTimeShould_SetDefaultValues()
+        public void OnEndingTime_SetDefaultValues()
         {
             _sut.OnStartingTime();
 
             _sut.OnEndingTime();
             Assert.Equal(string.Empty, _sut.Title);
             Assert.Equal(DateTimeOffset.MinValue.ToString(), _sut.StartTime);
-            Assert.Null(_sut.EndTime);
+            Assert.Empty(_sut.EndTime);
             Assert.Equal(Project.Empty, _sut.Project);
         }
 

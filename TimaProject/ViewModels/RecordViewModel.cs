@@ -15,9 +15,9 @@ namespace TimaProject.ViewModels
     {
         protected readonly AbstractValidator<RecordViewModel> _validator;
 
-        private string? _endTime;
+        private string _endTime;
 
-        public string? EndTime
+        public string EndTime
         {
             get
             {
@@ -40,6 +40,20 @@ namespace TimaProject.ViewModels
             set
             {
                 SetValue(ref _date, value);
+            }
+        }
+
+        private bool _isActive;
+
+        public bool IsActive
+        {
+            get
+            {
+                return _isActive;
+            }
+            set
+            {
+                SetValue(ref _isActive, value);
             }
         }
 
@@ -82,9 +96,11 @@ namespace TimaProject.ViewModels
         public RecordViewModel(AbstractValidator<RecordViewModel> validator)
         {
             _startTime = string.Empty;
-            _endTime = null;
+            _endTime = string.Empty;
+            _project = Project.Empty;
             _date = string.Empty;
             _title = string.Empty;
+            _isActive = false;
 
             _validator = validator;
         }

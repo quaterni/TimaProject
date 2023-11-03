@@ -23,11 +23,11 @@ namespace TimaProject.Services.Factories
 
         public Record Create(RecordViewModel timeNoteViewModel)
         {
-            var startTime = DateTimeOffset.Parse(timeNoteViewModel.StartTime);
-            DateTimeOffset? endTime = null;
-            if (timeNoteViewModel.EndTime is not null)
+            var startTime = DateTime.Parse(timeNoteViewModel.StartTime);
+            DateTime? endTime = null;
+            if (!timeNoteViewModel.EndTime.Equals(string.Empty))
             {
-                endTime = DateTimeOffset.Parse(timeNoteViewModel.EndTime);
+                endTime = DateTime.Parse(timeNoteViewModel.EndTime);
             }
 
             return new Record(startTime, _dateStore.Date, (ulong)_repository.GetNewId())

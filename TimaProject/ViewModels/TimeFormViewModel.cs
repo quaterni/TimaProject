@@ -94,11 +94,12 @@ namespace TimaProject.ViewModels
                 AddError(nameof(Time), "Incorrect input");
                 return;
             }
-            if(!DateTimeOffset.TryParse(EndTime, out var endTime))
+            if(HasPropertyErrors(nameof(EndTime)) || EndTime.Equals(string.Empty))
             {
                 AddError(nameof(Time), "Set correct EndTime");
                 return;
             }
+            DateTime.TryParse(EndTime, out var endTime);
             StartTime = (endTime - time).ToString();
         }
 
@@ -108,11 +109,21 @@ namespace TimaProject.ViewModels
             {
                 return;
             }
-            if(DateTimeOffset.TryParse(StartTime, out var startTime) 
-               && DateTimeOffset.TryParse(EndTime, out var endTime)) 
+
+            if(HasPropertyErrors(nameof(StartTime)) || HasPropertyErrors(nameof(EndTime)))
             {
-                Time = (endTime - startTime).ToString("h\\:mm\\:ss");
+                AddError(nameof(Time), "StartTime or EndTime not correct");
+                return;
             }
+
+            if (StartTime.Equals(string.Empty) || EndTime.Equals(string.Empty))
+            {
+                return;
+            }
+
+            DateTime.TryParse(StartTime, out var startTime);
+            DateTime.TryParse(EndTime, out var endTime);
+            Time = (endTime - startTime).ToString();
         }
     }
 }

@@ -7,7 +7,7 @@ namespace TimaProject.Tests
     {
         public void Navigate(object? parameter)
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

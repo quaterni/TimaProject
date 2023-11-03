@@ -8,25 +8,25 @@ namespace TimaProject.ViewModels.Validators
         public RecordValidator()
         {
             RuleFor(s => s.StartTime)
-                .Must(startTime => DateTimeOffset.TryParse(startTime, out _))
+                .Must(startTime => DateTime.TryParse(startTime, out _))
                 .WithMessage("StartTime not valid string");
 
             RuleFor(s => s.EndTime)
-                .Must(endTime => DateTimeOffset.TryParse(endTime, out _))
+                .Must(endTime => DateTime.TryParse(endTime, out _))
                 .WithMessage("EndTime not valid string");
-            When(s => DateTimeOffset.TryParse(s.StartTime, out var _) &&
-                    DateTimeOffset.TryParse(s.EndTime, out var _),
+            When(s => DateTime.TryParse(s.StartTime, out var _) &&
+                    DateTime.TryParse(s.EndTime, out var _),
                 () =>
                 {
                     RuleFor(record => record.StartTime)
                         .Must((record, startTime) =>
-                            DateTimeOffset.Parse(startTime) <
-                            DateTimeOffset.Parse(record.EndTime))
+                            DateTime.Parse(startTime) <=
+                            DateTime.Parse(record.EndTime))
                         .WithMessage("StartTime must be erlier than EndTime");
                     RuleFor(record => record.EndTime)
                         .Must((record, endTime) =>
-                            DateTimeOffset.Parse(record.StartTime) <
-                            DateTimeOffset.Parse(endTime))
+                            DateTime.Parse(record.StartTime) <=
+                            DateTime.Parse(endTime))
                         .WithMessage("StartTime must be erlier than EndTime");
                 }); 
 

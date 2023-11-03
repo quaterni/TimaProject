@@ -17,20 +17,6 @@ namespace TimaProject.ViewModels
 
         private readonly IRecordFactory _factory;
 
-        private bool _isActive;
-
-        public bool IsActive
-        {
-            get
-            {
-                return _isActive;
-            }
-            set
-            {
-                SetValue(ref _isActive, value);
-            }
-        }
-
         public TimerViewModel(IRecordRepository noteRepository, 
             IRecordFactory factory,
             INavigationService timeFormNavigationService,
@@ -73,8 +59,8 @@ namespace TimaProject.ViewModels
                     }
                 case nameof(StartTime):
                     {
-                        var startTime = DateTimeOffset.Parse(StartTime);
-                        if (startTime == DateTimeOffset.MinValue)
+                        var startTime = DateTime.Parse(StartTime);
+                        if (startTime == DateTime.MinValue)
                             break;
                         _record = _record with { StartTime = startTime };
                         _noteRepository.UpdateRecord(_record);
@@ -88,11 +74,11 @@ namespace TimaProject.ViewModels
         {
             var recordViewModel = new RecordViewModel(_validator)
             {
-                Title = PropertyHasErrors(nameof(Title)) ? string.Empty : Title,
+                Title = HasPropertyErrors(nameof(Title)) ? string.Empty : Title,
                 Project = Project,
-                StartTime = PropertyHasErrors(nameof(StartTime)) ?
+                StartTime = HasPropertyErrors(nameof(StartTime)) ?
                             DateTimeOffset.Now.ToString() : StartTime,
-                Date = PropertyHasErrors(nameof(Date)) ?
+                Date = HasPropertyErrors(nameof(Date)) ?
                        DateOnly.FromDateTime(DateTime.Today).ToString() : Date
             };
 
@@ -109,7 +95,7 @@ namespace TimaProject.ViewModels
             {
                 var updatedNote = _record! with
                 {
-                    EndTime = DateTimeOffset.UtcNow,
+                    EndTime = DateTime.Now,
                 };
                 _noteRepository.UpdateRecord(updatedNote);
                 IsActive = false;
@@ -123,7 +109,7 @@ namespace TimaProject.ViewModels
             _record = null;
             Title = string.Empty;
             StartTime = DateTimeOffset.MinValue.ToString();
-            EndTime = null;
+            EndTime = string.Empty;
             Project = Project.Empty;
         }
     }
