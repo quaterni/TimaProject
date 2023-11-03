@@ -62,13 +62,13 @@ namespace TimaProject.ViewModels
                 case nameof(Title):
                     {
                         _record = _record with { Title = Title };
-                        _noteRepository.UpdateNote(_record);
+                        _noteRepository.UpdateRecord(_record);
                         break;
                     }
                 case nameof(Project):
                     {
                         _record = _record with { Project = Project };
-                        _noteRepository.UpdateNote(_record);
+                        _noteRepository.UpdateRecord(_record);
                         break;
                     }
                 case nameof(StartTime):
@@ -77,7 +77,7 @@ namespace TimaProject.ViewModels
                         if (startTime == DateTimeOffset.MinValue)
                             break;
                         _record = _record with { StartTime = startTime };
-                        _noteRepository.UpdateNote(_record);
+                        _noteRepository.UpdateRecord(_record);
                         break;
                     }
             }
@@ -98,7 +98,7 @@ namespace TimaProject.ViewModels
 
             var newNote = _factory.Create(recordViewModel);
             _record = newNote;
-            _noteRepository.AddNote(newNote);
+            _noteRepository.AddRecord(newNote);
             IsActive = true;
 
         }
@@ -111,7 +111,7 @@ namespace TimaProject.ViewModels
                 {
                     EndTime = DateTimeOffset.UtcNow,
                 };
-                _noteRepository.UpdateNote(updatedNote);
+                _noteRepository.UpdateRecord(updatedNote);
                 IsActive = false;
 
                 SetDafultValues();

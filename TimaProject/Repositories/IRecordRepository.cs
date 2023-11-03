@@ -9,14 +9,20 @@ namespace TimaProject.Repositories
 {
     public interface IRecordRepository
     {
-        public int GetNewId();
+        public ulong GetNewId();
 
-        public void AddNote(Record note);
+        public void AddRecord(Record record);
 
-        public void UpdateNote(Record note);
+        public void UpdateRecord(Record record);
 
-        public IEnumerable<Record> GetAllNotes(Func<Record, bool>? wherePredicate = null);
+        public bool DeleteRecord(Record record);
 
-        public event EventHandler? NotesChanged;
+        public bool Contains(Record record);
+
+        public IEnumerable<Record> GetAllRecords(Func<Record, bool>? wherePredicate = null);
+
+        public IEnumerable<Record> GetRecords(FilterListingArgs filterListingArgs);
+
+        public event EventHandler<RepositoryChangedEventArgs>? RecordsChanged;
     }
 }

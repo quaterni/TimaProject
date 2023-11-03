@@ -28,18 +28,18 @@ namespace TimaProject.ViewModels
         public ListingRecordViewModel(IRecordRepository noteRepository)
         {
             _noteRepository = noteRepository;
-            _notes = new(_noteRepository.GetAllNotes( t => !t.IsActive).OrderByDescending(n => n.EndTime));
-            _noteRepository.NotesChanged += OnNotesChanged;
+            _notes = new(_noteRepository.GetAllRecords( t => !t.IsActive).OrderByDescending(n => n.EndTime));
+            _noteRepository.RecordsChanged += OnNotesChanged;
         }
 
         private void OnNotesChanged(object? sender, EventArgs e)
         {
-            Notes= new(_noteRepository.GetAllNotes(t => !t.IsActive).OrderByDescending(n => n.EndTime));           
+            Notes= new(_noteRepository.GetAllRecords(t => !t.IsActive).OrderByDescending(n => n.EndTime));           
         }
 
         public override void Dispose()
         {
-            _noteRepository.NotesChanged -= OnNotesChanged;
+            _noteRepository.RecordsChanged -= OnNotesChanged;
             base.Dispose();
         }
     }

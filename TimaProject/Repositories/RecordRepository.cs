@@ -10,70 +10,83 @@ namespace TimaProject.Repositories
 {
     public class RecordRepository : IRecordRepository
     {
-        private static int st_idCounter;
+        private ulong st_idCounter;
 
-        public List<Record> _notes;
+        public List<Record> _records;
 
         public RecordRepository()
         {
-            _notes = new();
-
-            _notes.Add(new Record(new DateTime(2023, 9, 14, 15, 45, 45), 1)
-            {
-                EndTime= new DateTime(2023, 9, 14, 18, 28, 19),
-                Title = "Занимался программированием (нет)",
-                Date = new DateOnly(2023, 9, 14), 
-            });
-
-            _notes.Add(new Record(new DateTime(2023, 9, 12, 12, 45, 45), 1)
-            {
-                EndTime = new DateTime(2023, 9, 12, 12, 55, 19),
-                Title = "Зарядка",
-                Date = new DateOnly(2023, 9, 12),
-            });
-            st_idCounter = _notes.Count();
+            _records = new();
+            st_idCounter = (ulong)_records.Count();
         }
 
-        public int GetNewId()
+        public event EventHandler<RepositoryChangedEventArgs>? RecordsChanged;
+
+        public ulong GetNewId()
         {
-            return st_idCounter;
+            return ++st_idCounter;
         }
 
-        public void AddNote(Record note)
+        public void AddRecord(Record record)
         {
-            if(_notes.Find(t => t.Id == note.Id) is not null)
+            if(_records.Find(t => t.Id == record.Id) is not null)
             {
                 throw new Exception("Note with current id exist");
             }
-            _notes.Add(note);
-            OnNotesChanged();
-            st_idCounter++;
+            _records.Add(record);
+            OnRepositoryChanged(RepositoryChangedOperation.Add, record);
         }
 
-        public void UpdateNote(Record note)
+        public void UpdateRecord(Record record)
         {
-            var n = _notes.Find(t => t.Id == note.Id);
+            var n = _records.Find(t => t.Id == record.Id);
             if(n is null)
             {
                 throw new Exception("Note with current id not exist");
             }
-            _notes.Remove(n);
-            _notes.Add(note);
-            OnNotesChanged();
+            _records.Remove(n);
+            _records.Add(record);
+            OnRepositoryChanged(RepositoryChangedOperation.Update, record);
         }
 
-        public IEnumerable<Record> GetAllNotes(Func<Record, bool>? wherePredicate = null)
+        public IEnumerable<Record> GetAllRecords(Func<Record, bool>? wherePredicate = null)
         {
             if (wherePredicate == null)
-                return _notes;
-            return _notes.Where(wherePredicate);
+                return _records;
+            return _records.Where(wherePredicate);
         }
 
-        public event EventHandler? NotesChanged;
-
-        private void OnNotesChanged()
+        private void OnRepositoryChanged(RepositoryChangedOperation operation, Record record)
         {
-            NotesChanged?.Invoke(this, EventArgs.Empty);
+            RecordsChanged?.Invoke(this, new RepositoryChangedEventArgs(operation, record));
+        }
+
+        public IEnumerable<Record> GetRecords(FilterListingArgs filterListingArgs)
+        {
+            IEnumerable<Record> result = _records
+                .Where(record => filterListingArgs.IsRecordValid(record))
+                .OrderByDescending(r => r.EndTime);
+
+            if (filterListingArgs.Count is int count)
+            {
+                result = result.Take(count);
+            }
+            return result;
+        }
+
+        public bool Contains(Record record)
+        {
+            return _records.Contains(record);
+        }
+
+        public bool DeleteRecord(Record record)
+        {
+            var result = _records.Remove(record);
+            if (result)
+            {
+                OnRepositoryChanged(RepositoryChangedOperation.Delete, record);
+            }
+            return result;
         }
     }
 }
