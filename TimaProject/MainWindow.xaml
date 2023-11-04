@@ -16,7 +16,7 @@
     <Grid>
         <Grid.Resources>
             <DataTemplate DataType="{x:Type viewModels:ListingRecordViewModel}">
-                <views:TimerListingView/>
+                <views:ListingRecordView/>
             </DataTemplate>
             <DataTemplate DataType="{x:Type viewModels:TimerViewModel}">
                 <views:TimerView/>
@@ -26,6 +26,9 @@
             </DataTemplate>
             <DataTemplate DataType="{x:Type viewModels:TimeFormViewModel}">
                 <views:TimeFormView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:EditableRecordViewModel}">
+                <views:EditableRecordView/>
             </DataTemplate>
         </Grid.Resources>
         <controls:ModalView DataContext="{Binding CurrentModalViewModel}" Panel.ZIndex="5"/>

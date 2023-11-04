@@ -16,18 +16,13 @@ using System.Windows.Shapes;
 namespace TimaProject.Views
 {
     /// <summary>
-    /// Interaction logic for TimeFormView.xaml
+    /// Interaction logic for EditableRecordViewModel.xaml
     /// </summary>
-    public partial class TimeFormView : UserControl
+    public partial class EditableRecordView : UserControl
     {
-        public TimeFormView()
+        public EditableRecordView()
         {
             InitializeComponent();
-        }
-
-        private void DatePicker_LostFocus(object sender, RoutedEventArgs e)
-        {
-            clickable.IsContentVisable = false;
         }
     }
 }

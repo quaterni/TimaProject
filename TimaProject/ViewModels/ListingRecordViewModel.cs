@@ -1,45 +1,65 @@
 ﻿using MvvmTools.Base;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using TimaProject.Models;
 using TimaProject.Repositories;
+using TimaProject.Stores;
+using TimaProject.ViewModels.Factories;
 
 namespace TimaProject.ViewModels
 {
-    internal class ListingRecordViewModel :ViewModelBase
+    public class ListingRecordViewModel :ViewModelBase
     {
-        private IRecordRepository _noteRepository;
+        private readonly ListingRecordStore _listingRecordStore;
 
-        private ObservableCollection<Record> _notes;
+        private readonly EditableRecordViewModelFactory _editableRecordViewModelFactory;
 
-        public ObservableCollection<Record> Notes
+        private IRecordRepository _recordRepository;
+
+        private ObservableCollection<EditableRecordViewModel> _records;
+
+        public ObservableCollection<EditableRecordViewModel> Records
         {
             get
             {
-                return _notes;
+                return _records;
             }
             set
             {
-                SetValue(ref _notes, value);
+                SetValue(ref _records, value);
             }
         }
 
-        public ListingRecordViewModel(IRecordRepository noteRepository)
+        public ListingRecordViewModel(
+            IRecordRepository noteRepository,
+            ListingRecordStore listingRecordStore,
+            EditableRecordViewModelFactory editableRecordViewModelFactory)
         {
-            _noteRepository = noteRepository;
-            _notes = new(_noteRepository.GetAllNotes( t => !t.IsActive).OrderByDescending(n => n.EndTime));
-            _noteRepository.NotesChanged += OnNotesChanged;
+            _records = new ObservableCollection<EditableRecordViewModel>();
+            _editableRecordViewModelFactory = editableRecordViewModelFactory;
+            _listingRecordStore = listingRecordStore;
+            _recordRepository = noteRepository;
+            _listingRecordStore.ListingChanged += OnListingChanged;
+            OnListingChanged(this, EventArgs.Empty);
         }
 
-        private void OnNotesChanged(object? sender, EventArgs e)
+        private void OnListingChanged(object? sender, EventArgs e)
         {
-            Notes= new(_noteRepository.GetAllNotes(t => !t.IsActive).OrderByDescending(n => n.EndTime));           
+            var recordViewModels = _listingRecordStore.Records
+                .Select(record => _editableRecordViewModelFactory.Create(record))
+                .ToList();
+            if(recordViewModels is null)
+            {
+                recordViewModels = new List<EditableRecordViewModel>();
+            }
+            Records = new(recordViewModels);        
         }
 
         public override void Dispose()
         {
-            _noteRepository.NotesChanged -= OnNotesChanged;
+            _recordRepository.RecordsChanged -= OnListingChanged;
             base.Dispose();
         }
     }

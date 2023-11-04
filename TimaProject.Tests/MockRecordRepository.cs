@@ -14,24 +14,52 @@ namespace TimaProject.Tests
 
         public List<Record> Notes => _notes;
 
-        public event EventHandler? NotesChanged;
+        public event EventHandler? RecordsChanged;
 
-        public void AddNote(Record note)
+        event EventHandler<RepositoryChangedEventArgs>? IRecordRepository.RecordsChanged
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public void AddRecord(Record note)
         {
             _notes.Add(note);
         }
 
-        public IEnumerable<Record> GetAllNotes(Func<Record, bool>? wherePredicate = null)
+        public bool Contains(Record record)
         {
             throw new NotImplementedException();
         }
 
-        public int GetNewId()
+        public bool DeleteRecord(Record record)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Record> GetAllRecords(Func<Record, bool>? wherePredicate = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ulong GetNewId()
         {
             return 1;
         }
 
-        public void UpdateNote(Record note)
+        public IEnumerable<Record> GetRecords(FilterListingArgs filterListingArgs)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateRecord(Record note)
         {
             _notes[0] = note;
         }

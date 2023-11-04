@@ -4,8 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TimaProject.Models;
+using TimaProject.Repositories;
+using TimaProject.Services.Factories;
 using TimaProject.Stores;
 using TimaProject.ViewModels;
+using TimaProject.ViewModels.Validators;
 using Xunit;
 
 namespace TimaProject.Tests
@@ -14,18 +17,18 @@ namespace TimaProject.Tests
     public class TimerTests
     {
         private readonly TimerViewModel _sut;
-        private readonly MockRecordRepository _testRepository;
+        private readonly RecordRepository _repository;
 
         public TimerTests()
         {
-            _testRepository = new MockRecordRepository();
+            _repository = new RecordRepository();
 
             _sut = new TimerViewModel(
-                _testRepository,
-                new MockRecordFactory(),
+                _repository,
+                new RecordFactory(_repository, new TodayDateStore()),
                 new MockNavigationService(),
                 null,
-                new MockRecordValidator());
+                new RecordValidator());
 
             _sut.StartTime = DateTimeOffset.Now.ToString();
             _sut.Date = DateOnly.MinValue.ToString();
@@ -37,125 +40,141 @@ namespace TimaProject.Tests
             return (date - DateTimeOffset.Now) < TimeSpan.FromMilliseconds(500);
         }
 
-        [Fact]
-        public void OnStartingTimeShould_AddNoteToRepository()
+        private Models.Record GetFirstRecordFromRepository()
         {
-            _sut.OnStartingTime();
-            Assert.True(_testRepository.Notes.Count() > 0);
+            return _repository.GetRecords(new FilterListingArgs() { IsActive = null }).First();
         }
 
         [Fact]
-        public void OnStartingTimeShould_AddActiveNote()
+        public void OnStartingTime_AddRecordToRepository()
         {
             _sut.OnStartingTime();
-            Assert.True(_testRepository.Notes[0].IsActive);
+
+            var result = _repository.GetRecords(new FilterListingArgs() { IsActive = null });
+
+            Assert.Single(result);
         }
 
         [Fact]
-        public void OnStartingTime_ShouldAddNoteWithCorrectStartTime()
+        public void OnStartingTime_AddActiveRecord()
         {
             _sut.OnStartingTime();
-            var note = _testRepository.Notes[0];
-            Assert.True(note.StartTime == DateTimeOffset.Parse(_sut.StartTime));
+
+            var record = GetFirstRecordFromRepository();
+
+            Assert.True(record.IsActive);
+        }
+
+        [Fact]
+        public void OnStartingTime_WhenStartTimeIsCorrect_AddRecordWithStartTime()
+        {
+            _sut.OnStartingTime();
+            var record = GetFirstRecordFromRepository();
+            Assert.Equal(record.StartTime, DateTimeOffset.Parse(_sut.StartTime));
         }
 
 
         [Fact]
-        public void OnStartingTimeShould_AddNoteWithCorrectTitle()
+        public void OnStartingTime_AddRecordWithTitle()
         {
+            var expectedTitle = "MyTitle";
+            _sut.Title = expectedTitle;
             _sut.OnStartingTime();
-            var note = _testRepository.Notes[0];
-            Assert.True(note.Title.Equals(_sut.Title));
+
+            var record = GetFirstRecordFromRepository();
+
+            Assert.Equal(expectedTitle, record.Title);
         }
 
         [Fact]
-        public void OnStartingTimeShould_AddNoteWithCorrectDate()
+        public void OnStartingTime_WhenDateIsCorrect_AddRecordWithDate()
         {
+            var expectedDate = DateOnly.Parse("27.10.2023");
+            _sut.Date = expectedDate.ToString();
+
+
             _sut.OnStartingTime();
-            var note = _testRepository.Notes[0];
-            Assert.True(note.Date == DateOnly.Parse(_sut.Date));
+
+            var record = GetFirstRecordFromRepository();
+
+            Assert.Equal(expectedDate, record.Date);
         }
 
         [Fact]
-        public void OnStartingTimeShould_AddNoteWithCorrectProject()
+        public void OnStartingTime_AddRecordWithProject()
         {
+            var expectedProject = new Project("MyProject", 1);
+            _sut.Project = expectedProject;
             _sut.OnStartingTime();
-            var note = _testRepository.Notes[0];
-            Assert.True(note.Project.Equals(_sut.Project));
+
+            var record = GetFirstRecordFromRepository();
+
+            Assert.Equal(expectedProject, record.Project);
         }
 
         [Fact]
-        public void OnStartingTimeShould_AddNoteWithNullEndTime()
+        public void OnStartingTime_AddNoteWithNullEndTime()
         {
             _sut.OnStartingTime();
-            var note = _testRepository.Notes[0];
-            Assert.Null(note.EndTime);
+            var record = GetFirstRecordFromRepository();
+
+            Assert.Null(record.EndTime);
         }
 
         [Fact]
-        public void OnStartingTimeShould_SetDefaultTitle_WhenValidationFailed()
+        public void OnStartingTime_WhenValidationFailed_StartTimeSetCurrentTime()
         {
-            _sut.Title = "NotValidate";
+            _sut.StartTime = "wrong input";
+
             _sut.OnStartingTime();
-            var note = _testRepository.Notes[0];
-            Assert.Equal(string.Empty, note.Title);
+
+            var record = GetFirstRecordFromRepository();
+            Assert.Equal(DateTime.Now, record.StartTime, TimeSpan.FromSeconds(1));
         }
 
         [Fact]
-        public void OnStartingTimeShould_SetDefaultStartTime_WhenValidationFailed()
+        public void OnStartingTime_WhenValidationFailed_DateSetToday()
         {
-            _sut.StartTime = "df";
+            _sut.Date = "wrong input";
+
             _sut.OnStartingTime();
-            var note = _testRepository.Notes[0];
-            Assert.True(IsCurrentTime(note.StartTime));
+
+            var record = GetFirstRecordFromRepository();
+            Assert.Equal(DateOnly.FromDateTime(DateTime.Today), record.Date);
         }
 
         [Fact]
-        public void OnStartingTimeShould_SetDefaultDate_WhenValidationFailed()
+        public void OnRecordUpdated_WhenTitleChanged_SetTilteInRepository()
         {
-            _sut.Date = DateOnly.MaxValue.ToString();
             _sut.OnStartingTime();
-            var note = _testRepository.Notes[0];
-            Assert.Equal(DateOnly.FromDateTime(DateTime.Now), note.Date);
-        }
 
-        [Fact]
-        public void OnNoteUpdatedShould_SetTilteInRepository_WhenTitleChanged()
-        {
-            _sut.OnStartingTime();
             _sut.Title = "New Title";
-            Assert.Equal(_sut.Title, _testRepository.Notes[0].Title);
+
+            var record = GetFirstRecordFromRepository();
+            Assert.Equal(_sut.Title, record.Title);
         }
 
-
         [Fact]
-        public void OnRecordUpdatedShould_IgonoreUpdate_WhenTitleNotCorrect()
-        {
-            _sut.OnStartingTime();
-            var expected = "New Title";
-            _sut.Title = expected;
-            _sut.Title = "NotValidate";
-            Assert.Equal(expected, _testRepository.Notes[0].Title);
-        }
-
-
-        [Fact]
-        public void OnRecordUpdatedShould_IgonoreUpdate_WhenStartTimeNotCorrect()
+        public void OnRecordUpdated_WhenStartTimeIsIncorrect_IgonoreUpdate()
         {
             _sut.OnStartingTime();
             var expected =  DateTimeOffset.Now;
             _sut.StartTime = expected.ToString();
             _sut.StartTime = "New Title";
-            Assert.Equal(expected, _testRepository.Notes[0].StartTime, TimeSpan.FromSeconds(1));
+
+            var record = GetFirstRecordFromRepository();
+            Assert.Equal(expected, record.StartTime, TimeSpan.FromSeconds(1));
         }
 
 
         [Fact]
-        public void OnEndingTimeShould_SetCurrentTimeToEndTime()
+        public void OnEndingTime_SetCurrentTimeToEndTime()
         {
             _sut.OnStartingTime();
             _sut.OnEndingTime();
-            Assert.Equal(DateTimeOffset.Now, (DateTimeOffset)_testRepository.Notes[0].EndTime!, TimeSpan.FromSeconds(1));
+
+            var record = GetFirstRecordFromRepository();
+            Assert.Equal(DateTimeOffset.Now, (DateTime)record.EndTime!, TimeSpan.FromSeconds(1));
         }
 
         [Fact]
@@ -167,25 +186,48 @@ namespace TimaProject.Tests
         }
 
         [Fact]
-        public void OnEndingTimeShould_SetDefaultValues()
+        public void OnEndingTime_SetDefaultValues()
         {
             _sut.OnStartingTime();
 
             _sut.OnEndingTime();
             Assert.Equal(string.Empty, _sut.Title);
             Assert.Equal(DateTimeOffset.MinValue.ToString(), _sut.StartTime);
-            Assert.Null(_sut.EndTime);
+            Assert.Empty(_sut.EndTime);
             Assert.Equal(Project.Empty, _sut.Project);
         }
 
         [Fact]
-        public void TimerShould_AddTwoRecord_WhenItHasWorkedTwoTimes()
+        public void Timer_AddTwoRecord_WhenItHasWorkedTwoTimes()
         {
             _sut.OnStartingTime();
             _sut.OnEndingTime();
             _sut.OnStartingTime();
             _sut.OnEndingTime();
-            Assert.True(_testRepository.Notes.Count == 2);
+            Assert.Equal(2, _repository.GetRecords(new FilterListingArgs()).Count());
+        }
+
+        [Fact]
+        public void OnRecordUpdated_WhenSetCorrectDate_UpdateRecord()
+        {
+            var expectedDate = DateOnly.Parse("1.11.2023");
+
+            _sut.OnStartingTime();
+            _sut.Date = expectedDate.ToString();
+
+            var record = GetFirstRecordFromRepository();
+            Assert.Equal(expectedDate, record.Date);
+        }
+
+        [Fact]
+        public void OnEndingTime_SetTodayDateByDefault()
+        {
+            var expectedDate = DateOnly.FromDateTime(DateTime.Today);
+
+            _sut.OnStartingTime();
+            _sut.OnEndingTime();
+
+            Assert.Equal(expectedDate.ToString(), _sut.Date);
         }
     }
 }

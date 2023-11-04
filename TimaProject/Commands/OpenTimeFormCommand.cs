@@ -9,40 +9,20 @@ namespace TimaProject.Commands
     {
         private readonly INavigationService _navigationService;
 
-        private readonly RecordViewModelWithEdit _noteViewModel;
-        private readonly Func<TimeFormViewModel> _timeFromFactory;
+        private readonly RecordViewModelWithEdit _recordViewModel;
 
-        public OpenTimeFormCommand(INavigationService navigationService,
-            RecordViewModelWithEdit noteViewModel,
-            Func<TimeFormViewModel> timeFormFactory)
+        public OpenTimeFormCommand(
+            INavigationService navigationService,
+            RecordViewModelWithEdit recordViewModel)
         {
             _navigationService = navigationService;
-            _noteViewModel = noteViewModel;
-            _timeFromFactory = timeFormFactory;
+            _recordViewModel = recordViewModel;
         }
 
         public override void Execute(object? parameter)
         {
-
-            var timeFormViewModel = _timeFromFactory();
-
-            timeFormViewModel.Date = _noteViewModel.Date;
-            timeFormViewModel.StartTime = _noteViewModel.StartTime;
-            if(_noteViewModel.EndTime is not null)
-            {
-                timeFormViewModel.IsEndTimeEnabled = true;
-                timeFormViewModel.EndTime = _noteViewModel.EndTime;
-            }
-            else
-            {
-                timeFormViewModel.IsEndTimeEnabled = false;
-                timeFormViewModel.EndTime = DateTimeOffset.Now.ToString();
-            }
-
-
-            _noteViewModel.TimeForm = timeFormViewModel;
-
-            _navigationService.Navigate(timeFormViewModel);
+            _recordViewModel.ApplyTimeForm();
+            _navigationService.Navigate(_recordViewModel.TimeForm);
         }
     }
 }

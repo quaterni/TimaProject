@@ -9,11 +9,13 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using TimaProject.Models;
 using TimaProject.Repositories;
 using TimaProject.Services.Factories;
 using TimaProject.Stores;
 using TimaProject.ViewModels;
 using TimaProject.ViewModels.Containers;
+using TimaProject.ViewModels.Factories;
 using TimaProject.ViewModels.Validators;
 
 namespace TimaProject
@@ -32,6 +34,7 @@ namespace TimaProject
             services.AddSingleton<NavigationStore>();
             services.AddSingleton<ModalStore>();
 
+
             services.AddTransient<CloseModalService>();
             services.AddTransient<OpenModalService>();
 
@@ -47,14 +50,31 @@ namespace TimaProject
                 s => type => (ViewModelBase)s.GetRequiredService(type));
 
             services.AddSingleton<IRecordRepository, RecordRepository>();
+            services.AddSingleton<ListingRecordStore>();
 
             services.AddSingleton<IDateStore, TodayDateStore>();
 
             services.AddTransient<RecordFactory>();
 
+            services.AddTransient(
+                s => new EditableRecordViewModelFactory(
+                    s.GetRequiredService<IRecordRepository>(),
+                    () => new CompositeNavigationService(
+                        ModalParameterizedNavigationService<TimeFormViewModel>(s),
+                        s.GetRequiredService<OpenModalService>()),
+                    TimeFormFactory,
+                    s.GetRequiredService<RecordValidator>()));
+
             services.AddTransient(s => TimerViewModelFactory(s));
 
-            services.AddTransient<ListingRecordViewModel>();
+
+
+            services.AddTransient(
+                s => new ListingRecordViewModel(
+                    s.GetRequiredService<IRecordRepository>(),
+                    s.GetRequiredService<ListingRecordStore>(),
+                    s.GetRequiredService<EditableRecordViewModelFactory>()
+                ));
 
             services.AddTransient<TimerLayoutViewModel>(
                 s => new TimerLayoutViewModel(
@@ -117,6 +137,5 @@ namespace TimaProject
         {
             return new TimeFormViewModel(_serviceProvider.GetRequiredService<RecordValidator>(), _serviceProvider.GetRequiredService<CloseModalService>());
         }
-
     }
 }

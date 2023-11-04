@@ -23,40 +23,63 @@ namespace TimaProject.Tests
         }
 
         [Fact]
-        public void TimeFromShould_BeNull_AfterInitialisation()
+        public void TimeFrom_AfterInitialisation_IsNull()
         {
             Assert.Null(_sut.TimeForm);
         }
 
         [Fact]
-        public void StartTimeShuold_BeSetTimeFormStartTime_WhenItCorrect()
+        public void ApplyTimeForm_SetTimeForm()
         {
-            var timeForm = new TimeFormViewModel(new RecordValidator(), new MockNavigationService());
-            _sut.TimeForm = timeForm;
-            var input = "27.10.2023 14:45";
-            timeForm.StartTime = input;
-            Assert.Equal(input, _sut.StartTime);
+            _sut.ApplyTimeForm();
+            Assert.NotNull(_sut.TimeForm);
         }
 
-
-        [Fact]
-        public void EndTimeShuold_BeSetTimeFormEndTime_WhenItCorrect()
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        [InlineData("bla bla")]
+        [InlineData("24.08.2008 14:57:00")]
+        public void ApplyTimeForm_SetCurrentStartTimeToTimeForm(string startTime)
         {
-            var timeForm = new TimeFormViewModel(new RecordValidator(), new MockNavigationService());
-            _sut.TimeForm = timeForm;
-            var input = "27.10.2023 14:45";
-            timeForm.EndTime = input;
-            Assert.Equal(input, _sut.EndTime);
+            _sut.StartTime = startTime;
+            _sut.ApplyTimeForm();
+
+            Assert.Equal(startTime, _sut.TimeForm!.StartTime);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        [InlineData("bla bla")]
+        [InlineData("24.08.2008 14:57")]
+        public void ApplyTimeForm_SetCurrentEndTimeToTimeForm(string endTime)
+        {
+            _sut.EndTime = endTime;
+            _sut.ApplyTimeForm();
+
+            Assert.Equal(endTime, _sut.TimeForm!.EndTime);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        [InlineData("bla bla")]
+        [InlineData("24.08.2008")]
+        public void ApplyTimeForm_SetCurrentDateToTimeForm(string date)
+        {
+            _sut.Date = date;
+            _sut.ApplyTimeForm();
+
+            Assert.Equal(date, _sut.TimeForm!.Date);
         }
 
         [Fact]
-        public void DateShuold_BeSetTimeFormDate_WhenItCorrect()
+        public void ApplyTimeForm_WhenIsActive_DisableEndTimeToTimeForm()
         {
-            var timeForm = new TimeFormViewModel(new RecordValidator(), new MockNavigationService());
-            _sut.TimeForm = timeForm;
-            var input = "27.10.2023";
-            timeForm.Date = input;
-            Assert.Equal(input, _sut.Date);
+            _sut.IsActive = true;
+            _sut.ApplyTimeForm();
+            Assert.False(_sut.TimeForm.IsActive);
         }
 
         [Fact]

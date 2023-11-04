@@ -8,16 +8,16 @@ using System.Windows.Data;
 
 namespace TimaProject.Views.Convertors
 {
-    class DateTimeOffsetToString : IValueConverter
+    class DateTimeToString : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value.ToString().Equals(string.Empty))
             {
-                return DateTimeOffset.MinValue;
+                return DateTime.MinValue;
             }
 
-            if(DateTimeOffset.TryParse(value.ToString(), out var date))
+            if(DateTime.TryParse(value.ToString(), out var date))
             {
                 return date;
             }
@@ -26,11 +26,11 @@ namespace TimaProject.Views.Convertors
 
         public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if(value is DateTimeOffset date)
+            if(value is DateTime date)
             {
                 return date.ToString();
             }
-            return null;
+            return string.Empty;
         }
     }
 }

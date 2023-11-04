@@ -14,7 +14,7 @@ namespace TimaProject.Tests
     {
         public Record Create(RecordViewModel timeNoteViewModel)
         {
-            var startTime = DateTimeOffset.Parse(timeNoteViewModel.StartTime);
+            var startTime = DateTime.Parse(timeNoteViewModel.StartTime);
             DateOnly date = DateOnly.Parse(timeNoteViewModel.Date);
 
             return new Record(startTime, date, 1)

@@ -13,15 +13,18 @@ namespace TimaProject.ViewModels
 {
     public class RecordViewModelWithEdit : RecordViewModel
     {
+        private readonly Func<TimeFormViewModel> _timeFormFactory;
+
         public RecordViewModelWithEdit(
             INavigationService timeFormNavigationService, 
             Func<TimeFormViewModel> timeFormFactory, 
             AbstractValidator<RecordViewModel> validator) : base(validator)
         {
-            OpenTimeForm = new OpenTimeFormCommand(timeFormNavigationService, this, timeFormFactory);
+            _timeFormFactory = timeFormFactory;
+            OpenTimeFormCommand = new OpenTimeFormCommand(timeFormNavigationService, this);
         }
 
-        public ICommand OpenTimeForm { get; }
+        public ICommand OpenTimeFormCommand { get; }
 
         private TimeFormViewModel? _timeForm;
 
@@ -34,16 +37,18 @@ namespace TimaProject.ViewModels
             set
             {
                 SetValue(ref _timeForm, value);
-                if (value != null)
-                {
-                    OnTimeFormApplied();
-                }
             }
         }
 
 
-        protected void OnTimeFormApplied()
+        public void ApplyTimeForm()
         {
+            var timeForm = _timeFormFactory();
+            timeForm.IsEndTimeEnabled = !IsActive;
+            timeForm.StartTime = StartTime;
+            timeForm.EndTime = EndTime;
+            timeForm.Date = Date;
+            TimeForm = timeForm;
             TimeForm.PropertyChanged += OnTimeFormPropertyChanged;
             TimeForm.Closed += OnTimeFormClosed;
         }
@@ -55,7 +60,7 @@ namespace TimaProject.ViewModels
                 throw new ArgumentException();
             }
 
-            if (TimeForm!.PropertyHasErrors(e.PropertyName!))
+            if (TimeForm!.HasPropertyErrors(e.PropertyName!))
             {
                 return;
             }
