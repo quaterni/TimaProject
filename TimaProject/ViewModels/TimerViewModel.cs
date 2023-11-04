@@ -13,7 +13,7 @@ namespace TimaProject.ViewModels
     {
         private Record? _record;
 
-        private readonly IRecordRepository _noteRepository;
+        private readonly IRecordRepository _recordRepository;
 
         private readonly IRecordFactory _factory;
 
@@ -23,7 +23,7 @@ namespace TimaProject.ViewModels
             Func<TimeFormViewModel> timeFormFactory,
             AbstractValidator<RecordViewModel> validator): base(timeFormNavigationService, timeFormFactory, validator)
         {
-            _noteRepository = noteRepository;
+            _recordRepository = noteRepository;
             _factory = factory;
             SetDafultValues();
             PropertyChanged += OnRecordUpdated;
@@ -48,22 +48,29 @@ namespace TimaProject.ViewModels
                 case nameof(Title):
                     {
                         _record = _record with { Title = Title };
-                        _noteRepository.UpdateRecord(_record);
+                        _recordRepository.UpdateRecord(_record);
                         break;
                     }
                 case nameof(Project):
                     {
                         _record = _record with { Project = Project };
-                        _noteRepository.UpdateRecord(_record);
+                        _recordRepository.UpdateRecord(_record);
                         break;
                     }
                 case nameof(StartTime):
                     {
                         var startTime = DateTime.Parse(StartTime);
                         if (startTime == DateTime.MinValue)
-                            break;
+                            break; 
                         _record = _record with { StartTime = startTime };
-                        _noteRepository.UpdateRecord(_record);
+                        _recordRepository.UpdateRecord(_record);
+                        break;
+                    }
+                case nameof(Date):
+                    {
+                        var date = DateOnly.Parse(Date);
+                        _record = _record with { Date = date };
+                        _recordRepository.UpdateRecord(_record);
                         break;
                     }
             }
@@ -77,14 +84,15 @@ namespace TimaProject.ViewModels
                 Title = HasPropertyErrors(nameof(Title)) ? string.Empty : Title,
                 Project = Project,
                 StartTime = HasPropertyErrors(nameof(StartTime)) ?
-                            DateTimeOffset.Now.ToString() : StartTime,
-                Date = HasPropertyErrors(nameof(Date)) ?
-                       DateOnly.FromDateTime(DateTime.Today).ToString() : Date
+                                DateTimeOffset.Now.ToString() : StartTime,
+                Date = HasPropertyErrors(nameof(Date)) 
+                       || Date.Equals(string.Empty) ?
+                        DateOnly.FromDateTime(DateTime.Today).ToString() : Date
             };
 
             var newNote = _factory.Create(recordViewModel);
             _record = newNote;
-            _noteRepository.AddRecord(newNote);
+            _recordRepository.AddRecord(newNote);
             IsActive = true;
 
         }
@@ -97,7 +105,7 @@ namespace TimaProject.ViewModels
                 {
                     EndTime = DateTime.Now,
                 };
-                _noteRepository.UpdateRecord(updatedNote);
+                _recordRepository.UpdateRecord(updatedNote);
                 IsActive = false;
 
                 SetDafultValues();
@@ -111,6 +119,7 @@ namespace TimaProject.ViewModels
             StartTime = DateTimeOffset.MinValue.ToString();
             EndTime = string.Empty;
             Project = Project.Empty;
+            Date = DateOnly.FromDateTime(DateTime.Today).ToString();
         }
     }
 }

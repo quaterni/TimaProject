@@ -30,7 +30,7 @@ namespace TimaProject.Views.Convertors
             {
                 return date.ToString();
             }
-            return null;
+            return string.Empty;
         }
     }
 }

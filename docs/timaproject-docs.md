@@ -91,6 +91,9 @@ EditableRecord
 - Record должен иметь StartTime - из поля StartTime, а EndTime - null
 - Record должен принимать Title из формы Title или принимать значение по умолчанию
 - Record принимает Project из поля Project
+
+- Изменение Date должно изменять Date в репозитории
+
 - Если поле не прошло валидацию должно ставиться значение по умолчанию
     - Title - пустая строка
     - Project - пустой проект
@@ -133,6 +136,8 @@ RecordViewModel содержит поля
 ApplyTimeForm() - утанавливает TimeForm
 
 Тесты (интеграционные)
+- ApplyTimeForm() должна устанавливать TimeForm
+
 - Поля StartTime, EndTime, Date должны полностью переносится в TimeForm (внезависимости от корректности)
 
 - Если поле IsActive true, то оно должно TimeForm должно отключить доступность EndTime
@@ -198,11 +203,14 @@ RecordViewModel, который хранит завершенную Record и п
 
 Имеет возможность добавлять заметки к записям
 
+Имеет свойство Time, которое является разностью EndTime и StartTime 
+
 Тесты
 - Корректные изменения полей должны изменять Record в репозитории
 - Некорректные изменения полей не должны измениять Record в репозитории
 - Добавление заметки должно добавлять ее в репозиторий
 - Удаление Record должно удалять ее из репозитория
+- Time изменяется когда изменяется Record
 
 ### ListingRecordViewModel
 ListingRecordViewModel обращается к RecordListingStore, который содержит текущие список Record

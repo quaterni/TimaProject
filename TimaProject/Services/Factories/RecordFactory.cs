@@ -30,7 +30,9 @@ namespace TimaProject.Services.Factories
                 endTime = DateTime.Parse(timeNoteViewModel.EndTime);
             }
 
-            return new Record(startTime, _dateStore.Date, (ulong)_repository.GetNewId())
+            var date = DateOnly.Parse(timeNoteViewModel.Date);
+
+            return new Record(startTime, date, (ulong)_repository.GetNewId())
             {
                 EndTime = endTime,
                 Title = timeNoteViewModel.Title,

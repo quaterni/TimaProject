@@ -5,12 +5,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TimaProject.Views"
              xmlns:cliclable="clr-namespace:ControlTools.ClickableControls;assembly=ControlTools"
+             xmlns:convertors="clr-namespace:TimaProject.Views.Convertors"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="200"
              Foreground="Black"
              Background="PowderBlue">
+    <UserControl.Resources>
+        <convertors:DateTimeToDateOnlyFormatString x:Key="DateTimeToDateOnlyFormatString"/>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
@@ -38,7 +43,32 @@
                     Mode=TwoWay,
                     ValidatesOnDataErrors=True}"/>
         </StackPanel>
+
         <StackPanel Grid.Row="3">
+            <TextBlock Text="Date"  />
+            <cliclable:ClickableContentControl x:Name="clickable">
+                <cliclable:ClickableContentControl.Header>
+                    <TextBlock Text="{Binding Date}"/>
+                </cliclable:ClickableContentControl.Header>
+                <cliclable:ClickableContentControl.ButtonStyle>
+                    <Style TargetType="Button">
+                        <Setter Property="Background" Value="Transparent"/>
+                    </Style>
+                </cliclable:ClickableContentControl.ButtonStyle>
+                <cliclable:ClickableContentControl.Content>
+                    <DatePicker LostFocus="DatePicker_LostFocus"
+                        SelectedDate="{
+                        Binding Date, 
+                        Mode=TwoWay, 
+                        Converter={StaticResource DateTimeToDateOnlyFormatString}}">
+                        
+                    </DatePicker>
+                </cliclable:ClickableContentControl.Content>
+                
+            </cliclable:ClickableContentControl>
+        </StackPanel>
+
+        <StackPanel Grid.Row="4">
             <Button Command="{Binding CloseCommand}"
                     Content="Close"/>
         </StackPanel>
