@@ -6,6 +6,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using TimaProject.Commands;
 using TimaProject.Models;
 using TimaProject.Repositories;
 
@@ -41,6 +43,8 @@ namespace TimaProject.ViewModels
             }
         }
 
+        public ICommand DeleteRecordCommand { get; }
+
         public EditableRecordViewModel(
             Record record,
             IRecordRepository recordRepository,
@@ -56,6 +60,7 @@ namespace TimaProject.ViewModels
             Date = record.Date.ToString();
             Project = record.Project;
             PropertyChanged += OnRecordUpdated;
+            DeleteRecordCommand = new DeleteRecordCommand(this);
         }
 
         private void OnRecordUpdated(object? sender, PropertyChangedEventArgs e)
@@ -88,6 +93,11 @@ namespace TimaProject.ViewModels
                     break;
             }
 
+        }
+
+        public void DeleteRecord()
+        {
+            _recordRepository.DeleteRecord(_record);
         }
     }
 }

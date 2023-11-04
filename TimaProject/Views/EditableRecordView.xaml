@@ -7,6 +7,12 @@
              xmlns:clickable="clr-namespace:ControlTools.ClickableControls;assembly=ControlTools"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="Delete"
+                      Command="{Binding DeleteRecordCommand}"/>
+        </ContextMenu>
+    </UserControl.ContextMenu>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

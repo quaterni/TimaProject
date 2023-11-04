@@ -7,116 +7,104 @@ namespace TimaProject.Tests
 {
     public class EditableRecordViewModelTests
     {
-        private readonly MockRecordRepository _recordRepository;
+        private readonly RecordRepository _recordRepository;
+
+        private Models.Record _record;
+
+        private readonly EditableRecordViewModel _sut;
 
         public EditableRecordViewModelTests()
         {
-            _recordRepository = new MockRecordRepository();
-        }
+            _recordRepository = new RecordRepository();
 
-        [Fact]
-        public void EditableRecordShould_SetValuesFromRecord()
-        {
-            var record = new Models.Record(DateTime.Parse("27.10.2023 10:00"), DateOnly.Parse("27.10.2023"), 1)
+            _record = new Models.Record(
+                DateTime.Parse("27.10.2023 10:00"), 
+                DateOnly.Parse("27.10.2023"), 
+                1)
             {
                 Title = "RecordTitle",
                 Project = new Project("MyProject", 1),
                 EndTime = DateTime.Parse("27.10.2023 20:45")
             };
-            _recordRepository.AddRecord(record);
-            var sut = new EditableRecordViewModel(
-                record,
-                _recordRepository,
-                new MockNavigationService(),
-                () => new TimeFormViewModel(
+
+            _sut = new EditableRecordViewModel(
+                    _record,
+                    _recordRepository,
+                    new MockNavigationService(),
+                    () => new TimeFormViewModel(
                         new MockRecordValidator(),
                         new MockNavigationService()),
-                new MockRecordValidator());
-            Assert.Equal(record.Title, sut.Title);
-            Assert.Equal(record.StartTime.ToString(), sut.StartTime);
-            Assert.Equal(record.EndTime.ToString(), sut.EndTime);
-            Assert.Equal(record.Date.ToString(), sut.Date);
-            Assert.Equal(record.Project, sut.Project);
+                    new MockRecordValidator());
         }
 
+
         [Fact]
-        public void EditableRecordShould_UpdateCorrectFields()
+        public void EditableRecord_SetValuesFromRecord()
         {
-            var record = new Models.Record(DateTime.Parse("27.10.2023 10:00"), DateOnly.Parse("27.10.2023"), 1)
-            {
-                Title = "RecordTitle",
-                Project = new Project("MyProject", 1),
-                EndTime = DateTime.Parse("27.10.2023 20:45")
-               
-            };
+            Assert.Equal(_record.Title, _sut.Title);
+            Assert.Equal(_record.StartTime.ToString(), _sut.StartTime);
+            Assert.Equal(_record.EndTime.ToString(), _sut.EndTime);
+            Assert.Equal(_record.Date.ToString(), _sut.Date);
+            Assert.Equal(_record.Project, _sut.Project);
+            Assert.Equal("10:45:00", _sut.Time);
+        }
 
-            _recordRepository.AddRecord(record);
 
-            var sut = new EditableRecordViewModel(
-                record,
-                _recordRepository,
-                new MockNavigationService(),
-                () => new TimeFormViewModel(
-                        new MockRecordValidator(),
-                        new MockNavigationService()),
-                new MockRecordValidator());
 
+        [Fact]
+        public void EditableRecord_UpdateCorrectFields()
+        {
+
+            _recordRepository.AddRecord(_record);
             var expectedStartTime = DateTime.Parse("26.10.2023 10:00");
             var expectedEndTime = DateTime.Parse("26.10.2023 17:45");
             var expectedDate = DateOnly.Parse("26.10.2023");
             var expectedTilte = "NewTitle";
             var expectedProject = new Project("MySecondProject", 2);
-            var expectedTime = "07:45:00";
 
-            sut.Title = expectedTilte;
-            sut.StartTime = expectedStartTime.ToString();
-            sut.EndTime = expectedEndTime.ToString();
-            sut.Date = expectedDate.ToString();
-            sut.Project = expectedProject;
+            _sut.Title = expectedTilte;
+            _sut.StartTime = expectedStartTime.ToString();
+            _sut.EndTime = expectedEndTime.ToString();
+            _sut.Date = expectedDate.ToString();
+            _sut.Project = expectedProject;
 
-            var updatedRecord = _recordRepository.Notes[0];
+            var updatedRecord = _recordRepository.GetRecords(new FilterListingArgs()).First();
 
             Assert.Equal(expectedTilte, updatedRecord.Title);
             Assert.Equal(expectedStartTime, updatedRecord.StartTime);
             Assert.Equal(expectedEndTime, updatedRecord.EndTime);
             Assert.Equal(expectedDate, updatedRecord.Date);
             Assert.Equal(expectedProject, updatedRecord.Project);
-            Assert.Equal(expectedTime, sut.Time);
         }
 
         [Fact]
-        public void EditableRecordShould_IgnoreUpdateIncorrectFields()
+        public void EditableRecord_IgnoreUpdateIncorrectFields()
         {
-            var record = new Models.Record(DateTime.Parse("27.10.2023 10:00"), DateOnly.Parse("27.10.2023"), 1)
-            {
-                Title = "RecordTitle",
-                Project = new Project("MyProject", 1),
-                EndTime = DateTime.Parse("27.10.2023 20:45")
-            };
+            _recordRepository.AddRecord(_record);
 
-            _recordRepository.AddRecord(record);
+            _sut.StartTime = "wrong";
+            _sut.EndTime = "wrong";
+            _sut.Date = "wrong";
 
-            var sut = new EditableRecordViewModel(
-                record,
-                _recordRepository,
-                new MockNavigationService(),
-                () => new TimeFormViewModel(
-                        new MockRecordValidator(),
-                        new MockNavigationService()),
-                new MockRecordValidator());
+            var updatedRecord = _recordRepository.GetRecords(new FilterListingArgs()).First();
 
-            sut.StartTime = "wrong";
-            sut.EndTime = "wrong";
-            sut.Date = "wrong";
-
-            var updatedRecord = _recordRepository.Notes[0];
-
-            Assert.Equal(record.StartTime, updatedRecord.StartTime);
-            Assert.Equal(record.EndTime, updatedRecord.EndTime);
-            Assert.Equal(record.Date, updatedRecord.Date);
+            Assert.Equal(_record.StartTime, updatedRecord.StartTime);
+            Assert.Equal(_record.EndTime, updatedRecord.EndTime);
+            Assert.Equal(_record.Date, updatedRecord.Date);
 
         }
 
+        [Fact]
+        public void DeleteRecord_DeleteRecordFromRepository()
+        {
+            _recordRepository.AddRecord(_record);
+
+            Assert.True(_recordRepository.Contains(_record));
+
+            _sut.DeleteRecord();
+
+            Assert.False(_recordRepository.Contains(_record));
+        }
 
     }
 }

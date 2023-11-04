@@ -36,7 +36,7 @@ namespace TimaProject.Tests
 
         public bool Contains(Record record)
         {
-            throw new NotImplementedException();
+            return _notes.Contains(record);
         }
 
         public bool DeleteRecord(Record record)
