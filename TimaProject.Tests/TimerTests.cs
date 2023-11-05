@@ -192,7 +192,7 @@ namespace TimaProject.Tests
 
             _sut.OnEndingTime();
             Assert.Equal(string.Empty, _sut.Title);
-            Assert.Equal(DateTimeOffset.MinValue.ToString(), _sut.StartTime);
+            Assert.Equal(string.Empty, _sut.StartTime);
             Assert.Empty(_sut.EndTime);
             Assert.Equal(Project.Empty, _sut.Project);
         }
@@ -229,5 +229,6 @@ namespace TimaProject.Tests
 
             Assert.Equal(expectedDate.ToString(), _sut.Date);
         }
+
     }
 }

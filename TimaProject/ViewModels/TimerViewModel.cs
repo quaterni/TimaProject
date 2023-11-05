@@ -2,6 +2,9 @@
 using MvvmTools.Navigation.Services;
 using System;
 using System.ComponentModel;
+using System.Windows.Input;
+using System.Windows.Threading;
+using TimaProject.Commands;
 using TimaProject.Models;
 using TimaProject.Repositories;
 using TimaProject.Services.Factories;
@@ -11,11 +14,33 @@ namespace TimaProject.ViewModels
 {
     public class TimerViewModel: RecordViewModelWithEdit
     {
+        private const int TIMER_INTERVAL_MILLISECONDS = 200;
+
+        private DispatcherTimer? _dispatcherTimer;
+
+        private DateTime? _startTime;
+
         private Record? _record;
 
         private readonly IRecordRepository _recordRepository;
 
         private readonly IRecordFactory _factory;
+
+        private string _time;
+
+        public string Time
+        {
+            get
+            {
+                return _time;
+            }
+            set
+            {
+                SetValue(ref _time, value);
+            }
+        }
+
+        public ICommand TimerCommand { get; }
 
         public TimerViewModel(IRecordRepository noteRepository, 
             IRecordFactory factory,
@@ -26,6 +51,7 @@ namespace TimaProject.ViewModels
             _recordRepository = noteRepository;
             _factory = factory;
             SetDafultValues();
+            TimerCommand = new TimerCommand(this);
             PropertyChanged += OnRecordUpdated;
         }
 
@@ -60,8 +86,7 @@ namespace TimaProject.ViewModels
                 case nameof(StartTime):
                     {
                         var startTime = DateTime.Parse(StartTime);
-                        if (startTime == DateTime.MinValue)
-                            break; 
+                        SetStartTime();
                         _record = _record with { StartTime = startTime };
                         _recordRepository.UpdateRecord(_record);
                         break;
@@ -77,8 +102,45 @@ namespace TimaProject.ViewModels
 
         }
 
+        private void StartTimer()
+        {
+            _dispatcherTimer = new DispatcherTimer();
+            _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(TIMER_INTERVAL_MILLISECONDS);
+            SetStartTime();
+            _dispatcherTimer.Tick += SetTime;
+            _dispatcherTimer.Start();
+        }
+
+        private void SetTime(object? sender, EventArgs e)
+        {
+            Time = (DateTime.Now - _startTime).ToString()!;
+        }
+
+        private void SetStartTime()
+        {
+            if (HasPropertyErrors(nameof(StartTime)) || StartTime.Equals(string.Empty))
+            {
+                if(_startTime is null)
+                {
+                    _startTime = DateTime.Now;
+                }
+                return;
+            }
+            _startTime = DateTime.Parse(StartTime);
+        }
+
+
+
         public void OnStartingTime()
         {
+            if(HasPropertyErrors(nameof(StartTime)) || StartTime.Equals(string.Empty))
+            {
+                StartTime = DateTime.Now.ToString();
+            }
+
+            StartTimer();
+            IsActive = true;
+
             var recordViewModel = new RecordViewModel(_validator)
             {
                 Title = HasPropertyErrors(nameof(Title)) ? string.Empty : Title,
@@ -93,14 +155,13 @@ namespace TimaProject.ViewModels
             var newNote = _factory.Create(recordViewModel);
             _record = newNote;
             _recordRepository.AddRecord(newNote);
-            IsActive = true;
-
         }
 
         public void OnEndingTime()
         {
             if(IsActive)
             {
+                StopTimer();
                 var updatedNote = _record! with
                 {
                     EndTime = DateTime.Now,
@@ -112,14 +173,23 @@ namespace TimaProject.ViewModels
             }
         }
 
+        private void StopTimer()
+        {
+            _dispatcherTimer!.Stop();
+            _dispatcherTimer.Tick -= SetTime;
+        }
+
         private void SetDafultValues()
         {
             _record = null;
+            _startTime = null;
+            _dispatcherTimer = null;
             Title = string.Empty;
-            StartTime = DateTimeOffset.MinValue.ToString();
+            StartTime = string.Empty;
             EndTime = string.Empty;
             Project = Project.Empty;
             Date = DateOnly.FromDateTime(DateTime.Today).ToString();
+            Time = "00:00:00";
         }
     }
 }

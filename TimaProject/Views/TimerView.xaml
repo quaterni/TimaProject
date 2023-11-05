@@ -17,6 +17,7 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
         </Grid.ColumnDefinitions>
         <clickable:ClickableTextBox Grid.Column="0"
                                    Margin="0 10 10 5"
@@ -32,26 +33,33 @@
                 BorderThickness="0"
                 Foreground="#61AFEF"/>
         <Grid Grid.Column="2">
-            <controls:TimerControl Grid.Column="2"
-                               BorderThickness="0"
-                               x:Name="timer"
-                               StartingTime="{Binding StartTime,
-                                                    Converter={StaticResource DateTimeToString},
-                                                    Mode=TwoWay, 
-                                                    UpdateSourceTrigger=PropertyChanged}"
-                               TimeStarted="TimerControl_TimeStarted"
-                               TimeStopped="TimerControl_TimeStopped"
-                              />
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
 
             <Grid Background="#272B34"
                   HorizontalAlignment="Left" 
                   Width="70"
                   VerticalAlignment="Center">
-                <Button Content="{Binding ElementName=timer,
-                    Path=Time, StringFormat={}{0:hh\\:mm\\:ss}}"
+                <Button Content="{Binding Time}"
                         Background="{x:Null}"
                         Command="{Binding OpenTimeFormCommand}"
                         IsEnabled="{Binding IsActive}"/>
+            </Grid>
+            <Grid Grid.Column="1">
+                <Button Command="{Binding TimerCommand}">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Content" Value="Start"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                    <Setter Property="Content" Value="Stop"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
             </Grid>
 
         </Grid>
