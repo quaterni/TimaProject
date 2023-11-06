@@ -1,0 +1,49 @@
+@startuml
+
+class "ProjectFormViewModel" as pf {
+    - _projectRepository
+    + CurrentProject
+    + Projects
+
+    + AddingProjectEdit
+    + AddProjectCommand
+    + AddProject()
+}
+
+class "ProjectViewModel" as projectVM {
+    - _project
+    - _projectRepository
+    + Name
+    + IsEmpty
+    + ProjectEdit
+    + Update()
+    + Delete()
+}
+
+pf "1" --> "*" projectVM
+
+class "ProjectEditViewModel" as projectEdit{
+    - _validator
+    + Name
+}
+
+projectEdit --o pf
+projectEdit --o projectVM
+
+
+interface "ProjectRepository" as pr {
+    + Contains(string)
+    + Contains(Project)
+    + GetId()
+    + AddProject(Project)
+    + UpdateProject(Project)
+    + RemoveProject(Project)
+    + GetProjects()
+
+}
+
+pf --> pr
+projectVM --> pr
+
+
+@enduml
