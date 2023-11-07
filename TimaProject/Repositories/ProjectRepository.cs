@@ -32,6 +32,7 @@ namespace TimaProject.Repositories
             }
             _projects.Add(project);
             _currentId++;
+            OnRepositoryChanged();
         }
 
         public bool Contains(string name)
@@ -61,7 +62,12 @@ namespace TimaProject.Repositories
 
         public bool RemoveProject(Project project)
         {
-            return _projects.Remove(project);
+            var result = _projects.Remove(project);
+            if (result)
+            {
+                OnRepositoryChanged();
+            }
+            return result;
         }
 
         public void UpdateProject(Project project)
@@ -73,6 +79,14 @@ namespace TimaProject.Repositories
             }
             _projects.Remove(oldProject);
             _projects.Add(project);
+            OnRepositoryChanged();
+        }
+
+        public event EventHandler? RepositoryChanged;
+
+        private void OnRepositoryChanged()
+        {
+            RepositoryChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

@@ -166,5 +166,52 @@ namespace TimaProject.Tests
 
             Assert.Equal(2, _sut.GetId());
         }
+
+        [Fact]
+        public void AddProject_InvokeRepositoryChanged()
+        {
+            var project = new Project("MyProject", _sut.GetId());
+
+            Assert.RaisesAny(
+                e=> _sut.RepositoryChanged += e,
+                e=> _sut.RepositoryChanged -= e,
+                ()=> _sut.AddProject(project));
+        }
+
+        [Fact]
+        public void UpdateProject_InvokeRepositoryChanged()
+        {
+            var project = new Project("MyProject", _sut.GetId());
+            _sut.AddProject(project);
+            Assert.RaisesAny(
+                e => _sut.RepositoryChanged += e,
+                e => _sut.RepositoryChanged -= e,
+                () => _sut.UpdateProject(project));
+        }
+
+        [Fact]
+        public void RemoveProject_WhenProjectExistsInRepository_InvokeRepositoryChanged()
+        {
+            var project = new Project("MyProject", _sut.GetId());
+            _sut.AddProject(project);
+            Assert.RaisesAny(
+                e => _sut.RepositoryChanged += e,
+                e => _sut.RepositoryChanged -= e,
+                () => _sut.RemoveProject(project));
+        }
+
+        [Fact]
+        public void RemoveProject_WhenProjectDoesntExistsInRepository_DoesntInvlokeRepositoryChanged()
+        {
+            var result = false;
+            Action<object?, EventArgs> checkFunc = (sender, e) => result = true;
+
+            var project = new Project("MyProject", _sut.GetId());
+            _sut.RepositoryChanged += checkFunc.Invoke;
+            _sut.RemoveProject(project);
+            _sut.RepositoryChanged -= checkFunc.Invoke;
+
+            Assert.False(result);
+        }
     }
 }

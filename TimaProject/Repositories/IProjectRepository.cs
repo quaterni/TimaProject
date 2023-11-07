@@ -24,5 +24,7 @@ namespace TimaProject.Repositories
         public bool RemoveProject(Project project);
 
         public List<Project> GetAllProjects();
+
+        public event EventHandler? RepositoryChanged;
     }
 }
