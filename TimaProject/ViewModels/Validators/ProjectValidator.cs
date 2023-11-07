@@ -8,11 +8,11 @@ using TimaProject.Repositories;
 
 namespace TimaProject.ViewModels.Validators
 {
-    public class ProjectEditValidator : AbstractValidator<ProjectEditViewModel>
+    public class ProjectValidator : AbstractValidator<ProjectViewModelBase>
     {
         private readonly IProjectRepository _projectRepository;
 
-        public ProjectEditValidator(IProjectRepository projectRepository)
+        public ProjectValidator(IProjectRepository projectRepository)
         {
             _projectRepository = projectRepository;
             RuleFor(s=> s.Name).NotEmpty().WithMessage("Name must be not empty");

@@ -10,15 +10,15 @@ using Xunit;
 
 namespace TimaProject.Tests
 {
-    public class ProjectEditViewModelTests
+    public class ProjectViewModelBaseTests
     {
-        private readonly ProjectEditViewModel _sut;
+        private readonly ProjectViewModelBase _sut;
         private readonly ProjectRepository _projectRepository;
 
-        public ProjectEditViewModelTests()
+        public ProjectViewModelBaseTests()
         {
             _projectRepository = new ProjectRepository();
-            _sut = new ProjectEditViewModel(new ProjectEditValidator(_projectRepository));
+            _sut = new ProjectViewModelBase(new ProjectValidator(_projectRepository));
         }
 
         [Fact]

@@ -8,46 +8,12 @@ using System.Threading.Tasks;
 
 namespace TimaProject.ViewModels
 {
-    public class ProjectEditViewModel : NotifyDataErrorViewModel
+    public class ProjectEditViewModel : ProjectViewModelBase
     {
-        private readonly AbstractValidator<ProjectEditViewModel> _validator;
 
-        public ProjectEditViewModel(AbstractValidator<ProjectEditViewModel> validator)
+        public ProjectEditViewModel(AbstractValidator<ProjectViewModelBase> validator) :base(validator)
         {
-            _name = string.Empty;
-            _validator = validator;
         }
 
-        private string _name;
-
-        public string Name
-        {
-            get 
-            {
-                return _name; 
-            }
-            set
-            { 
-                SetValue(ref _name, value);
-            }
-        }
-
-        protected override void Validate(string propertyName)
-        {
-            if(propertyName == nameof(Name))
-            {
-                var validationResult = _validator.Validate(this);
-                if (!validationResult.IsValid)
-                {
-                    foreach(var error in validationResult.Errors)
-                    {
-                        if(error.PropertyName == nameof(Name))
-                        {
-                            AddError(propertyName, error.ErrorMessage);
-                        }
-                    }
-                }
-            }
-        }
     }
 }

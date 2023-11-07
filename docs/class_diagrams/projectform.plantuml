@@ -10,22 +10,28 @@ class "ProjectFormViewModel" as pf {
     + AddProject()
 }
 
+class "ProjectViewModelBase" as projectBase{
+    - _validator
+    + Name
+
+}
+
 class "ProjectViewModel" as projectVM {
     - _project
     - _projectRepository
-    + Name
     + IsEmpty
     + ProjectEdit
-    + Update()
-    + Delete()
+    + DeleteProject()
 }
 
 pf "1" --> "*" projectVM
 
 class "ProjectEditViewModel" as projectEdit{
-    - _validator
-    + Name
+
 }
+
+projectEdit --|> projectBase
+projectVM --|> projectBase
 
 projectEdit --o pf
 projectEdit --o projectVM
