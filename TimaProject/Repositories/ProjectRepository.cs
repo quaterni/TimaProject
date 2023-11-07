@@ -16,7 +16,10 @@ namespace TimaProject.Repositories
 
         public ProjectRepository()
         {
-            _projects = new List<Project>();
+            _projects = new List<Project>
+            {
+                Project.Empty
+            };
             _currentId = 1;
         }
 
