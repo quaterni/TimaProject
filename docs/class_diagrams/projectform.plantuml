@@ -2,9 +2,10 @@
 
 class "ProjectFormViewModel" as pf {
     - _projectRepository
-    + CurrentProject
+    + SelectedProject
     + Projects
-
+    + IsCanAdd
+    + CloseProjectFormCommand
     + AddingProjectEdit
     + AddProjectCommand
     + AddProject()

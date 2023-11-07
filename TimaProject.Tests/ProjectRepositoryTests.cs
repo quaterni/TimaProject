@@ -20,11 +20,12 @@ namespace TimaProject.Tests
         }
 
         [Fact]
-        public void GetAllProjects_WhenRepositoryEmpty_ReturnEmptyList()
+        public void GetAllProjects_WhenRepositoryEmpty_ReturnEmptyProject()
         {
             var result = _sut.GetAllProjects();
 
-            Assert.Empty(result);
+            Assert.Single(result);
+            Assert.Equal(Project.Empty, result.First());
         }
 
         [Fact]
@@ -146,7 +147,7 @@ namespace TimaProject.Tests
             _sut.AddProject(project);
 
             Assert.True(_sut.RemoveProject(project));
-            Assert.Empty(_sut.GetAllProjects());
+            Assert.False(_sut.Contains(project));
         }
 
         [Fact]
@@ -212,6 +213,12 @@ namespace TimaProject.Tests
             _sut.RepositoryChanged -= checkFunc.Invoke;
 
             Assert.False(result);
+        }
+
+        [Fact]
+        public void Contains_RepositoryContainsEmptyProjectAfterInits_ReturnTrue()
+        {
+            Assert.True(_sut.Contains(Project.Empty));
         }
     }
 }

@@ -221,6 +221,12 @@ ProjectForm позволяет выбрать проект для текущег
 
 - GetId() должен увеличиваться после добавления проекта
 
+- RepositoryChanged должен срабатывать когда добавляет проект
+- RepositoryChanged должен срабатывать когда обновляется проект
+- RepositoryChanged должен срабатывать если проект удалился
+- RepositoryChanged не должен срабатывать если проект не был в репозитории
+
+
 ###### ProjectEditViewModel
 
 Тесты
@@ -232,7 +238,9 @@ ProjectForm позволяет выбрать проект для текущег
 
 Тесты:
 - Если при инициализации добавляет пустой проект, то свойство IsEmpty true, иначе False
-
+- UpdateProject() должен выбрасывать ошибку если проект пустой
+- RemoveProject() должен выбрасывать ошибку если проект пустой
+- OnProjectEditChanged() должен выбрасывать ошибку если проект пустой 
 
 
 - При инициалцизации Name ProjectViewModel и Name Project должно совпадать
@@ -240,9 +248,26 @@ ProjectForm позволяет выбрать проект для текущег
 - OnProjectEditChanged Некорректные изменения не должны применяться к свойству Name
 - Изменение имени должно добавляться в репозиторий
 - RemoveProject() должен удалять проект из репозитория
-- UpdateProject() должен выбрасывать ошибку если проект пустой
-- RemoveProject() должен выбрасывать ошибку если проект пустой
-- OnProjectEditChanged должен выбрасывать ошибку если проект пустой 
+
+###### ProjectFormViewModel
+
+Тесты
+- PropertyChanged IsProjectEditValid должен вызываться, когда ProjectEditViewModel изменяется
+
+- IsCanAdd должен быть true если ProjectEdit имеет валидный Name
+- IsCanAdd должен быть false если ProjectEdit имеет невалидный Name
+- IsCanAdd должен быть false когда ProjectEdit Name - пустое
+
+- AddProject должен добавлять новый проект если IsCanAdd true
+- AddProject не добавляет новый проект если IsCanAdd false
+- AddProject должен установить добавленный проект в SelectedProject
+
+- Projects должен обновляться когда в репозиторий добавили новый проект
+- Projects должен обновляться когда в репозиторий обновили проект
+- Projects должен обновляться когда в репозиторий удалили проект
+- Projects должен содержать проекты из репозитория при инициализации
+
+- Если SelectedProject изменился, он закрывает форму
 
 
 ##### EditableRecordViewModel

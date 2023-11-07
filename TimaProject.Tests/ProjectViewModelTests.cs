@@ -84,16 +84,15 @@ namespace TimaProject.Tests
             var project = new Project("MyProject", _repository.GetId());
             _repository.AddProject(project);
             var sut = Create(project);
+            Assert.False(_repository.Contains(expectedName));
             sut.Name = expectedName;
 
-            var updatedProject = _repository.GetAllProjects().First();
-
-            Assert.Equal(expectedName, updatedProject.Name);
+            Assert.True(_repository.Contains(expectedName));
         }
 
 
         [Fact]
-        public void OnUpdateProject_IfChangedNameInvalid_UpdateNameInRepository()
+        public void OnUpdateProject_IfChangedNameInvalid_PassUpdateNameInRepository()
         {
             var expectedName = "MyProject";
             var project = new Project(expectedName, _repository.GetId());
@@ -103,7 +102,7 @@ namespace TimaProject.Tests
 
             var updatedProject = _repository.GetAllProjects().First();
 
-            Assert.Equal(expectedName, updatedProject.Name);
+            Assert.True(_repository.Contains(expectedName));
         }
 
         [Fact]
