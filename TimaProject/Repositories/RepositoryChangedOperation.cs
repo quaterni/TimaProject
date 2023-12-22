@@ -9,7 +9,7 @@ namespace TimaProject.Repositories
     public enum RepositoryChangedOperation
     {
         Add,
-        Delete,
-        Update
+        Update,
+        Remove
     }
 }

@@ -1,7 +1,9 @@
-﻿namespace TimaProject.Models
+﻿using System;
+
+namespace TimaProject.Models
 {
-    public record Project(string Name, int Id)
+    public record Project(string Name, Guid Id)
     {
-        public static Project Empty => new Project("", 0);
+        public static Project Empty => new Project("", Guid.Empty);
     }
 }

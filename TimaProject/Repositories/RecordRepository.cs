@@ -84,7 +84,7 @@ namespace TimaProject.Repositories
             var result = _records.Remove(record);
             if (result)
             {
-                OnRepositoryChanged(RepositoryChangedOperation.Delete, record);
+                OnRepositoryChanged(RepositoryChangedOperation.Remove, record);
             }
             return result;
         }

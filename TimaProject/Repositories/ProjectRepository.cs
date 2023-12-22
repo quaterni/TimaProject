@@ -4,15 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using TimaProject.Exceptions;
 using TimaProject.Models;
 
 namespace TimaProject.Repositories
 {
-    public class ProjectRepository : IProjectRepository
+    public class ProjectRepository : IRepository<Project>
     {
         private readonly List<Project> _projects;
-
-        private int _currentId;
 
         public ProjectRepository()
         {
@@ -20,76 +19,70 @@ namespace TimaProject.Repositories
             {
                 Project.Empty
             };
-            _currentId = 1;
         }
 
-        public void AddProject(Project project)
-        {
-            if (Contains(project.Id))
-            {
-                throw new Exception("Project with same id exists");
-            }
-            if (Contains(project.Name))
-            {
-                throw new Exception("Project with same name exists");
-            }
-            _projects.Add(project);
-            _currentId++;
-            OnRepositoryChanged();
-        }
+        public event EventHandler<RepositoryChangedEventArgs<Project>>? RepositoryChanged;
 
         public bool Contains(string name)
         {
             return _projects.Find(p => p.Name.Equals(name)) is not null;
         }
 
-        public bool Contains(Project project)
+        private void OnRepositoryChanged(Project item, RepositoryChangedOperation operation)
         {
-            return _projects.Contains(project);
+            RepositoryChanged?.Invoke(this, new RepositoryChangedEventArgs<Project>(item, operation));
         }
 
-        public bool Contains(int id)
+        public void AddItem(Project item)
         {
-            return _projects.Find(p => p.Id == id) is not null;
+            if (Contains(item))
+            {
+                throw new AddingNotUniqueItem("Project with same id exists");
+            }
+            if (Contains(item.Name))
+            {
+                throw new AddingNotUniqueItem("Project with same name exists");
+            }
+            _projects.Add(item);
+            OnRepositoryChanged(item, RepositoryChangedOperation.Add);
         }
 
-        public List<Project> GetAllProjects()
+        public void UpdateItem(Project item)
         {
-            return _projects;
+            if (item.Id.Equals(Project.Empty.Id))
+            {
+                throw new ChangeEmptyProjectException();
+            }
+            Project oldProject = _projects.Find(r => r.Id == item.Id)
+                ?? throw new NotFoundException<Project>(item, "Project doesn't contain in repository");
+
+            _projects[_projects.IndexOf(oldProject)] = item;
+            OnRepositoryChanged(item, RepositoryChangedOperation.Update);
         }
 
-        public int GetId()
+        public bool RemoveItem(Project item)
         {
-            return _currentId;
-        }
+            if(item.Equals(Project.Empty))
+            {
+                throw new ChangeEmptyProjectException();
+            }
 
-        public bool RemoveProject(Project project)
-        {
-            var result = _projects.Remove(project);
+            var result = _projects.Remove(item);
             if (result)
             {
-                OnRepositoryChanged();
+                OnRepositoryChanged(item, RepositoryChangedOperation.Remove);
             }
             return result;
         }
 
-        public void UpdateProject(Project project)
+        public bool Contains(Project item)
         {
-            var oldProject = _projects.Find(r => r.Id == project.Id);
-            if(oldProject == null)
-            {
-                throw new Exception("Project not found");
-            }
-            _projects.Remove(oldProject);
-            _projects.Add(project);
-            OnRepositoryChanged();
+            return _projects.Contains(item);
         }
 
-        public event EventHandler? RepositoryChanged;
-
-        private void OnRepositoryChanged()
+        public IEnumerable<Project> GetItems(Func<Project, bool> filterPredicate)
         {
-            RepositoryChanged?.Invoke(this, EventArgs.Empty);
+           return _projects.Where((project)=> filterPredicate(project) && !project.Equals(Project.Empty));
         }
     }
 }
