@@ -30,7 +30,9 @@
                     Mode=TwoWay}"/>
             <Button Grid.Column="1"
                     Width="80"
-                    Content="{Binding Project.Name}"/>
+                    Command="{Binding OpenProjectFormCommand}">
+                <local:ProjectView DataContext="{Binding Project}"/>
+            </Button>
             <Button Grid.Column="2"
                     Width="80"
                     Content="{Binding Time}"

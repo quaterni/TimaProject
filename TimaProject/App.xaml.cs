@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 using MvvmTools.Base;
 using MvvmTools.Navigation.Services;
 using MvvmTools.Navigation.Stores;
@@ -39,6 +40,7 @@ namespace TimaProject
             services.AddTransient<OpenModalService>();
 
             services.AddTransient<RecordValidator>();
+            services.AddTransient<AbstractValidator<IProjectName> ,ProjectNameValidator >();
 
             services.AddSingleton<MainWindow>(
                 s => new MainWindow()
@@ -50,19 +52,32 @@ namespace TimaProject
                 s => type => (ViewModelBase)s.GetRequiredService(type));
 
             services.AddSingleton<IRecordRepository, RecordRepository>();
+
+            services.AddSingleton<IProjectRepository, ProjectRepository>();
             services.AddSingleton<ListingRecordStore>();
 
             services.AddSingleton<IDateStore, TodayDateStore>();
 
             services.AddTransient<RecordFactory>();
 
+            services.AddTransient<ProjectFormViewModelFactory>(
+                s=> new ProjectFormViewModelFactory(
+                        s.GetRequiredService<IProjectRepository>(),
+                        s.GetRequiredService<AbstractValidator<IProjectName>>(),
+                        s.GetRequiredService<CloseModalService>()));
+
+
             services.AddTransient(
                 s => new EditableRecordViewModelFactory(
                     s.GetRequiredService<IRecordRepository>(),
-                    () => new CompositeNavigationService(
+                    new CompositeNavigationService(
                         ModalParameterizedNavigationService<TimeFormViewModel>(s),
                         s.GetRequiredService<OpenModalService>()),
+                    new CompositeNavigationService(
+                        ModalParameterizedNavigationService<ProjectFormViewModel>(s),
+                        s.GetRequiredService<OpenModalService>()),
                     TimeFormFactory,
+                    s.GetRequiredService<ProjectFormViewModelFactory>(),
                     s.GetRequiredService<RecordValidator>()));
 
             services.AddTransient(s => TimerViewModelFactory(s));
@@ -91,7 +106,10 @@ namespace TimaProject
                             s.GetRequiredService<RecordFactory>(),
                             new CompositeNavigationService(ModalParameterizedNavigationService<TimeFormViewModel>(s),
                                                            s.GetRequiredService<OpenModalService>()),
+                            new CompositeNavigationService(ModalParameterizedNavigationService<ProjectFormViewModel>(s),
+                                                           s.GetRequiredService<OpenModalService>()),
                             TimeFormFactory,
+                            s.GetRequiredService<ProjectFormViewModelFactory>(),
                             s.GetRequiredService<RecordValidator>());
         }
 

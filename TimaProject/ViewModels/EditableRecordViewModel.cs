@@ -10,10 +10,11 @@ using System.Windows.Input;
 using TimaProject.Commands;
 using TimaProject.Models;
 using TimaProject.Repositories;
+using TimaProject.ViewModels.Factories;
 
 namespace TimaProject.ViewModels
 {
-    public class EditableRecordViewModel : RecordViewModelWithEdit
+    public class EditableRecordViewModel : RecordViewModelWithEdit, IRecordViewModel
     {
         private Record _record;
         private readonly IRecordRepository _recordRepository;
@@ -41,6 +42,10 @@ namespace TimaProject.ViewModels
                 }
                 return string.Empty;
             }
+            set
+            {
+                throw new NotImplementedException(nameof(Time));
+            }
         }
 
         public ICommand DeleteRecordCommand { get; }
@@ -49,8 +54,10 @@ namespace TimaProject.ViewModels
             Record record,
             IRecordRepository recordRepository,
             INavigationService timeFormNavigationService,
+            INavigationService projectFormNavigationService,
             Func<TimeFormViewModel> timeFormFactory,
-            AbstractValidator<RecordViewModel> validator) : base(timeFormNavigationService, timeFormFactory, validator)
+            ProjectFormViewModelFactory projectFormViewModelFactory,
+            AbstractValidator<RecordViewModel> validator) : base(timeFormNavigationService, projectFormNavigationService, projectFormViewModelFactory, timeFormFactory, validator)
         {
             _record = record;
             _recordRepository = recordRepository;

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TimaProject.Commands;
+using TimaProject.ViewModels.Factories;
 
 namespace TimaProject.ViewModels
 {
@@ -15,16 +16,9 @@ namespace TimaProject.ViewModels
     {
         private readonly Func<TimeFormViewModel> _timeFormFactory;
 
-        public RecordViewModelWithEdit(
-            INavigationService timeFormNavigationService, 
-            Func<TimeFormViewModel> timeFormFactory, 
-            AbstractValidator<RecordViewModel> validator) : base(validator)
-        {
-            _timeFormFactory = timeFormFactory;
-            OpenTimeFormCommand = new OpenTimeFormCommand(timeFormNavigationService, this);
-        }
-
         public ICommand OpenTimeFormCommand { get; }
+
+        public ICommand OpenProjectFormCommand { get; }
 
         private TimeFormViewModel? _timeForm;
 
@@ -38,6 +32,33 @@ namespace TimaProject.ViewModels
             {
                 SetValue(ref _timeForm, value);
             }
+        }
+
+        private ProjectFormViewModel? _projectForm;
+
+        public ProjectFormViewModel? ProjectForm
+        {
+            get
+            {
+                return _projectForm;
+            }
+            set
+            {
+                SetValue(ref _projectForm, value);
+            }
+        }
+
+
+        public RecordViewModelWithEdit(
+            INavigationService timeFormNavigationService, 
+            INavigationService projectFormNavigationService,
+            ProjectFormViewModelFactory projectFormViewModelFactory, 
+            Func<TimeFormViewModel> timeFormFactory, 
+            AbstractValidator<RecordViewModel> validator) : base(validator)
+        {
+            _timeFormFactory = timeFormFactory;
+            OpenTimeFormCommand = new OpenTimeFormCommand(timeFormNavigationService, this);
+            OpenProjectFormCommand = new OpenProjectFormCommand(this, projectFormViewModelFactory, projectFormNavigationService);
         }
 
 
@@ -80,7 +101,7 @@ namespace TimaProject.ViewModels
 
         private void OnTimeFormClosed(object? sender, EventArgs e)
         {
-            TimeForm.PropertyChanged -= OnTimeFormPropertyChanged;
+            TimeForm!.PropertyChanged -= OnTimeFormPropertyChanged;
             TimeForm.Closed -= OnTimeFormClosed;
             TimeForm = null;
         }

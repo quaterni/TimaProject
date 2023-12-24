@@ -13,19 +13,25 @@ namespace TimaProject.ViewModels.Factories
     public class EditableRecordViewModelFactory
     {
         private readonly IRecordRepository recordRepository;
-        private readonly Func<INavigationService> timeFromNavigationServiceFactory;
+        private readonly INavigationService timeFromNavigationService;
+        private readonly INavigationService projectFromNavigationService;
         private readonly Func<TimeFormViewModel> timeFormFactory;
+        private readonly ProjectFormViewModelFactory projectFormViewModelFactory;
         private readonly RecordValidator validator;
 
         public EditableRecordViewModelFactory(
             IRecordRepository recordRepository, 
-            Func<INavigationService> timeFromNavigationServiceFactory,
+            INavigationService timeFromNavigationService,
+            INavigationService projectFromNavigationService,
             Func<TimeFormViewModel> timeFormFactory,
+            ProjectFormViewModelFactory projectFormViewModelFactory,
             RecordValidator validator)
         {
             this.recordRepository = recordRepository;
-            this.timeFromNavigationServiceFactory = timeFromNavigationServiceFactory;
+            this.timeFromNavigationService = timeFromNavigationService;
+            this.projectFromNavigationService = projectFromNavigationService;
             this.timeFormFactory = timeFormFactory;
+            this.projectFormViewModelFactory = projectFormViewModelFactory;
             this.validator = validator;
         }
 
@@ -34,8 +40,10 @@ namespace TimaProject.ViewModels.Factories
             return new EditableRecordViewModel(
                 record,
                 recordRepository,
-                timeFromNavigationServiceFactory(),
+                timeFromNavigationService,
+                projectFromNavigationService,
                 timeFormFactory,
+                projectFormViewModelFactory,
                 validator);
         }
 

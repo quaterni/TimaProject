@@ -8,11 +8,11 @@ using TimaProject.Commands;
 using TimaProject.Models;
 using TimaProject.Repositories;
 using TimaProject.Services.Factories;
-
+using TimaProject.ViewModels.Factories;
 
 namespace TimaProject.ViewModels
 {
-    public class TimerViewModel: RecordViewModelWithEdit
+    public class TimerViewModel: RecordViewModelWithEdit, IRecordViewModel
     {
         private const int TIMER_INTERVAL_MILLISECONDS = 200;
 
@@ -45,8 +45,10 @@ namespace TimaProject.ViewModels
         public TimerViewModel(IRecordRepository noteRepository, 
             IRecordFactory factory,
             INavigationService timeFormNavigationService,
+            INavigationService projectFormNavigationService,
             Func<TimeFormViewModel> timeFormFactory,
-            AbstractValidator<RecordViewModel> validator): base(timeFormNavigationService, timeFormFactory, validator)
+            ProjectFormViewModelFactory projectFormViewModelFactory,
+            AbstractValidator<RecordViewModel> validator): base(timeFormNavigationService, projectFormNavigationService, projectFormViewModelFactory, timeFormFactory, validator)
         {
             _recordRepository = noteRepository;
             _factory = factory;

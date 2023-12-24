@@ -28,10 +28,13 @@
                                                   Mode=TwoWay}"
                                    Background="#20242B"/>
         <Button Grid.Column="1"
-                Content="project"
+                Width="60"
                 Background="Transparent"
                 BorderThickness="0"
-                Foreground="#61AFEF"/>
+                Foreground="#61AFEF"
+                Command="{Binding OpenProjectFormCommand}">
+            <local:ProjectView DataContext="{Binding Project}"/>
+        </Button>
         <Grid Grid.Column="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>

@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using TimaProject.Models;
 
-namespace TimaProject.Repositories
+namespace TimaProject.ViewModels
 {
-    public interface IProjectRepository : IRepository<Project>
+    public interface IRecordViewModel : ITimeBase
     {
-        public bool Contains(string name);
+        string Title { get; set; }
+        Project Project { get; set; }
     }
 }

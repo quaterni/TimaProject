@@ -9,7 +9,7 @@ using TimaProject.Models;
 
 namespace TimaProject.Repositories
 {
-    public class ProjectRepository : IRepository<Project>
+    public class ProjectRepository : IProjectRepository
     {
         private readonly List<Project> _projects;
 

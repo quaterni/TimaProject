@@ -11,7 +11,7 @@ using TimaProject.Models;
 
 namespace TimaProject.ViewModels
 {
-    public class RecordViewModel :NotifyDataErrorViewModel
+    public class RecordViewModel :NotifyDataErrorViewModel, IRecordViewModel
     {
         protected readonly AbstractValidator<RecordViewModel> _validator;
 
@@ -92,6 +92,8 @@ namespace TimaProject.ViewModels
                 SetValue(ref _startTime, value);
             }
         }
+
+        public string Time { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public RecordViewModel(AbstractValidator<RecordViewModel> validator)
         {

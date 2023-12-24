@@ -30,6 +30,9 @@
             <DataTemplate DataType="{x:Type viewModels:EditableRecordViewModel}">
                 <views:EditableRecordView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:ProjectFormViewModel}">
+                <views:ProjectFormView/>
+            </DataTemplate>
         </Grid.Resources>
         <controls:ModalView DataContext="{Binding CurrentModalViewModel}" Panel.ZIndex="5"/>
         <ContentControl Content="{Binding CurrentViewModel}"/>
