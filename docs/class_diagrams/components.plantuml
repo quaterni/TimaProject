@@ -1,0 +1,179 @@
+@startuml
+
+rectangle ViewModels {
+
+    class "TimerViewModel" as timerVM{
+        - _recordRepository
+        # _validator : AbstractValidator<Record>
+        - _record : Record?
+        + State : TimerState
+        # Validate()
+        + Update()
+        + Start()
+        + Stop()
+    }
+
+
+    class "EditableRecordViewModel" as editableRecordVM{
+        # _validator : AbstractValidator<RecordViewModel>
+        # Validate(string)
+        + Record : Record
+        - _recordRepository : IRepository<Record>
+        + NoteFormViewModel
+        + DeleteRepository : ICommand
+        + Update()
+        + Delete()
+    }
+
+
+    class "TimeSolver" as solver {
+        - _validator : AbstractValidator<ITimeBase>
+        - _timeBase : ITimeBase
+        + State : TimeSolverState
+        + Solve(string propertyName)
+    }
+    class "TimeFormViewModel" as timeForm{
+        - _validator : AbstractValidator<ITimeBase>
+        - _recordViewModel : IRecordViewModelBase
+        + CloseCommand : ICommand
+    }
+
+    class "ProjectFormViewModel" as projectForm{
+        - _projectRepository
+        - _validator
+        - _source : IRecordViewModelBase
+        + Name : string
+        + Projects : ObservableCollection<EditableProjectViewModel>
+        + AddProjectCommand : ICommand
+        + SelectProjectCommand : ICommand
+    }
+
+    class "EditableProjectViewModel" as editableProject {
+        - _projectRepository
+        - _validator
+        + Project
+        + Name
+        + RemoveProjectCommand : ICommand
+        + RemoveProject()
+        + UpdateProject()
+    }
+
+    class "NoteFormViewModel" {
+        - _noteRepository : IRepository<Note>
+        + CurrentText : string,
+        + AddNoteCommand : ICommand
+        + AddNote(Note note)
+    }
+
+    class "ListingNoteViewModel" as listingNote {
+        - _noteRepository : IRepository<Note>
+        + Notes : ObservableCollection<EditableNoteViewModel>
+    }
+
+    class "EditableNoteViewModel" as editableNote{
+        - _noteRepository : IRepository<Note>
+        + Note : Note
+        + Text : string
+        + DeleteNote()
+        + UpdateNote()
+    }
+
+    class "ListingRecordViewModel" as listing {
+
+    }
+
+    Interface "IRecordViewModel" {
+        + Title : string,
+        + Project : Project
+    }
+
+    interface "ITimeBase" {
+        + StartTime : string,
+        + EndTime : string,
+        + Time,
+        + Date : string
+    }
+
+    interface "IRecordEdit" {
+        + OpenTimeForm : ICommand,
+        + OpenProjectForm : ICommand
+    }
+
+    class "RepositoryChangedEventArgs<T>" {
+        + Item : T
+        + Operation : RepositoryChangedOperation
+    }
+
+    class "ProjectRepository" as projectRepository {
+        + Contains(string name) : bool
+    }
+
+    interface "IRepository<T>" as interfaceRepository {
+        + AddItem(T item)
+        + UpdateItem(T item)
+        + RemoveItem(T item) : bool
+        + Contains(T item) : bool
+        + GetItems(Func<T, bool> predicate) : IEnumerable<T>
+        + RepositoryChanged : EventHandler<RepositoryChangedEventArgs<T>>?
+    }
+
+    interface "IProjectName" {
+        + Name :string
+    }
+
+    class "ProjectNameValidator" as projectValidator {
+
+    }
+ 
+    class "ProjectContainerViewModel" as projectContainer {
+        Item : EditableProjectViewModel?
+        IsEmpty : bool,
+        IsSelected : bool
+    }
+
+    timerVM --|> "IRecordEdit"
+    timerVM --|> "IRecordViewModel"
+
+    listing "1"  --> "*" editableRecordVM
+
+    editableRecordVM -|> "IRecordViewModel"
+   "IRecordViewModel" -|> "ITimeBase" 
+    editableRecordVM -|> "IRecordEdit"
+
+
+    NoteFormViewModel --* editableRecordVM
+    listingNote --* editableRecordVM
+    listingNote "1" --> "*" editableNote
+
+    solver --* timeForm
+    solver --* editableRecordVM
+    solver --* timerVM
+
+
+    timeForm --|> ITimeBase
+
+    timeForm --> editableRecordVM
+    timeForm --> timerVM
+
+   projectRepository --|> interfaceRepository
+
+    interfaceRepository --> "RepositoryChangedEventArgs<T>"
+
+    projectForm ..> projectRepository
+
+    projectForm --> editableRecordVM
+    projectForm --> timerVM
+
+    projectForm "1" --> "*" projectContainer
+
+    editableProject ..> projectRepository
+
+    editableProject --|> "IProjectName"
+    projectForm --|> "IProjectName"
+
+    editableProject ..> projectValidator
+    projectForm ..> projectValidator
+
+    projectContainer --> editableProject : "nullable"
+}
+@enduml

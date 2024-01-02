@@ -1,41 +1,66 @@
 @startuml timaproject-use-case
 
-left to right direction
-
 actor Пользователь as user
 
-(изменение record из таймера) as changeRecordTimer
-(запуск таймера) as startTimer
+(Запустить таймер) as startTimer
+(Сохранить record) as saveRecord
+(Изменить Record) as changeRecord
+(Изменить Title) as changeTitle
 
-(создание record) as changeRecord
+(Изменить время) as changeTime
+(Изменить endtime) as setEndTime
+(Изменить date) as setDate
+(Изменить starttime) as setStartTime
+changeTime -- setEndTime : "если record завершенная"
+changeTime -- setDate
+changeTime -- setStartTime
+setEndTime -- saveRecord
+setStartTime -- saveRecord
+setDate -- saveRecord
+changeTitle -- saveRecord
 
+(Настроить проект) as handleProject
+(Назначить проект) as setProject
+(Добавить новый проект) as addProject
+handleProject -- addProject
+handleProject -- setProject
+addProject -- setProject
+setProject -- saveRecord
 
+(Настраивать заметки) as handleNote
+(Добавить заметку) as addNote
+(Удалить заметку) as removeNote
+(Изменить заметку) as changeNote
+handleNote -- addNote
+handleNote -- removeNote
+handleNote -- changeNote
 
-user -- changeRecordTimer
+changeRecord -- changeTitle
+changeRecord -- handleProject
+changeRecord -- changeTime
+changeRecord -- handleNote
+
+(Остановка таймера) as stopTimer
+
+(Удалить проект) as removeProject
+(Изменить проект)  as changeProject
+
+user -- changeProject
+user -- removeProject
 
 user -- startTimer
 
-startTimer ..> changeRecord
+startTimer -- (Добавить record)
+startTimer -- (Начать отсчет)
 
-changeRecordTimer ..> (изменение заголовка) 
-changeRecordTimer ..> (изменение StartTime)
-changeRecordTimer ..> (изменение проекта)
+user -- changeRecord 
+user -- stopTimer
 
-user -- (остановка таймера)
+stopTimer -- setEndTime
+stopTimer -- (Обнулить timer и записи таймера)
 
-(остановка таймера) ..> (запись EndTime в record)
-
-
-user -- (удаление record)
-user -- (создание record без таймера)
-user -- (изменение record из списка)
-(изменение record из списка) ..> (изменение заголовка) 
-(изменение record из списка) ..> (изменение проекта)
-(изменение record из списка) ..> (изменение времени record)
-(изменение времени record) ..> (изменение StartTime)
-(изменение времени record) ..> (изменение EndTime)
-(изменение времени record) ..> (изменение свойства Time)
-(изменение record из списка) ..> (добавление заметок к завершенным записям)
+user -- (Удалить record)
+user -- (Добавить record)
 
 
 @enduml

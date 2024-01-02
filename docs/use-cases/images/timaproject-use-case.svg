@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="659px" preserveAspectRatio="none" style="width:1504px;height:659px;background:#FFFFFF;" version="1.1" viewBox="0 0 1504 659" width="1504px" zoomAndPan="magnify"><defs/><g><!--MD5=[8fc3522a43f8c7199df5e09e5bb0188e]
+entity user--><g id="elem_user"><ellipse cx="842.5" cy="14" fill="#F1F1F1" rx="8" ry="8" style="stroke:#181818;stroke-width:0.5;"/><path d="M842.5,22 L842.5,49 M829.5,30 L855.5,30 M842.5,49 L829.5,64 M842.5,49 L855.5,64 " fill="none" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="93" x="796" y="80.0332">Пользователь</text></g><g id="elem_startTimer"><ellipse cx="263.2516" cy="164.4503" fill="#F1F1F1" rx="82.7516" ry="18.9503" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="121" x="202.7516" y="168.1788">Запустить таймер</text></g><g id="elem_saveRecord"><ellipse cx="687.6887" cy="635.0377" fill="#F1F1F1" rx="80.6887" ry="18.5377" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="116" x="629.0015" y="638.9661">Сохранить record</text></g><g id="elem_changeRecord"><ellipse cx="639.2827" cy="164.4565" fill="#F1F1F1" rx="80.2827" ry="18.4565" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="115" x="580.9192" y="168.4341">Изменить Record</text></g><g id="elem_changeTitle"><ellipse cx="1188.5109" cy="348.5022" fill="#F1F1F1" rx="73.0109" ry="17.0022" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="96" x="1137.5109" y="353.0188">Изменить Title</text></g><g id="elem_changeTime"><ellipse cx="495.2877" cy="417.5575" fill="#F1F1F1" rx="78.2877" ry="18.0575" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="110" x="438.5149" y="421.7774">Изменить время</text></g><g id="elem_setEndTime"><ellipse cx="878.4202" cy="536.284" fill="#F1F1F1" rx="81.9202" ry="18.784" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="119" x="818.7512" y="540.0629">Изменить endtime</text></g><g id="elem_setDate"><ellipse cx="687.376" cy="536.5752" fill="#F1F1F1" rx="73.376" ry="17.0752" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="97" x="635.876" y="541.0918">Изменить date</text></g><g id="elem_setStartTime"><ellipse cx="495.5873" cy="536.6175" fill="#F1F1F1" rx="83.5873" ry="19.1175" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="123" x="434.0873" y="540.346">Изменить starttime</text></g><g id="elem_handleProject"><ellipse cx="458.4202" cy="273.284" fill="#F1F1F1" rx="81.9202" ry="18.784" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="119" x="398.7512" y="277.0629">Настроить проект</text></g><g id="elem_setProject"><ellipse cx="295.5075" cy="536.7015" fill="#F1F1F1" rx="81.5075" ry="18.7015" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="118" x="236.1675" y="540.5304">Назначить проект</text></g><g id="elem_addProject"><ellipse cx="211.2802" cy="417.556" fill="#F1F1F1" rx="98.2802" ry="22.056" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="157" x="132.7802" y="421.2846">Добавить новый проект</text></g><g id="elem_handleNote"><ellipse cx="738.6965" cy="273.7393" fill="#F1F1F1" rx="91.6965" ry="20.7393" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="142" x="667.6965" y="277.4678">Настраивать заметки</text></g><g id="elem_addNote"><ellipse cx="691.4202" cy="417.284" fill="#F1F1F1" rx="81.9202" ry="18.784" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="119" x="631.7512" y="421.0629">Добавить заметку</text></g><g id="elem_removeNote"><ellipse cx="887.5785" cy="417.7157" fill="#F1F1F1" rx="79.0785" ry="18.2157" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="112" x="830.1751" y="421.8395">Удалить заметку</text></g><g id="elem_changeNote"><ellipse cx="1084.2516" cy="417.4503" fill="#F1F1F1" rx="82.7516" ry="18.9503" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="121" x="1023.7516" y="421.1788">Изменить заметку</text></g><g id="elem_stopTimer"><ellipse cx="842.4661" cy="164.2932" fill="#F1F1F1" rx="86.9661" ry="19.7932" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="131" x="776.9661" y="168.0217">Остановка таймера</text></g><g id="elem_removeProject"><ellipse cx="1041.355" cy="164.671" fill="#F1F1F1" rx="76.355" ry="17.671" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="105" x="986.1233" y="169.1255">Удалить проект</text></g><g id="elem_changeProject"><ellipse cx="1233.3789" cy="164.3758" fill="#F1F1F1" rx="79.8789" ry="18.3758" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="114" x="1175.3373" y="168.4024">Изменить проект</text></g><g id="elem_Добавить record"><ellipse cx="263.5069" cy="273.4014" fill="#F1F1F1" rx="77.5069" ry="17.9014" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="108" x="207.3567" y="277.716">Добавить record</text></g><g id="elem_Начать отсчет"><ellipse cx="78.6476" cy="273.4295" fill="#F1F1F1" rx="72.6476" ry="16.9295" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="95" x="28.1476" y="277.9461">Начать отсчет</text></g><g id="elem_Обнулить timer и записи таймера"><ellipse cx="1064.5083" cy="273.5017" fill="#F1F1F1" rx="128.0083" ry="28.0017" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="222" x="953.5083" y="277.2302">Обнулить timer и записи таймера</text></g><g id="elem_Удалить record"><ellipse cx="1423.3525" cy="164.3705" fill="#F1F1F1" rx="74.8525" ry="17.3705" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="101" x="1369.8525" y="168.8871">Удалить record</text></g><!--MD5=[251d5c250073c91f4fb14b825acabc0d]
+link changeTime to setEndTime--><g id="link_changeTime_setEndTime"><path d="M540.56,432.27 C613.43,454.53 756.46,498.22 830.91,520.96 " fill="none" id="changeTime-setEndTime" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="152" x="722.5" y="483.9951">если record завершенная</text></g><!--MD5=[c6690f534d8f7aa800d8af6be56c9b6d]
+link changeTime to setDate--><g id="link_changeTime_setDate"><path d="M521.79,434.52 C558.97,457.18 626.41,498.28 662.74,520.41 " fill="none" id="changeTime-setDate" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[c7b9ab7185db8b75aa24f0e4a419995c]
+link changeTime to setStartTime--><g id="link_changeTime_setStartTime"><path d="M495.5,435.51 C495.5,457.31 495.5,494.96 495.5,517.31 " fill="none" id="changeTime-setStartTime" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[4ccdd7266127460b27b6bb67aafc9003]
+link setEndTime to saveRecord--><g id="link_setEndTime_saveRecord"><path d="M845.67,554.09 C810.25,571.98 754.26,600.27 719.27,617.95 " fill="none" id="setEndTime-saveRecord" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[702dd809d623d4fc4fe98e90822b406e]
+link setStartTime to saveRecord--><g id="link_setStartTime_saveRecord"><path d="M528.51,554.09 C564.1,571.98 620.39,600.27 655.56,617.95 " fill="none" id="setStartTime-saveRecord" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[48c490ab458e7d52006129c05c1257c7]
+link setDate to saveRecord--><g id="link_setDate_saveRecord"><path d="M687.5,553.87 C687.5,571.18 687.5,598.41 687.5,616.24 " fill="none" id="setDate-saveRecord" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[d8bac82b20215b5bc2bb81a00553e04a]
+link changeTitle to saveRecord--><g id="link_changeTitle_saveRecord"><path d="M1192.17,365.48 C1195.64,384.6 1198.45,416.86 1184.5,439.5 C1129.18,529.29 1075.14,515.64 977.5,555.5 C900.36,586.99 806.56,609.75 746.94,622.41 " fill="none" id="changeTitle-saveRecord" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[167fe18124a7ffc10371a72183ec28ac]
+link handleProject to addProject--><g id="link_handleProject_addProject"><path d="M420.95,290.4 C396.67,301.12 364.65,316.07 337.5,331.5 C302.17,351.58 263.75,378.26 238.74,396.33 " fill="none" id="handleProject-addProject" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[2544f9fcfa7b712f72fb84d10d9d85b5]
+link handleProject to setProject--><g id="link_handleProject_setProject"><path d="M447.3,292.44 C417.37,340.35 335.87,470.86 306.35,518.12 " fill="none" id="handleProject-setProject" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[b1d0655a258e3f52af96bc54af3a6c2c]
+link addProject to setProject--><g id="link_addProject_setProject"><path d="M226.52,439.42 C242.66,461.9 268.01,497.22 283.07,518.19 " fill="none" id="addProject-setProject" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[f0f6c6c13530fcc011217d31aafa8b2b]
+link setProject to saveRecord--><g id="link_setProject_saveRecord"><path d="M348.77,550.61 C423.82,569.09 559.84,602.57 634.66,620.99 " fill="none" id="setProject-saveRecord" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[6a19a0b6fd13ff794fbaa1238d371a73]
+link handleNote to addNote--><g id="link_handleNote_addNote"><path d="M731.96,294.24 C722.83,321.83 706.39,371.52 697.53,398.27 " fill="none" id="handleNote-addNote" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[4e6f63399fab88468bb261c7b497d1bd]
+link handleNote to removeNote--><g id="link_handleNote_removeNote"><path d="M758.59,293.65 C787.99,321.66 842.22,373.34 870.04,399.86 " fill="none" id="handleNote-removeNote" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[2ea4ddeae74cc78873ee220a1e1c252f]
+link handleNote to changeNote--><g id="link_handleNote_changeNote"><path d="M780.58,291.77 C848.3,319.56 980.46,373.8 1045.89,400.66 " fill="none" id="handleNote-changeNote" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[8e51d7a254512626a4421fa6dde08563]
+link changeRecord to changeTitle--><g id="link_changeRecord_changeTitle"><path d="M687.59,179.44 C730.97,193.06 795.72,216.02 847.5,245.5 C882.43,265.38 881.78,285.17 918.5,301.5 C981.94,329.7 1060.84,340.7 1116.93,344.94 " fill="none" id="changeRecord-changeTitle" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[291d7958b919d9031929b8a61c8af1ac]
+link changeRecord to handleProject--><g id="link_changeRecord_handleProject"><path d="M611.62,181.98 C577.8,201.97 521.11,235.49 487.01,255.64 " fill="none" id="changeRecord-handleProject" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[3885d7c832590d8b90fb0daa8f424336]
+link changeRecord to changeTime--><g id="link_changeRecord_changeTime"><path d="M629.37,183.15 C602.81,229.46 531.35,354 505.23,399.53 " fill="none" id="changeRecord-changeTime" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[3dc272cbac2ba007f34fded8ad45f4df]
+link changeRecord to handleNote--><g id="link_changeRecord_handleNote"><path d="M655.41,182.69 C673.22,201.95 702.04,233.09 720.62,253.18 " fill="none" id="changeRecord-handleNote" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[1b59c6bc1a2c1bfd5944c373622c5ec1]
+link user to changeProject--><g id="link_user_changeProject"><path d="M889.28,59.62 C964.48,82.31 1111.43,126.66 1186.67,149.37 " fill="none" id="user-changeProject" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[4a4968f516fb5a1e5974c7a4753c24e6]
+link user to removeProject--><g id="link_user_removeProject"><path d="M889.16,73.17 C928.45,96.46 983.22,128.94 1015.26,147.94 " fill="none" id="user-removeProject" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[b7c6113697f206919c8e9ac836388c65]
+link user to startTimer--><g id="link_user_startTimer"><path d="M795.85,50.72 C717.57,59.98 555.13,81.4 420.5,113.5 C381.13,122.89 337.31,137.17 306,148.07 " fill="none" id="user-startTimer" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[4002d8910f49df7769e0cbaf2956b17e]
+link startTimer to Добавить record--><g id="link_startTimer_Добавить record"><path d="M263.5,183.65 C263.5,203.68 263.5,235.69 263.5,255.32 " fill="none" id="startTimer-Добавить record" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[4eb4f6fc05dbabab652e9623980ad566]
+link startTimer to Начать отсчет--><g id="link_startTimer_Начать отсчет"><path d="M234.19,182.45 C198.42,203.14 138.53,237.78 104.39,257.52 " fill="none" id="startTimer-Начать отсчет" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[01d66dfd2b64d669c73e867ee0b9743a]
+link user to changeRecord--><g id="link_user_changeRecord"><path d="M795.93,72.57 C756.36,95.57 700.86,127.83 667.71,147.1 " fill="none" id="user-changeRecord" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[45311d5972694614ae5029827580565f]
+link user to stopTimer--><g id="link_user_stopTimer"><path d="M842.5,83.81 C842.5,104 842.5,127.89 842.5,144.21 " fill="none" id="user-stopTimer" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[141b2a1431a446a0b845959e5faa6ae6]
+link stopTimer to setEndTime--><g id="link_stopTimer_setEndTime"><path d="M906.57,178.2 C1008.36,198.57 1196.87,237.08 1209.5,245.5 C1248.27,271.36 1255.52,287.04 1269.5,331.5 C1312.84,469.37 1079.72,514.83 954.24,529.2 " fill="none" id="stopTimer-setEndTime" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[399b601a052905e9a08bf4956e03b361]
+link stopTimer to Обнулить timer и записи таймера--><g id="link_stopTimer_Обнулить timer и записи таймера"><path d="M878.66,182.93 C915.15,200.52 971.84,227.84 1013.02,247.69 " fill="none" id="stopTimer-Обнулить timer и записи таймера" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[7035a434cd34bf111d5b402fbf373670]
+link user to Удалить record--><g id="link_user_Удалить record"><path d="M889.27,54.97 C976.19,72.56 1168.49,111.52 1330.5,144.5 C1342.93,147.03 1356.3,149.76 1368.92,152.34 " fill="none" id="user-Удалить record" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[4466be84f7a4d933b1f977e3740ae83a]
+link user to Добавить record--><g id="link_user_Добавить record"><path d="M795.77,59.07 C736.08,76.8 629.94,109.73 541.5,144.5 C449.77,180.57 345.01,231.57 294.27,256.93 " fill="none" id="user-Добавить record" style="stroke:#181818;stroke-width:1.0;"/></g><!--MD5=[dd3eb0fe517c9195d0b4e4b339d523cf]
+@startuml timaproject-use-case
+
+actor Пользователь as user
+
+(Запустить таймер) as startTimer
+(Сохранить record) as saveRecord
+(Изменить Record) as changeRecord
+(Изменить Title) as changeTitle
+
+(Изменить время) as changeTime
+(Изменить endtime) as setEndTime
+(Изменить date) as setDate
+(Изменить starttime) as setStartTime
+changeTime - - setEndTime : "если record завершенная"
+changeTime - - setDate
+changeTime - - setStartTime
+setEndTime - - saveRecord
+setStartTime - - saveRecord
+setDate - - saveRecord
+changeTitle - - saveRecord
+
+(Настроить проект) as handleProject
+(Назначить проект) as setProject
+(Добавить новый проект) as addProject
+handleProject - - addProject
+handleProject - - setProject
+addProject - - setProject
+setProject - - saveRecord
+
+(Настраивать заметки) as handleNote
+(Добавить заметку) as addNote
+(Удалить заметку) as removeNote
+(Изменить заметку) as changeNote
+handleNote - - addNote
+handleNote - - removeNote
+handleNote - - changeNote
+
+changeRecord - - changeTitle
+changeRecord - - handleProject
+changeRecord - - changeTime
+changeRecord - - handleNote
+
+(Остановка таймера) as stopTimer
+
+(Удалить проект) as removeProject
+(Изменить проект)  as changeProject
+
+user - - changeProject
+user - - removeProject
+
+user - - startTimer
+
+startTimer - - (Добавить record)
+startTimer - - (Начать отсчет)
+
+user - - changeRecord 
+user - - stopTimer
+
+stopTimer - - setEndTime
+stopTimer - - (Обнулить timer и записи таймера)
+
+user - - (Удалить record)
+user - - (Добавить record)
+
+
+@enduml
+
+PlantUML version 1.2022.7(Mon Aug 22 22:01:30 YEKT 2022)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: Cp1251
+Language: ru
+Country: RU
+--></g></svg>

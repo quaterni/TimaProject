@@ -1,42 +1,36 @@
 @startuml
 
 class "ProjectFormViewModel" as pf {
+    - _newProjectValidator
+    - _projectViewModelFactory
     - _projectRepository
-    + SelectedProject
-    + Projects
+    - _selectedProject : Project
+    + SelectedProject : Project
+    + Projects : ObservableCollection<SelectedListContainer<ProjectViewModel>>
     + IsCanAdd
+    + NewProjectName : string
     + CloseProjectFormCommand
-    + AddingProjectEdit
     + AddProjectCommand
     + AddProject()
+    + Validate()
+    + Closed : EventHandler
 }
 
-class "ProjectViewModelBase" as projectBase{
-    - _validator
-    + Name
-
+class "SelectedListContainer<T>" as container {
+    + IsSelected
+    + Item : T
 }
 
 class "ProjectViewModel" as projectVM {
     - _project
-    - _projectRepository
     + IsEmpty
-    + ProjectEdit
-    + DeleteProject()
+    + Name
+    + Id
 }
 
-pf "1" --> "*" projectVM
+pf "1" --> "*" container
 
-class "ProjectEditViewModel" as projectEdit{
-
-}
-
-projectEdit --|> projectBase
-projectVM --|> projectBase
-
-projectEdit --o pf
-projectEdit --o projectVM
-
+container ..> projectVM : "T"
 
 interface "ProjectRepository" as pr {
     + Contains(string)
@@ -46,11 +40,12 @@ interface "ProjectRepository" as pr {
     + UpdateProject(Project)
     + RemoveProject(Project)
     + GetProjects()
-
+    + GetProject(int Id)
+    + GetProject(string name)
 }
 
 pf --> pr
-projectVM --> pr
+
 
 
 @enduml
