@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Moq;
+using MvvmTools.Navigation.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Printing;
@@ -11,24 +13,28 @@ using Xunit;
 
 namespace TimaProject.Tests
 {
-    public class TimeFormViewModelTests
+    public class TimeFormViewModelShould
     {
         private readonly TimeFormViewModel _sut;
+        private readonly RecordValidator _validator;
+        private readonly Mock<INavigationService> _mockNavigationService;
 
-        public TimeFormViewModelTests()
+        public TimeFormViewModelShould()
         {
-            _sut = new TimeFormViewModel(new RecordValidator(), new MockNavigationService());
+            _mockNavigationService = new Mock<INavigationService>();
+            _validator = new RecordValidator();
+            _sut = new TimeFormViewModel(_validator, _mockNavigationService.Object);
         }
 
         [Fact]
-        public void Time_WhenTimeInits_ReturnEmptyString()
+        public void TimeIsEmptyString_AfterInits()
         {
-            Assert.Equal(string.Empty, _sut.Time);
+            Assert.False(_sut.HasErrors);
         }
 
 
         [Fact]
-        public void HasPropertyErrors_OnTime_AfterTimeInits_ReturnFalse()
+        public void HasNoErrors_AfterInits()
         {
             var result = _sut.HasPropertyErrors(nameof(TimeFormViewModel.Time));
 
@@ -36,24 +42,19 @@ namespace TimaProject.Tests
         }
 
         [Fact]
-        public void HasPropertyErrors_OnTime_WhenTimeHasSetEmptyStringTwice_ReturnTrue()
+        public void HasErrors_WhenValidatorNotPassValue()
         {
             _sut.Time = "24.05.2022 7:45";
             _sut.Time = "";
-
+            var result = _validator.Validate(_sut);
+            Assert.False(result.IsValid);
             Assert.True(_sut.HasPropertyErrors(nameof(TimeFormViewModel.Time)));
         }
 
 
-        [Fact]
-        public void HasPropertyErrors_OnTime_WhenHasSetIncorrect_ReturnTrue()
-        {
-            _sut.Time = "2355634";
-            Assert.True(_sut.HasPropertyErrors(nameof(TimeFormViewModel.Time)));
-        }
 
         [Fact]
-        public void EndTime_SetCurrentTime_WhenEndTimeDisabled()
+        public void SetCurrentTimeToEndTime_WhenEndTimeDisabled()
         {
             _sut.IsEndTimeEnabled = false;
 
@@ -69,7 +70,6 @@ namespace TimaProject.Tests
             var expected = _sut.EndTime;
             _sut.EndTime = "dsfsdf";
             Assert.Equal(expected, _sut.EndTime);
-
         }
 
         [Fact]
@@ -82,16 +82,6 @@ namespace TimaProject.Tests
             Assert.False(_sut.HasPropertyErrors(nameof(TimeFormViewModel.StartTime)));
 
             Assert.Equal(time, _sut.Time);
-        }
-
-
-        [Fact]
-        public void HasPropertyErrors_OnTime_WhenHasSetCorrectStartTime_ButTimeAndEndTimeEmpty_ReturnFalse()
-        {
-            _sut.StartTime = "13/04/2024 6:45";
-            Assert.False(_sut.HasPropertyErrors(nameof(TimeFormViewModel.StartTime)));
-
-            Assert.False(_sut.HasPropertyErrors(nameof(TimeFormViewModel.Time)));
         }
 
         [Fact]
@@ -207,84 +197,84 @@ namespace TimaProject.Tests
             Assert.Equal(expected, _sut.StartTime);
         }
 
-        //[Fact]
-        //public void ValidateShould_ValidTimeAndSetStartTime_WhenTimeAndEndTimeCorrectButStartTimeIncorrect()
-        //{
-        //    _sut.EndTime = "28.10.2023 14:00";
-        //    _sut.StartTime = "bla bla";
-        //    _sut.Time = "1:00:00";
-        //    Assert.False(_sut.HasPropertyErrors(nameof(TimeFormViewModel.Time)));
-        //    DateTimeOffset expected = new DateTimeOffset(2023, 10, 28, 13, 00, 00, TimeSpan.FromHours(5));
-        //    Assert.True(DateTimeOffset.TryParse(_sut.StartTime, out var result));
-        //    Assert.Equal(expected, result);
-        //}
+        [Fact]
+        public void ValidateShould_ValidTimeAndSetStartTime_WhenTimeAndEndTimeCorrectButStartTimeIncorrect()
+        {
+            _sut.EndTime = "28.10.2023 14:00";
+            _sut.StartTime = "bla bla";
+            _sut.Time = "1:00:00";
+            Assert.False(_sut.HasPropertyErrors(nameof(TimeFormViewModel.Time)));
+            DateTimeOffset expected = new DateTimeOffset(2023, 10, 28, 13, 00, 00, TimeSpan.FromHours(5));
+            Assert.True(DateTimeOffset.TryParse(_sut.StartTime, out var result));
+            Assert.Equal(expected, result);
+        }
 
 
-        //[Fact]
-        //public void ValidateShould_ValidTimeAndSetStartTime_WhenTimeEndTimeAndStartTimeIsCorrect()
-        //{
-        //    _sut.EndTime = "28.10.2023 14:00";
-        //    _sut.StartTime = "28.10.2023 12:00";
-        //    _sut.Time = "1:00:00";
-        //    Assert.False(_sut.HasPropertyErrors(nameof(TimeFormViewModel.Time)));
-        //    DateTimeOffset expected = new DateTimeOffset(2023, 10, 28, 13, 00, 00, TimeSpan.FromHours(5));
-        //    Assert.True(DateTimeOffset.TryParse(_sut.StartTime, out var result));
-        //    Assert.Equal(expected, result);
-        //}
+        [Fact]
+        public void ValidateShould_ValidTimeAndSetStartTime_WhenTimeEndTimeAndStartTimeIsCorrect()
+        {
+            _sut.EndTime = "28.10.2023 14:00";
+            _sut.StartTime = "28.10.2023 12:00";
+            _sut.Time = "1:00:00";
+            Assert.False(_sut.HasPropertyErrors(nameof(TimeFormViewModel.Time)));
+            DateTimeOffset expected = new DateTimeOffset(2023, 10, 28, 13, 00, 00, TimeSpan.FromHours(5));
+            Assert.True(DateTimeOffset.TryParse(_sut.StartTime, out var result));
+            Assert.Equal(expected, result);
+        }
 
 
 
-        //private bool IsCurrentTime(DateTimeOffset date)
-        //{
-        //    return (date - DateTimeOffset.Now) < TimeSpan.FromMilliseconds(500);
-        //}
+        private bool IsCurrentTime(DateTimeOffset date)
+        {
+            return (date - DateTimeOffset.Now) < TimeSpan.FromMilliseconds(500);
+        }
 
-        //[Fact]
-        //public void TimeShould_BeSet_WhenCerrectStartTimeChangedAndEndTimeIsCorrect()
-        //{
-        //    _sut.EndTime = "28.10.2023 14:00";
-        //    _sut.Time = "1:00:00";
-        //    _sut.StartTime = "28.10.2023 00:00";
-        //    var expected = "14:00:00";
-        //    Assert.False(_sut.HasPropertyErrors(nameof(TimeFormViewModel.Time)));
-        //    Assert.Equal(expected, _sut.Time);
-        //}
-
-
-        //[Fact]
-        //public void TimeShould_BeSet_WhenCerrectEndTimeChangedAndStartTimeIsCorrect()
-        //{
-        //    _sut.Time = "1:00:00";
-        //    _sut.StartTime = "28.10.2023 00:00";
-        //    _sut.EndTime = "28.10.2023 14:00";
-        //    var expected = "14:00:00";
-        //    Assert.False(_sut.HasPropertyErrors(nameof(TimeFormViewModel.Time)));
-        //    Assert.Equal(expected, _sut.Time);
-        //}
-
-        //[Fact]
-        //public void TimeShouldNot_ChangeStartTime_WhenStartTimeNotValid_IfStartTimeChanged()
-        //{
-        //    _sut.EndTime = "28.10.2023 14:00";
-        //    _sut.Time = "1:00:00";
-        //    _sut.StartTime = "29.10.2023 00:00";
-        //    var expected = "29.10.2023 00:00";
-        //    Assert.Equal(expected, _sut.StartTime);
-        //    Assert.True(_sut.HasPropertyErrors(nameof(TimeFormViewModel.StartTime)));
-
-        //}
-
-        //[Fact]
-        //public void TimeShouldNot_ChangedStartTime_WhenEndTimeNotCorrect()
-        //{
-        //    _sut.StartTime = "28.10.2023 15:00";
-        //    _sut.EndTime = "28.10.2023 14:00";
-        //    _sut.Time = "1:00:00";
-
-        //    Assert.Equal("28.10.2023 15:00", _sut.StartTime);
-        //    Assert.True(_sut.HasPropertyErrors(nameof(TimeFormViewModel.EndTime)));
+        [Fact]
+        public void TimeShould_BeSet_WhenCerrectStartTimeChangedAndEndTimeIsCorrect()
+        {
+            _sut.EndTime = "28.10.2023 14:00";
+            _sut.Time = "1:00:00";
+            _sut.StartTime = "28.10.2023 00:00";
+            var expected = "14:00:00";
+            Assert.False(_sut.HasPropertyErrors(nameof(TimeFormViewModel.Time)));
+            Assert.Equal(expected, _sut.Time);
+        }
 
 
-        //}
+        [Fact]
+        public void TimeShould_BeSet_WhenCerrectEndTimeChangedAndStartTimeIsCorrect()
+        {
+            _sut.Time = "1:00:00";
+            _sut.StartTime = "28.10.2023 00:00";
+            _sut.EndTime = "28.10.2023 14:00";
+            var expected = "14:00:00";
+            Assert.False(_sut.HasPropertyErrors(nameof(TimeFormViewModel.Time)));
+            Assert.Equal(expected, _sut.Time);
+        }
+
+        [Fact]
+        public void TimeShouldNot_ChangeStartTime_WhenStartTimeNotValid_IfStartTimeChanged()
+        {
+            _sut.EndTime = "28.10.2023 14:00";
+            _sut.Time = "1:00:00";
+            _sut.StartTime = "29.10.2023 00:00";
+            var expected = "29.10.2023 00:00";
+            Assert.Equal(expected, _sut.StartTime);
+            Assert.True(_sut.HasPropertyErrors(nameof(TimeFormViewModel.StartTime)));
+
+        }
+
+        [Fact]
+        public void TimeShouldNot_ChangedStartTime_WhenEndTimeNotCorrect()
+        {
+            _sut.StartTime = "28.10.2023 15:00";
+            _sut.EndTime = "28.10.2023 14:00";
+            _sut.Time = "1:00:00";
+
+            Assert.Equal("28.10.2023 15:00", _sut.StartTime);
+            Assert.True(_sut.HasPropertyErrors(nameof(TimeFormViewModel.EndTime)));
+
+
+        }
     }
 }

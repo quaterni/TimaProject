@@ -2,12 +2,19 @@
 using TimaProject.ViewModels;
 using TimaProject.Models;
 using TimaProject.Repositories;
+using TimaProject.ViewModels.Factories;
+using MvvmTools.Navigation.Services;
+using Moq;
+using TimaProject.ViewModels.Validators;
 
 namespace TimaProject.Tests
 {
     public class EditableRecordViewModelTests
     {
         private readonly RecordRepository _recordRepository;
+        private readonly Mock<INavigationService> _mockNavigationService;
+
+        private readonly RecordValidator _validator;
 
         private Models.Record _record;
 
@@ -15,6 +22,9 @@ namespace TimaProject.Tests
 
         public EditableRecordViewModelTests()
         {
+            _validator = new RecordValidator();
+
+            _mockNavigationService = new();
             _recordRepository = new RecordRepository();
 
             _record = new Models.Record(
@@ -23,18 +33,20 @@ namespace TimaProject.Tests
                 1)
             {
                 Title = "RecordTitle",
-                Project = new Project("MyProject", 1),
+                Project = new Project("MyProject", Guid.NewGuid()),
                 EndTime = DateTime.Parse("27.10.2023 20:45")
             };
 
             _sut = new EditableRecordViewModel(
                     _record,
                     _recordRepository,
-                    new MockNavigationService(),
+                    _mockNavigationService.Object,
+                    _mockNavigationService.Object,
                     () => new TimeFormViewModel(
-                        new MockRecordValidator(),
-                        new MockNavigationService()),
-                    new MockRecordValidator());
+                        _validator,
+                        _mockNavigationService.Object),
+                    null,
+                    _validator);
         }
 
 
@@ -60,7 +72,7 @@ namespace TimaProject.Tests
             var expectedEndTime = DateTime.Parse("26.10.2023 17:45");
             var expectedDate = DateOnly.Parse("26.10.2023");
             var expectedTilte = "NewTitle";
-            var expectedProject = new Project("MySecondProject", 2);
+            var expectedProject = new Project("MySecondProject", Guid.NewGuid());
 
             _sut.Title = expectedTilte;
             _sut.StartTime = expectedStartTime.ToString();
