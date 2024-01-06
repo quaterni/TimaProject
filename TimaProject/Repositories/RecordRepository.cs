@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TimaProject.Exceptions;
 using TimaProject.Models;
 
 namespace TimaProject.Repositories
@@ -20,36 +21,35 @@ namespace TimaProject.Repositories
             st_idCounter = (ulong)_records.Count();
         }
 
-        public event EventHandler<RepositoryChangedEventArgs>? RecordsChanged;
+        public event EventHandler<RepositoryChangedEventArgs<Record>>? RepositoryChanged;
 
         public ulong GetNewId()
         {
             return ++st_idCounter;
         }
 
-        public void AddRecord(Record record)
+        public void AddItem(Record record)
         {
             if(_records.Find(t => t.Id == record.Id) is not null)
             {
-                throw new Exception("Note with current id exist");
+                throw new AddingNotUniqueItem("Record already contains in repository.");
             }
             _records.Add(record);
             OnRepositoryChanged(RepositoryChangedOperation.Add, record);
         }
 
-        public void UpdateRecord(Record record)
+        public void UpdateItem(Record record)
         {
             var n = _records.Find(t => t.Id == record.Id);
             if(n is null)
             {
-                throw new Exception("Note with current id not exist");
+                throw new NotFoundException<Record>(record ,"Record not found in the repository");
             }
-            _records.Remove(n);
-            _records.Add(record);
+            _records[_records.IndexOf(n)] = record;
             OnRepositoryChanged(RepositoryChangedOperation.Update, record);
         }
 
-        public IEnumerable<Record> GetAllRecords(Func<Record, bool>? wherePredicate = null)
+        public IEnumerable<Record> GetItems(Func<Record, bool>? wherePredicate = null)
         {
             if (wherePredicate == null)
                 return _records;
@@ -58,10 +58,10 @@ namespace TimaProject.Repositories
 
         private void OnRepositoryChanged(RepositoryChangedOperation operation, Record record)
         {
-            RecordsChanged?.Invoke(this, new RepositoryChangedEventArgs(operation, record));
+            RepositoryChanged?.Invoke(this, new RepositoryChangedEventArgs<Record>(record, operation));
         }
 
-        public IEnumerable<Record> GetRecords(FilterListingArgs filterListingArgs)
+        public IEnumerable<Record> GetItems(FilterListingArgs filterListingArgs)
         {
             IEnumerable<Record> result = _records
                 .Where(record => filterListingArgs.IsRecordValid(record))
@@ -76,10 +76,10 @@ namespace TimaProject.Repositories
 
         public bool Contains(Record record)
         {
-            return _records.Contains(record);
+            return _records.Where(x=> x.Id.Equals(record.Id)).Any();
         }
 
-        public bool DeleteRecord(Record record)
+        public bool RemoveItem(Record record)
         {
             var result = _records.Remove(record);
             if (result)

@@ -1,30 +1,51 @@
 ﻿using FluentValidation;
+using MvvmTools.Base;
 using MvvmTools.Navigation.Services;
 using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Windows.Input;
 using System.Windows.Threading;
 using TimaProject.Commands;
 using TimaProject.Models;
 using TimaProject.Repositories;
-using TimaProject.Services.Factories;
 using TimaProject.ViewModels.Factories;
 
 namespace TimaProject.ViewModels
 {
-    public class TimerViewModel: RecordViewModelWithEdit, IRecordViewModel
+    public enum TimerState
     {
+        NotRunning,
+        Running
+    }
+
+    public class TimerViewModel: NotifyDataErrorViewModel, IEditRecord, IRecordViewModel
+    {
+        private TimerState _state;
+
+        public TimerState State
+        {
+            get 
+            {
+                return _state; 
+            }
+            set
+            {
+                SetValue(ref _state, value);
+            }
+        }
+
+        private readonly AbstractValidator<ITimeBase> _validator;
+
         private const int TIMER_INTERVAL_MILLISECONDS = 200;
 
         private DispatcherTimer? _dispatcherTimer;
 
-        private DateTime? _startTime;
+        private DateTime? _startTimeDateTime;
 
         private Record? _record;
 
         private readonly IRecordRepository _recordRepository;
-
-        private readonly IRecordFactory _factory;
 
         private string _time;
 
@@ -42,16 +63,92 @@ namespace TimaProject.ViewModels
 
         public ICommand TimerCommand { get; }
 
-        public TimerViewModel(IRecordRepository noteRepository, 
-            IRecordFactory factory,
+        public ICommand OpenTimeFormCommand { get; }
+
+        public ICommand OpenProjectFormCommand { get; }
+
+        private string _title;
+
+        public string Title
+        {
+            get
+            {
+                return _title;
+            }
+            set
+            {
+                SetValue(ref _title, value);
+            }
+        }
+
+        private Project _project;
+
+        public Project Project
+        {
+            get
+            {
+                return _project;
+            }
+            set
+            {
+                SetValue(ref _project, value);
+            }
+        }
+
+        private string _startTime;
+
+        public string StartTime
+        {
+            get
+            {
+                return _startTime;
+            }
+            set
+            {
+                SetValue(ref _startTime, value);
+            }
+        }
+
+        private string _endTime;
+
+        public string EndTime
+        {
+            get
+            {
+                return _endTime;
+            }
+            set
+            {
+                SetValue(ref _endTime, value);
+            }
+        }
+
+        private string _date;
+
+        public string Date
+        {
+            get
+            {
+                return _date;
+            }
+            set
+            {
+                SetValue(ref _date, value);
+            }
+        }
+
+        public TimerViewModel(
+            IRecordRepository noteRepository,
             INavigationService timeFormNavigationService,
             INavigationService projectFormNavigationService,
-            Func<TimeFormViewModel> timeFormFactory,
+            TimeFormViewModelFactory timeFormFactory,
             ProjectFormViewModelFactory projectFormViewModelFactory,
-            AbstractValidator<RecordViewModel> validator): base(timeFormNavigationService, projectFormNavigationService, projectFormViewModelFactory, timeFormFactory, validator)
+            AbstractValidator<ITimeBase> validator)
         {
+            _validator = validator;
             _recordRepository = noteRepository;
-            _factory = factory;
+            OpenTimeFormCommand = new OpenTimeFormCommand(this, timeFormFactory, timeFormNavigationService, isEndTimeEnabled:false);
+            OpenProjectFormCommand = new OpenProjectFormCommand(this, projectFormViewModelFactory, projectFormNavigationService);
             SetDafultValues();
             TimerCommand = new TimerCommand(this);
             PropertyChanged += OnRecordUpdated;
@@ -76,13 +173,13 @@ namespace TimaProject.ViewModels
                 case nameof(Title):
                     {
                         _record = _record with { Title = Title };
-                        _recordRepository.UpdateRecord(_record);
+                        _recordRepository.UpdateItem(_record);
                         break;
                     }
                 case nameof(Project):
                     {
                         _record = _record with { Project = Project };
-                        _recordRepository.UpdateRecord(_record);
+                        _recordRepository.UpdateItem(_record);
                         break;
                     }
                 case nameof(StartTime):
@@ -90,18 +187,17 @@ namespace TimaProject.ViewModels
                         var startTime = DateTime.Parse(StartTime);
                         SetStartTime();
                         _record = _record with { StartTime = startTime };
-                        _recordRepository.UpdateRecord(_record);
+                        _recordRepository.UpdateItem(_record);
                         break;
                     }
                 case nameof(Date):
                     {
                         var date = DateOnly.Parse(Date);
                         _record = _record with { Date = date };
-                        _recordRepository.UpdateRecord(_record);
+                        _recordRepository.UpdateItem(_record);
                         break;
                     }
             }
-
         }
 
         private void StartTimer()
@@ -115,20 +211,20 @@ namespace TimaProject.ViewModels
 
         private void SetTime(object? sender, EventArgs e)
         {
-            Time = (DateTime.Now - _startTime).ToString()!;
+            Time = (DateTime.Now - _startTimeDateTime).ToString()!;
         }
 
         private void SetStartTime()
         {
             if (HasPropertyErrors(nameof(StartTime)) || StartTime.Equals(string.Empty))
             {
-                if(_startTime is null)
+                if(_startTimeDateTime is null)
                 {
-                    _startTime = DateTime.Now;
+                    _startTimeDateTime = DateTime.Now;
                 }
                 return;
             }
-            _startTime = DateTime.Parse(StartTime);
+            _startTimeDateTime = DateTime.Parse(StartTime);
         }
 
 
@@ -141,35 +237,40 @@ namespace TimaProject.ViewModels
             }
 
             StartTimer();
-            IsActive = true;
+            State = TimerState.Running;
+            CreateRecord();
+        }
 
-            var recordViewModel = new RecordViewModel(_validator)
-            {
-                Title = HasPropertyErrors(nameof(Title)) ? string.Empty : Title,
-                Project = Project,
-                StartTime = HasPropertyErrors(nameof(StartTime)) ?
-                                DateTimeOffset.Now.ToString() : StartTime,
-                Date = HasPropertyErrors(nameof(Date)) 
+        private void CreateRecord()
+        {
+            var title = HasPropertyErrors(nameof(Title)) ? string.Empty : Title;
+            var project = Project;
+            var startTime = HasPropertyErrors(nameof(StartTime)) ?
+                                DateTime.Now : DateTime.Parse(StartTime);
+            var date = HasPropertyErrors(nameof(Date))
                        || Date.Equals(string.Empty) ?
-                        DateOnly.FromDateTime(DateTime.Today).ToString() : Date
+                        DateOnly.FromDateTime(DateTime.Today) : DateOnly.Parse(Date);
+            var record = new Record(startTime, date, Guid.NewGuid())
+            {
+                Project = project,
+                Title = title,
             };
 
-            var newNote = _factory.Create(recordViewModel);
-            _record = newNote;
-            _recordRepository.AddRecord(newNote);
+            _record = record;
+            _recordRepository.AddItem(record);
         }
 
         public void OnEndingTime()
         {
-            if(IsActive)
+            if(State == TimerState.Running)
             {
                 StopTimer();
                 var updatedNote = _record! with
                 {
                     EndTime = DateTime.Now,
                 };
-                _recordRepository.UpdateRecord(updatedNote);
-                IsActive = false;
+                _recordRepository.UpdateItem(updatedNote);
+                State = TimerState.NotRunning;
 
                 SetDafultValues();
             }
@@ -184,7 +285,7 @@ namespace TimaProject.ViewModels
         private void SetDafultValues()
         {
             _record = null;
-            _startTime = null;
+            _startTimeDateTime = null;
             _dispatcherTimer = null;
             Title = string.Empty;
             StartTime = string.Empty;
@@ -192,6 +293,21 @@ namespace TimaProject.ViewModels
             Project = Project.Empty;
             Date = DateOnly.FromDateTime(DateTime.Today).ToString();
             Time = "00:00:00";
+        }
+
+        protected override void Validate(string propertyName)
+        {
+            ClearAllErrors();
+            var validationResult = _validator.Validate(this);
+            if (validationResult.IsValid)
+            {
+                return;
+            }
+            foreach(var error in  validationResult.Errors)
+            {
+                AddError(error.PropertyName, error.ErrorMessage);
+            }
+
         }
     }
 }

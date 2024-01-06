@@ -2,279 +2,547 @@
 using MvvmTools.Navigation.Services;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Printing;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using TimaProject.Exceptions;
+using TimaProject.Models;
 using TimaProject.ViewModels;
 using TimaProject.ViewModels.Validators;
 using Xunit;
 
 namespace TimaProject.Tests
 {
+
+    public class MockRecord : IRecordViewModel
+    {
+        public int SetStartTimeCounter = 0;
+        public int SetEndTimeCounter = 0;
+        public int SetTimeCounter = 0;
+        public int SetDateCounter = 0;
+
+        public string Title { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Project Project { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        private string _startTime;
+        public string StartTime
+        {
+            get
+            {
+                return _startTime;
+            }
+            set
+            {
+                _startTime = value;
+                SetStartTimeCounter++;
+            }
+        }
+
+        private string _endTime;
+
+        public string EndTime
+        {
+            get
+            {
+                return _endTime;
+            }
+            set
+            {
+                _endTime = value;
+                SetEndTimeCounter++;
+            }
+        }
+
+        private string _time;
+
+        public string Time
+        {
+            get
+            {
+                return _time;
+            }
+            set
+            {
+                _time = value;
+                SetTimeCounter++;
+            }
+        }
+
+        private string _date;
+
+        public string Date
+        {
+            get
+            {
+                return _date;
+            }
+            set
+            {
+                _date = value;
+                SetDateCounter++;
+            }
+        }
+    }
+
     public class TimeFormViewModelShould
     {
         private readonly TimeFormViewModel _sut;
-        private readonly RecordValidator _validator;
+        private readonly TimeValidator _validator;
         private readonly Mock<INavigationService> _mockNavigationService;
+        private readonly static MockRecord _testRecord = new()
+        {
+            StartTime = "05.01.2024 10:00",
+            EndTime = "05.01.2024 12:00",
+            Time = "2:00",
+            Date = "05.01.2024"
+        };
+
+        private readonly static MockRecord _mockRecord = new()
+        {
+            StartTime = "05.01.2024 10:00",
+            EndTime = "05.01.2024 12:00",
+            Time = "2:00",
+            Date = "05.01.2024"
+        };
 
         public TimeFormViewModelShould()
         {
             _mockNavigationService = new Mock<INavigationService>();
-            _validator = new RecordValidator();
-            _sut = new TimeFormViewModel(_validator, _mockNavigationService.Object);
+            _mockRecord.StartTime = "05.01.2024 10:00";
+            _mockRecord.EndTime = "05.01.2024 12:00";
+            _mockRecord.Time = "2:00";
+            _mockRecord.Date = "05.01.2024";
+
+            _validator = new TimeValidator();
+            _sut = new TimeFormViewModel(
+                _mockRecord,
+                _validator,
+                _mockNavigationService.Object);
         }
 
         [Fact]
-        public void TimeIsEmptyString_AfterInits()
+        public void GetValuesFromRecord_AfterInits()
         {
-            Assert.False(_sut.HasErrors);
-        }
 
-
-        [Fact]
-        public void HasNoErrors_AfterInits()
-        {
-            var result = _sut.HasPropertyErrors(nameof(TimeFormViewModel.Time));
-
-            Assert.False(result);
+            Assert.Equal(_mockRecord.StartTime, _sut.StartTime);
+            Assert.Equal(_mockRecord.EndTime, _sut.EndTime);
+            Assert.Equal(_mockRecord.Time, _sut.Time);
+            Assert.Equal(_mockRecord.Date, _sut.Date);
         }
 
         [Fact]
-        public void HasErrors_WhenValidatorNotPassValue()
+        public void NotGetValues_IfTimeFormNotValid()
         {
-            _sut.Time = "24.05.2022 7:45";
+            _mockRecord.SetStartTimeCounter = 0;
+            _mockRecord.SetTimeCounter = 0;
+            _mockRecord.SetEndTimeCounter = 0;
+            _mockRecord.SetDateCounter = 0;
+
+            var expected = new MockRecord()
+            {
+                StartTime = _mockRecord.StartTime,
+                EndTime = _mockRecord.EndTime,
+                Time = _mockRecord.Time,
+                Date = _mockRecord.Date
+            };
+
+            _sut.StartTime = "";
+            _sut.EndTime = "12.12.2023 10:00";
+            _sut.Date = "12.12.2023";
+            Assert.True(_sut.HasErrors);
+
+            Assert.Equal(expected.StartTime, _mockRecord.StartTime);
+            Assert.Equal(expected.EndTime, _mockRecord.EndTime);
+            Assert.Equal(expected.Time, _mockRecord.Time);
+            Assert.Equal(expected.Date, _mockRecord.Date);
+
+            _sut.EndTime = "";
+            _sut.StartTime = "12.12.2023 10:00";
+            _sut.Date = "12.12.2023";
+            Assert.True(_sut.HasErrors);
+
+            Assert.Equal(expected.StartTime, _mockRecord.StartTime);
+            Assert.Equal(expected.EndTime, _mockRecord.EndTime);
+            Assert.Equal(expected.Time, _mockRecord.Time);
+            Assert.Equal(expected.Date, _mockRecord.Date);
+
             _sut.Time = "";
-            var result = _validator.Validate(_sut);
-            Assert.False(result.IsValid);
-            Assert.True(_sut.HasPropertyErrors(nameof(TimeFormViewModel.Time)));
+            _sut.StartTime = "12.12.2023 10:00";
+            _sut.Date = "12.12.2023";
+            Assert.True(_sut.HasErrors);
+
+            Assert.Equal(expected.StartTime, _mockRecord.StartTime);
+            Assert.Equal(expected.EndTime, _mockRecord.EndTime);
+            Assert.Equal(expected.Time, _mockRecord.Time);
+            Assert.Equal(expected.Date, _mockRecord.Date);
+
+            _sut.Date = "";
+            _sut.StartTime = "12.12.2023 10:00";
+            _sut.EndTime = "12.12.2023 12:00";
+            _sut.Time = "2:00";
+            Assert.True(_sut.HasErrors);
+
+            Assert.Equal(expected.StartTime, _mockRecord.StartTime);
+            Assert.Equal(expected.EndTime, _mockRecord.EndTime);
+            Assert.Equal(expected.Time, _mockRecord.Time);
+            Assert.Equal(expected.Date, _mockRecord.Date);
         }
 
+        [Theory, MemberData(nameof(StartTimeTestData))]
+        public void SetStartTimeToSource(ITimeBase setupTimeBase, ITimeBase expected)
+        {
+            MockRecord mockRecord = new()
+            {
+                StartTime = "05.01.2024 10:00",
+                EndTime = "05.01.2024 12:00",
+                Time = "2:00",
+                Date = "05.01.2024"
+            };
+
+            var sut = new TimeFormViewModel(
+                mockRecord,
+                _validator,
+                _mockNavigationService.Object);
+
+            sut.EndTime = setupTimeBase.EndTime;
+            sut.Time = setupTimeBase.Time;
+            sut.Date = setupTimeBase.Date;
+            sut.StartTime = setupTimeBase.StartTime;
+
+            Assert.Equal(expected.StartTime, mockRecord.StartTime);
+            Assert.Equal(expected.EndTime, mockRecord.EndTime);
+            Assert.Equal(expected.Time, mockRecord.Time);
+            Assert.Equal(expected.Date, mockRecord.Date);
+        }
+
+        public static IEnumerable<object[]> StartTimeTestData()
+        {
+            yield return new object[]
+            {
+                new MockRecord()
+                {
+                    EndTime = "05.01.2024 12:00",
+                    Time = "2:00",
+                    Date = "05.01.2024",
+                    StartTime = "05.01.2024 11:00"
+                },
+                new MockRecord()
+                {
+                    EndTime = "05.01.2024 12:00",
+                    Date = "05.01.2024",
+                    Time = "01:00:00",
+                    StartTime = "05.01.2024 11:00"
+                },
+            };
+
+            yield return new object[]
+            {
+                new MockRecord()
+                {
+                    EndTime = "05.01.2024 12:00",
+                    Date = "05.01.2024",
+                    Time = "",
+                    StartTime = "05.01.2024 11:00"
+                },
+                new MockRecord()
+                {
+                    EndTime = "05.01.2024 12:00",
+                    Date = "05.01.2024",
+                    Time = "01:00:00",
+                    StartTime = "05.01.2024 11:00"
+                },
+            };
+
+            yield return new object[]
+            {
+                new MockRecord()
+                {
+                    EndTime = "05.01.2024 12:00",
+                    Date = "05.01.2024",
+                    Time = "",
+                    StartTime = ""
+                },
+                new MockRecord()
+                {
+                    StartTime = "05.01.2024 10:00",
+                    EndTime = "05.01.2024 12:00",
+                    Time = "2:00",
+                    Date = "05.01.2024"
+                }
+            };
+
+            yield return new object[]
+            {
+                new MockRecord()
+                {
+                    EndTime = "",
+                    Date = "05.01.2024",
+                    Time = "1:00:00",
+                    StartTime = "05.01.2024 11:00"
+                },
+                new MockRecord()
+                {
+                    StartTime = "05.01.2024 10:00",
+                    EndTime = "05.01.2024 12:00",
+                    Time = "2:00",
+                    Date = "05.01.2024"
+                }
+            };
+
+        }
+
+        [Theory, MemberData(nameof(EndTimeTestData))]
+        public void SetEndTimeToSource(ITimeBase setupTimeBase, ITimeBase expected)
+        {
+            MockRecord mockRecord = new()
+            {
+                StartTime = "05.01.2024 10:00",
+                EndTime = "05.01.2024 12:00",
+                Time = "2:00",
+                Date = "05.01.2024"
+            };
+
+            var sut = new TimeFormViewModel(
+                mockRecord,
+                _validator,
+                _mockNavigationService.Object);
+
+            sut.Time = setupTimeBase.Time;
+            sut.Date = setupTimeBase.Date;
+            sut.StartTime = setupTimeBase.StartTime;
+            sut.EndTime = setupTimeBase.EndTime;
+
+
+            Assert.Equal(expected.StartTime, mockRecord.StartTime);
+            Assert.Equal(expected.EndTime, mockRecord.EndTime);
+            Assert.Equal(expected.Time, mockRecord.Time);
+            Assert.Equal(expected.Date, mockRecord.Date);
+        }
+
+        public static IEnumerable<object[]> EndTimeTestData()
+        {
+            yield return new object[]
+            {
+                new MockRecord()
+                {
+                    EndTime = "05.01.2024 15:00",
+                    Date = _testRecord.Date,
+                    Time = _testRecord.Time,
+                    StartTime = _testRecord.StartTime
+                },
+                new MockRecord()
+                {
+                    EndTime = "05.01.2024 15:00",
+                    Date = _testRecord.Date,
+                    Time = "05:00:00",
+                    StartTime = _testRecord.StartTime
+                },
+            };
+
+            yield return new object[]
+            {
+                new MockRecord()
+                {
+                    EndTime = "05.01.2024 15:00",
+                    Date = _testRecord.Date,
+                    Time = "",
+                    StartTime = _testRecord.StartTime
+                },
+                new MockRecord()
+                {
+                    EndTime = "05.01.2024 15:00",
+                    Date = _testRecord.Date,
+                    Time = "05:00:00",
+                    StartTime = _testRecord.StartTime
+                },
+            };
+
+            yield return new object[]
+            {
+                new MockRecord()
+                {
+                    EndTime = "",
+                    Date = _testRecord.Date,
+                    Time = _testRecord.Time,
+                    StartTime = _testRecord.StartTime
+                },
+                _testRecord
+            };
+            yield return new object[]
+            {
+                new MockRecord()
+                {
+                    EndTime = _testRecord.EndTime,
+                    Date = _testRecord.Date,
+                    Time = "",
+                    StartTime = ""
+                },
+                _testRecord
+            };
+
+            yield return new object[]
+            {
+                new MockRecord()
+                {
+                    EndTime = "05.01.2024 15:00",
+                    Date = _testRecord.Date,
+                    Time = _testRecord.Time,
+                    StartTime = ""
+                },
+                _testRecord
+            };
+
+            yield return new object[]
+            {
+                new MockRecord()
+                {
+                    EndTime = "05.01.2024 15:00",
+                    Date = "",
+                    Time = _testRecord.Time,
+                    StartTime = _testRecord.StartTime
+                },
+                _testRecord
+            };
+        }
+
+        [Theory, MemberData(nameof(TimeTestData))]
+        public void SetTimeToSource(ITimeBase setupTimeBase, ITimeBase expected)
+        {
+            MockRecord mockRecord = new()
+            {
+                StartTime = "05.01.2024 10:00",
+                EndTime = "05.01.2024 12:00",
+                Time = "2:00",
+                Date = "05.01.2024"
+            };
+
+            var sut = new TimeFormViewModel(
+                mockRecord,
+                _validator,
+                _mockNavigationService.Object);
+
+            sut.Date = setupTimeBase.Date;
+            sut.StartTime = setupTimeBase.StartTime;
+            sut.EndTime = setupTimeBase.EndTime;
+            sut.Time = setupTimeBase.Time;
+
+
+            Assert.Equal(expected.StartTime, mockRecord.StartTime);
+            Assert.Equal(expected.EndTime, mockRecord.EndTime);
+            Assert.Equal(expected.Time, mockRecord.Time);
+            Assert.Equal(expected.Date, mockRecord.Date);
+        }
+
+
+        public static IEnumerable<object[]> TimeTestData()
+        {
+            yield return new object[]
+            {
+                new MockRecord()
+                {
+                    EndTime = _testRecord.EndTime,
+                    Date = _testRecord.Date,
+                    Time = "3:00:00",
+                    StartTime = _testRecord.StartTime
+                },
+                new MockRecord()
+                {
+                    EndTime = _testRecord.EndTime,
+                    Date = _testRecord.Date,
+                    Time = "3:00:00",
+                    StartTime = "05.01.2024 9:00:00"
+                }
+            };
+
+            yield return new object[]
+            {
+                new MockRecord()
+                {
+                    EndTime = "",
+                    Date = _testRecord.Date,
+                    Time = "3:00:00",
+                    StartTime = _testRecord.StartTime
+                },
+                new MockRecord()
+                {
+                StartTime = "05.01.2024 10:00",
+                EndTime = "05.01.2024 12:00",
+                Time = "2:00",
+                Date = "05.01.2024"
+                }
+        };
+
+            yield return new object[]
+            {
+                new MockRecord()
+                {
+                    EndTime = _testRecord.Time,
+                    Date = "",
+                    Time =  "3:00:00",
+                    StartTime = _testRecord.StartTime
+                },
+                new MockRecord()
+                {
+                StartTime = "05.01.2024 10:00",
+                EndTime = "05.01.2024 12:00",
+                Time = "2:00",
+                Date = "05.01.2024"
+                }
+            };
+
+        }
 
 
         [Fact]
         public void SetCurrentTimeToEndTime_WhenEndTimeDisabled()
         {
-            _sut.IsEndTimeEnabled = false;
+            var sut = new TimeFormViewModel(
+                _mockRecord,
+                _validator,
+                _mockNavigationService.Object,
+                isEndTimeEnabled: false);
 
-            Assert.True(DateTimeOffset.TryParse(_sut.EndTime, out var result));
-            Assert.Equal(result, DateTimeOffset.Now, TimeSpan.FromSeconds(1));
-
-        }
-
-        [Fact]
-        public void EndTime_DoesntChange_WhenEndTimeDisabled()
-        {
-            _sut.IsEndTimeEnabled = false;
-            var expected = _sut.EndTime;
-            _sut.EndTime = "dsfsdf";
-            Assert.Equal(expected, _sut.EndTime);
-        }
-
-        [Fact]
-        public void Time_DoesntChange_WhenHasSetCorrectStartTimeButEndTimeEmpty()
-        {
-            var time = "1:00:00";
-
-            _sut.Time = time;
-            _sut.StartTime = "13/04/2024 6:45";
-            Assert.False(_sut.HasPropertyErrors(nameof(TimeFormViewModel.StartTime)));
-
-            Assert.Equal(time, _sut.Time);
-        }
-
-        [Fact]
-        public void Time_DoesntChange_WhenHasSetCorrectEndTime_ButStartTimeEmpty()
-        {
-            var time = "1:00:00";
-
-            _sut.Time = time;
-            _sut.EndTime = "13/04/2024 6:45";
-            Assert.False(_sut.HasPropertyErrors(nameof(TimeFormViewModel.EndTime)));
-
-            Assert.Equal(time, _sut.Time);
-        }
-
-
-        [Fact]
-        public void HasPropertyErrors_OnTime_WhenHasSetCorrectEndTime_ButTimeAndStartTimeEmpty_ReturnFalse()
-        {
-            _sut.EndTime = "13/04/2024 6:45";
-            Assert.False(_sut.HasPropertyErrors(nameof(TimeFormViewModel.EndTime)));
-
-            Assert.False(_sut.HasPropertyErrors(nameof(TimeFormViewModel.Time)));
-        }
-
-        [Theory]
-        [InlineData("13/04/2024 6:45", "bla bla")]
-        [InlineData("bla bla", "13/04/2024 6:45")]
-        [InlineData("bla bla", "bla bla")]
-        [InlineData("13/04/2024 6:45", "12/04/2024 6:45")]
-        public void HasPropertyErrors_OnTime_WhenAnyHasErrorsOnStartTimeOrEndTime_ReturnTrue(string startTime, string endTime)
-        {
-            _sut.StartTime = startTime;
-            _sut.EndTime = endTime;
-            Assert.True(_sut.HasPropertyErrors(nameof(TimeFormViewModel.Time)));
-        }
-
-        [Fact]
-        public void HasPropertyErrors_OnTime_WhenHasSetCorrectEndTime_StartTimeEmptyTwice_ReturnTrue()
-        {
-            _sut.EndTime = "13/04/2024 6:45";
-            _sut.StartTime = "13/04/2024 6:35";
-            _sut.StartTime = string.Empty;
-            Assert.False(_sut.HasPropertyErrors(nameof(TimeFormViewModel.EndTime)));
-
-            Assert.True(_sut.HasPropertyErrors(nameof(TimeFormViewModel.Time)));
-        }
-
-        [Fact]
-        public void HasPropertyErrors_OnTime_WhenHasSetCorrectStartTime_EndTimeEmptyTwice_ReturnTrue()
-        {
-            _sut.StartTime = "13/04/2024 6:45";
-            _sut.EndTime = "13/04/2024 6:45";
-            _sut.EndTime = string.Empty;
-            Assert.False(_sut.HasPropertyErrors(nameof(TimeFormViewModel.StartTime)));
-
-            Assert.True(_sut.HasPropertyErrors(nameof(TimeFormViewModel.Time)));
-        }
-
-
-
-        [Fact]
-        public void HasPropertyErrors_OnTime_WhenHasSetCorrectTimeButEndTimeIncorrect_ReturnTrue()
-        {
-            _sut.EndTime = "2355634";
-            _sut.Time = "1:00:00";
-            Assert.True(_sut.HasPropertyErrors(nameof(TimeFormViewModel.Time)));
-        }
-
-
-        [Theory]
-        [InlineData("")]
-        [InlineData("wrong data")]
-        [InlineData("13/04/2024 6:45")]
-        public void StartTime_ChangeValue_WhenTimeAndEndTimeCorrect(string startTime)
-        {
-            _sut.StartTime = startTime;
-            _sut.EndTime = "13/04/2024 6:45";
-            _sut.Time = "1:00:00";
-            var expected = "13/04/2024 5:45";
-
-            Assert.False(_sut.HasPropertyErrors(nameof(TimeFormViewModel.StartTime)));
-            Assert.Equal(DateTimeOffset.Parse(expected), DateTimeOffset.Parse(_sut.StartTime));
-        }
-
-
-        [Theory]
-        [InlineData("")]
-        [InlineData("wrong data")]
-        [InlineData("13.04.2024 6:45:00")]
-        public void StartTime_DoesntChangeValue_WhenTimeIncorrect_ButEndTimeCorrect(string startTime)
-        {
-            _sut.StartTime = startTime;
-            _sut.EndTime = "13/04/2024 6:45";
-            _sut.Time = "bla bla";
-            var expected = startTime;
-
-            Assert.True(_sut.HasPropertyErrors(nameof(TimeFormViewModel.Time)));
-            Assert.Equal(expected, _sut.StartTime);
-        }
-
-        [Theory]
-        [InlineData("")]
-        [InlineData("wrong data")]
-        [InlineData("13.04.2024 6:45:00 +05:00")]
-        public void StartTime_DoesntChangeValue_WhenTimeCorrect_ButEndTimeIncorrect(string startTime)
-        {
-            _sut.StartTime = startTime;
-            _sut.EndTime = "bla bla";
-            _sut.Time = "1:00:00";
-            var expected = startTime;
-
-            Assert.True(_sut.HasPropertyErrors(nameof(TimeFormViewModel.EndTime)));
-            Assert.Equal(expected, _sut.StartTime);
-        }
-
-        [Fact]
-        public void ValidateShould_ValidTimeAndSetStartTime_WhenTimeAndEndTimeCorrectButStartTimeIncorrect()
-        {
-            _sut.EndTime = "28.10.2023 14:00";
-            _sut.StartTime = "bla bla";
-            _sut.Time = "1:00:00";
-            Assert.False(_sut.HasPropertyErrors(nameof(TimeFormViewModel.Time)));
-            DateTimeOffset expected = new DateTimeOffset(2023, 10, 28, 13, 00, 00, TimeSpan.FromHours(5));
-            Assert.True(DateTimeOffset.TryParse(_sut.StartTime, out var result));
-            Assert.Equal(expected, result);
-        }
-
-
-        [Fact]
-        public void ValidateShould_ValidTimeAndSetStartTime_WhenTimeEndTimeAndStartTimeIsCorrect()
-        {
-            _sut.EndTime = "28.10.2023 14:00";
-            _sut.StartTime = "28.10.2023 12:00";
-            _sut.Time = "1:00:00";
-            Assert.False(_sut.HasPropertyErrors(nameof(TimeFormViewModel.Time)));
-            DateTimeOffset expected = new DateTimeOffset(2023, 10, 28, 13, 00, 00, TimeSpan.FromHours(5));
-            Assert.True(DateTimeOffset.TryParse(_sut.StartTime, out var result));
-            Assert.Equal(expected, result);
-        }
-
-
-
-        private bool IsCurrentTime(DateTimeOffset date)
-        {
-            return (date - DateTimeOffset.Now) < TimeSpan.FromMilliseconds(500);
-        }
-
-        [Fact]
-        public void TimeShould_BeSet_WhenCerrectStartTimeChangedAndEndTimeIsCorrect()
-        {
-            _sut.EndTime = "28.10.2023 14:00";
-            _sut.Time = "1:00:00";
-            _sut.StartTime = "28.10.2023 00:00";
-            var expected = "14:00:00";
-            Assert.False(_sut.HasPropertyErrors(nameof(TimeFormViewModel.Time)));
-            Assert.Equal(expected, _sut.Time);
-        }
-
-
-        [Fact]
-        public void TimeShould_BeSet_WhenCerrectEndTimeChangedAndStartTimeIsCorrect()
-        {
-            _sut.Time = "1:00:00";
-            _sut.StartTime = "28.10.2023 00:00";
-            _sut.EndTime = "28.10.2023 14:00";
-            var expected = "14:00:00";
-            Assert.False(_sut.HasPropertyErrors(nameof(TimeFormViewModel.Time)));
-            Assert.Equal(expected, _sut.Time);
-        }
-
-        [Fact]
-        public void TimeShouldNot_ChangeStartTime_WhenStartTimeNotValid_IfStartTimeChanged()
-        {
-            _sut.EndTime = "28.10.2023 14:00";
-            _sut.Time = "1:00:00";
-            _sut.StartTime = "29.10.2023 00:00";
-            var expected = "29.10.2023 00:00";
-            Assert.Equal(expected, _sut.StartTime);
-            Assert.True(_sut.HasPropertyErrors(nameof(TimeFormViewModel.StartTime)));
+            Assert.True(DateTime.TryParse(sut.EndTime, out var result));
+            Assert.Equal(DateTime.Now, result, TimeSpan.FromSeconds(1));
 
         }
 
         [Fact]
-        public void TimeShouldNot_ChangedStartTime_WhenEndTimeNotCorrect()
+        public void ThrowException_WhenDisabledEndTimeSet()
         {
-            _sut.StartTime = "28.10.2023 15:00";
-            _sut.EndTime = "28.10.2023 14:00";
-            _sut.Time = "1:00:00";
+            var sut = new TimeFormViewModel(
+                _mockRecord,
+                _validator,
+                _mockNavigationService.Object,
+                isEndTimeEnabled: false);
 
-            Assert.Equal("28.10.2023 15:00", _sut.StartTime);
-            Assert.True(_sut.HasPropertyErrors(nameof(TimeFormViewModel.EndTime)));
+            Assert.Throws<SettingDisableEndTimeException>(() => sut.EndTime = "01.01.2024 10:00");
+        }
 
+        [Fact]
+        public void SetCorrectProperites_WhenDisabledEndTimeSet()
+        {
+            var sut = new TimeFormViewModel(
+                _mockRecord,
+                _validator,
+                _mockNavigationService.Object,
+                isEndTimeEnabled: false);
+            var expectedStartTime = "05.01.2024 9:00:00";
+            var expectedDate = "03.01.2024";
+
+            sut.StartTime = expectedStartTime;
+            sut.Date = expectedDate;
+            Assert.Equal(expectedStartTime, _mockRecord.StartTime);
+            Assert.Equal(expectedDate, _mockRecord.Date);
+
+            var expectedTime = "5:00:00";
+            sut.Time = expectedTime;
+            Assert.Equal(expectedTime, _mockRecord.Time);
 
         }
+
     }
 }

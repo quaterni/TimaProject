@@ -19,7 +19,7 @@ namespace TimaProject.Commands
 
         public override void Execute(object? parameter)
         {
-            if (_timerViewModel.IsActive)
+            if (_timerViewModel.State == TimerState.Running)
             {
                 _timerViewModel.OnEndingTime();
             }

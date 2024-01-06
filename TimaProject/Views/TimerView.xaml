@@ -11,6 +11,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <converters:DateTimeToString x:Key="DateTimeToString"/>
+        <converters:TimerStateToBooleanConverter x:Key="TimerStateToBooleanConverter"/>
     </UserControl.Resources>
     <Grid Margin="0 5" MaxWidth="800">
         <Grid.ColumnDefinitions>
@@ -48,7 +49,8 @@
                 <Button Content="{Binding Time}"
                         Background="{x:Null}"
                         Command="{Binding OpenTimeFormCommand}"
-                        IsEnabled="{Binding IsActive}"/>
+                        IsEnabled="{Binding State,
+                                    Converter={StaticResource TimerStateToBooleanConverter}}"/>
             </Grid>
             <Grid Grid.Column="1">
                 <Button Command="{Binding TimerCommand}">
@@ -56,7 +58,9 @@
                         <Style TargetType="Button">
                             <Setter Property="Content" Value="Start"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                <DataTrigger Binding="{Binding State,
+                                                Converter={StaticResource TimerStateToBooleanConverter}}" 
+                                             Value="True">
                                     <Setter Property="Content" Value="Stop"/>
                                 </DataTrigger>
                             </Style.Triggers>

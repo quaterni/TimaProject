@@ -15,17 +15,17 @@ namespace TimaProject.ViewModels.Factories
         private readonly IRecordRepository recordRepository;
         private readonly INavigationService timeFromNavigationService;
         private readonly INavigationService projectFromNavigationService;
-        private readonly Func<TimeFormViewModel> timeFormFactory;
+        private readonly TimeFormViewModelFactory timeFormFactory;
         private readonly ProjectFormViewModelFactory projectFormViewModelFactory;
-        private readonly RecordValidator validator;
+        private readonly TimeValidator validator;
 
         public EditableRecordViewModelFactory(
             IRecordRepository recordRepository, 
             INavigationService timeFromNavigationService,
             INavigationService projectFromNavigationService,
-            Func<TimeFormViewModel> timeFormFactory,
+            TimeFormViewModelFactory timeFormFactory,
             ProjectFormViewModelFactory projectFormViewModelFactory,
-            RecordValidator validator)
+            TimeValidator validator)
         {
             this.recordRepository = recordRepository;
             this.timeFromNavigationService = timeFromNavigationService;

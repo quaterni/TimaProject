@@ -2,27 +2,33 @@
 using MvvmTools.Navigation.Services;
 using System;
 using TimaProject.ViewModels;
+using TimaProject.ViewModels.Factories;
 
 namespace TimaProject.Commands
 {
     public class OpenTimeFormCommand : CommandBase
     {
-        private readonly INavigationService _navigationService;
+        private readonly IRecordViewModel _source;
+        private readonly TimeFormViewModelFactory _factory;
+        private readonly INavigationService _openTimeFormNavigationService;
+        private readonly bool _isEndTimeEnabled;
 
-        private readonly RecordViewModelWithEdit _recordViewModel;
 
         public OpenTimeFormCommand(
-            INavigationService navigationService,
-            RecordViewModelWithEdit recordViewModel)
+            IRecordViewModel source,
+            TimeFormViewModelFactory factory,
+            INavigationService openTimeFormNavigationService,
+            bool isEndTimeEnabled = true)
         {
-            _navigationService = navigationService;
-            _recordViewModel = recordViewModel;
+            _source = source;
+            _factory = factory;
+            _openTimeFormNavigationService = openTimeFormNavigationService;
+            _isEndTimeEnabled = isEndTimeEnabled;
         }
 
         public override void Execute(object? parameter)
         {
-            _recordViewModel.ApplyTimeForm();
-            _navigationService.Navigate(_recordViewModel.TimeForm);
+            _openTimeFormNavigationService.Navigate(_factory.Create(_source, isEndTimeEnabled: _isEndTimeEnabled));
         }
     }
 }

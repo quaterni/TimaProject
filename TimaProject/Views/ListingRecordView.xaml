@@ -12,8 +12,8 @@
         <Grid>
             <Grid.Resources>
                 <CollectionViewSource x:Key="notes" Source="{Binding Records}">
-                    <CollectionViewSource.GroupDescriptions>
-                        <PropertyGroupDescription PropertyName="Date" />
+                    <CollectionViewSource.GroupDescriptions >
+                        <PropertyGroupDescription PropertyName="Date"  />
                     </CollectionViewSource.GroupDescriptions>
                 </CollectionViewSource>
             </Grid.Resources>
