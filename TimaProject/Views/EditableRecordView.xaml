@@ -10,7 +10,7 @@
     <UserControl.ContextMenu>
         <ContextMenu>
             <MenuItem Header="Delete"
-                      Command="{Binding DeleteRecordCommand}"/>
+                      Command="{Binding RemoveRecordCommand}"/>
         </ContextMenu>
     </UserControl.ContextMenu>
     <Grid>

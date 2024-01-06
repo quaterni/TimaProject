@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using TimaProject.Models;
 using TimaProject.Repositories;
-using TimaProject.Services.Factories;
 using TimaProject.Stores;
 using TimaProject.ViewModels;
 using TimaProject.ViewModels.Validators;
@@ -28,23 +27,16 @@ namespace TimaProject.Tests
             _mockNavigationService = new Mock<INavigationService>();
             _sut = new TimerViewModel(
                 _mockRepository.Object,
-                new RecordFactory(_mockRepository.Object, new TodayDateStore()),
                 _mockNavigationService.Object,
                 _mockNavigationService.Object,
                 null,
                 null,
-                new RecordValidator());
+                new TimeValidator());
 
             _sut.StartTime = DateTimeOffset.Now.ToString();
             _sut.Date = DateOnly.MinValue.ToString();
             _sut.Title = "Test";
         }
-
-        private bool IsCurrentTime(DateTimeOffset date)
-        {
-            return (date - DateTimeOffset.Now) < TimeSpan.FromMilliseconds(500);
-        }
-
 
         [Fact]
         public void AddRecordToRepository_WhenStarts()
@@ -61,7 +53,7 @@ namespace TimaProject.Tests
 
 
             _mockRepository
-                .Setup(x => x.AddRecord(It.IsAny<Models.Record>()))
+                .Setup(x => x.AddItem(It.IsAny<Models.Record>()))
                 .Callback<Models.Record>(
                     x => {
                         Assert.Equal(expectedTitle, x.Title);
@@ -73,7 +65,7 @@ namespace TimaProject.Tests
 
             _sut.OnStartingTime();
 
-            _mockRepository.Verify(x=> x.AddRecord(It.IsAny<Models.Record>()), Times.Once);
+            _mockRepository.Verify(x=> x.AddItem(It.IsAny<Models.Record>()), Times.Once);
         }
 
 
@@ -81,7 +73,7 @@ namespace TimaProject.Tests
         public void SetCurrentTime_WhenStartsWithNoValidStartTime()
         {
             _mockRepository
-                .Setup(x => x.AddRecord(It.IsAny<Models.Record>()))
+                .Setup(x => x.AddItem(It.IsAny<Models.Record>()))
                 .Callback<Models.Record>(
                     x => {
                         Assert.Equal(DateTime.Now, x.StartTime, TimeSpan.FromSeconds(1));
@@ -96,7 +88,7 @@ namespace TimaProject.Tests
         public void SetCurrentDate_WhenStartsWithNoValidDate()
         {
             _mockRepository
-                .Setup(x => x.AddRecord(It.IsAny<Models.Record>()))
+                .Setup(x => x.AddItem(It.IsAny<Models.Record>()))
                 .Callback<Models.Record>(
                     x => {
                         Assert.Equal(DateOnly.FromDateTime(DateTime.Now), x.Date);
@@ -111,14 +103,14 @@ namespace TimaProject.Tests
         public void UpdateRecord_WhenTimerIsRunning()
         {
             _sut.OnStartingTime();
-            _mockRepository.Verify(x => x.AddRecord(It.IsAny<Models.Record>()), Times.Once);
+            _mockRepository.Verify(x => x.AddItem(It.IsAny<Models.Record>()), Times.Once);
 
             _sut.Title = "New Title";
             _sut.StartTime = DateTime.Now.ToString();
             _sut.Date = "27.11.2023";
             _sut.Project = new Project("NewProject", Guid.NewGuid());
 
-            _mockRepository.Verify(x => x.UpdateRecord(It.IsAny<Models.Record>()), Times.Exactly(4));
+            _mockRepository.Verify(x => x.UpdateItem(It.IsAny<Models.Record>()), Times.Exactly(4));
 
         }
 
@@ -131,7 +123,7 @@ namespace TimaProject.Tests
 
             _sut.StartTime = "wrong input";
             _sut.Date = "wrong input";
-            _mockRepository.Verify(x => x.UpdateRecord(It.IsAny<Models.Record>()), Times.Never);
+            _mockRepository.Verify(x => x.UpdateItem(It.IsAny<Models.Record>()), Times.Never);
         }
 
 
@@ -139,13 +131,13 @@ namespace TimaProject.Tests
         public void SetCurrentTimeToEndTime_WhenTimerEndsRunning()
         {
             _mockRepository
-                .Setup(x => x.UpdateRecord(It.IsAny<Models.Record>()))
+                .Setup(x => x.UpdateItem(It.IsAny<Models.Record>()))
                 .Callback<Models.Record>(x => Assert.Equal(DateTime.Now, (DateTime)x.EndTime, TimeSpan.FromSeconds(1)));
 
             _sut.OnStartingTime();
             _sut.OnEndingTime();
 
-            _mockRepository.Verify(x => x.UpdateRecord(It.IsAny<Models.Record>()), Times.Once);
+            _mockRepository.Verify(x => x.UpdateItem(It.IsAny<Models.Record>()), Times.Once);
         }
 
         [Fact]
@@ -153,7 +145,7 @@ namespace TimaProject.Tests
         {
             _sut.OnStartingTime();
             _sut.OnEndingTime();
-            Assert.False(_sut.IsActive);
+            Assert.Equal(TimerState.NotRunning, _sut.State);
         }
 
         [Fact]

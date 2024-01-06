@@ -12,8 +12,6 @@ namespace TimaProject.ViewModels
 {
     public class ListingRecordViewModel :ViewModelBase
     {
-        private readonly ListingRecordStore _listingRecordStore;
-
         private readonly EditableRecordViewModelFactory _editableRecordViewModelFactory;
 
         private IRecordRepository _recordRepository;
@@ -33,21 +31,25 @@ namespace TimaProject.ViewModels
         }
 
         public ListingRecordViewModel(
-            IRecordRepository noteRepository,
-            ListingRecordStore listingRecordStore,
+            IRecordRepository recordRepository,
+
             EditableRecordViewModelFactory editableRecordViewModelFactory)
         {
             _records = new ObservableCollection<EditableRecordViewModel>();
             _editableRecordViewModelFactory = editableRecordViewModelFactory;
-            _listingRecordStore = listingRecordStore;
-            _recordRepository = noteRepository;
-            _listingRecordStore.ListingChanged += OnListingChanged;
+
+            _recordRepository = recordRepository;
+
+            _recordRepository.RepositoryChanged += OnListingChanged;
+
             OnListingChanged(this, EventArgs.Empty);
         }
 
         private void OnListingChanged(object? sender, EventArgs e)
         {
-            var recordViewModels = _listingRecordStore.Records
+            var recordViewModels = _recordRepository
+                .GetItems(x=> !x.IsActive)
+                .OrderByDescending(x=> x.EndTime)
                 .Select(record => _editableRecordViewModelFactory.Create(record))
                 .ToList();
             if(recordViewModels is null)
@@ -59,7 +61,7 @@ namespace TimaProject.ViewModels
 
         public override void Dispose()
         {
-            _recordRepository.RecordsChanged -= OnListingChanged;
+            _recordRepository.RepositoryChanged -= OnListingChanged;
             base.Dispose();
         }
     }

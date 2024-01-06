@@ -12,7 +12,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using TimaProject.Models;
 using TimaProject.Repositories;
-using TimaProject.Services.Factories;
 using TimaProject.Stores;
 using TimaProject.ViewModels;
 using TimaProject.ViewModels.Containers;
@@ -39,7 +38,7 @@ namespace TimaProject
             services.AddTransient<CloseModalService>();
             services.AddTransient<OpenModalService>();
 
-            services.AddTransient<RecordValidator>();
+            services.AddTransient<TimeValidator>();
             services.AddTransient<AbstractValidator<IProjectName> ,ProjectNameValidator >();
 
             services.AddSingleton<MainWindow>(
@@ -54,11 +53,9 @@ namespace TimaProject
             services.AddSingleton<IRecordRepository, RecordRepository>();
 
             services.AddSingleton<IProjectRepository, ProjectRepository>();
-            services.AddSingleton<ListingRecordStore>();
+
 
             services.AddSingleton<IDateStore, TodayDateStore>();
-
-            services.AddTransient<RecordFactory>();
 
             services.AddTransient<ProjectFormViewModelFactory>(
                 s=> new ProjectFormViewModelFactory(
@@ -66,6 +63,11 @@ namespace TimaProject
                         s.GetRequiredService<AbstractValidator<IProjectName>>(),
                         s.GetRequiredService<CloseModalService>()));
 
+
+            services.AddTransient(
+                s => new TimeFormViewModelFactory(
+                    s.GetRequiredService<TimeValidator>(),
+                    s.GetRequiredService<CloseModalService>()));
 
             services.AddTransient(
                 s => new EditableRecordViewModelFactory(
@@ -76,9 +78,9 @@ namespace TimaProject
                     new CompositeNavigationService(
                         ModalParameterizedNavigationService<ProjectFormViewModel>(s),
                         s.GetRequiredService<OpenModalService>()),
-                    TimeFormFactory,
+                    s.GetRequiredService<TimeFormViewModelFactory>(),
                     s.GetRequiredService<ProjectFormViewModelFactory>(),
-                    s.GetRequiredService<RecordValidator>()));
+                    s.GetRequiredService<TimeValidator>()));
 
             services.AddTransient(s => TimerViewModelFactory(s));
 
@@ -87,7 +89,6 @@ namespace TimaProject
             services.AddTransient(
                 s => new ListingRecordViewModel(
                     s.GetRequiredService<IRecordRepository>(),
-                    s.GetRequiredService<ListingRecordStore>(),
                     s.GetRequiredService<EditableRecordViewModelFactory>()
                 ));
 
@@ -103,14 +104,13 @@ namespace TimaProject
         {
             return new TimerViewModel(
                             s.GetRequiredService<IRecordRepository>(),
-                            s.GetRequiredService<RecordFactory>(),
                             new CompositeNavigationService(ModalParameterizedNavigationService<TimeFormViewModel>(s),
                                                            s.GetRequiredService<OpenModalService>()),
                             new CompositeNavigationService(ModalParameterizedNavigationService<ProjectFormViewModel>(s),
                                                            s.GetRequiredService<OpenModalService>()),
-                            TimeFormFactory,
+                            s.GetRequiredService<TimeFormViewModelFactory>(),
                             s.GetRequiredService<ProjectFormViewModelFactory>(),
-                            s.GetRequiredService<RecordValidator>());
+                            s.GetRequiredService<TimeValidator>());
         }
 
         protected override void OnStartup(StartupEventArgs e)
@@ -151,9 +151,5 @@ namespace TimaProject
                 (t) => new ModalViewModel(t));
         }
 
-        private TimeFormViewModel TimeFormFactory()
-        {
-            return new TimeFormViewModel(_serviceProvider.GetRequiredService<RecordValidator>(), _serviceProvider.GetRequiredService<CloseModalService>());
-        }
     }
 }

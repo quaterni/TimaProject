@@ -22,7 +22,7 @@ rectangle ViewModels {
         + NoteFormViewModel
         + DeleteRepository : ICommand
         + Update()
-        + Delete()
+        + Remove()
     }
 
 
@@ -74,7 +74,7 @@ rectangle ViewModels {
         - _noteRepository : IRepository<Note>
         + Note : Note
         + Text : string
-        + DeleteNote()
+        + RemoveNote()
         + UpdateNote()
     }
 
@@ -131,6 +131,27 @@ rectangle ViewModels {
         IsSelected : bool
     }
 
+    class "RecordRepository" as recordRepository {
+
+    }
+
+    class "TimeValidator" as timeValidator{
+
+    }
+
+    class "RecordValidator" as recordValidator {
+
+    }
+
+    timerVM --> recordValidator
+    editableRecordVM --> recordValidator
+
+    recordValidator --* timeValidator
+
+    solver --> timeValidator
+
+    recordRepository --|> interfaceRepository
+
     timerVM --|> "IRecordEdit"
     timerVM --|> "IRecordViewModel"
 
@@ -175,5 +196,8 @@ rectangle ViewModels {
     projectForm ..> projectValidator
 
     projectContainer --> editableProject : "nullable"
+
+    timerVM --> recordRepository
+    editableRecordVM --> recordRepository
 }
 @enduml

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TimaProject.Models
 {
-    public record Record(DateTime StartTime, DateOnly Date, ulong Id)
+    public record Record(DateTime StartTime, DateOnly Date, Guid Id)
     {
         public DateTime? EndTime { get; init; } 
 
@@ -15,8 +15,6 @@ namespace TimaProject.Models
         public Project Project { get; init; } = Project.Empty;
 
         public List<Note> Notes { get; } = new List<Note>();
-
-        public TimeSpan? Time => IsActive ? null: EndTime - StartTime;
 
         public bool IsActive => EndTime is null;
 

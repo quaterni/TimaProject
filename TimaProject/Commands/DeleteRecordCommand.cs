@@ -19,7 +19,7 @@ namespace TimaProject.Commands
 
         public override void Execute(object? parameter)
         {
-            _editableRecordViewModel.DeleteRecord();
+            _editableRecordViewModel.RemoveRecord();
         }
     }
 }
