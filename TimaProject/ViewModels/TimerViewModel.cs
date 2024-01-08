@@ -4,6 +4,7 @@ using MvvmTools.Navigation.Services;
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Reactive.Linq;
 using System.Windows.Input;
 using System.Windows.Threading;
 using TimaProject.Commands;
@@ -37,11 +38,9 @@ namespace TimaProject.ViewModels
 
         private readonly AbstractValidator<ITimeBase> _validator;
 
-        private const int TIMER_INTERVAL_MILLISECONDS = 200;
+        public const int TIMER_INTERVAL_MILLISECONDS = 200;
 
-        private DispatcherTimer? _dispatcherTimer;
-
-        private DateTime? _startTimeDateTime;
+        private DateTime? _timerStartTime;
 
         private Record? _record;
 
@@ -145,6 +144,7 @@ namespace TimaProject.ViewModels
             ProjectFormViewModelFactory projectFormViewModelFactory,
             AbstractValidator<ITimeBase> validator)
         {
+            State = TimerState.NotRunning;
             _validator = validator;
             _recordRepository = noteRepository;
             OpenTimeFormCommand = new OpenTimeFormCommand(this, timeFormFactory, timeFormNavigationService, isEndTimeEnabled:false);
@@ -202,29 +202,32 @@ namespace TimaProject.ViewModels
 
         private void StartTimer()
         {
-            _dispatcherTimer = new DispatcherTimer();
-            _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(TIMER_INTERVAL_MILLISECONDS);
             SetStartTime();
-            _dispatcherTimer.Tick += SetTime;
-            _dispatcherTimer.Start();
-        }
-
-        private void SetTime(object? sender, EventArgs e)
-        {
-            Time = (DateTime.Now - _startTimeDateTime).ToString()!;
+            Observable
+                .Timer((DateTime)_timerStartTime!, TimeSpan.FromMilliseconds(TIMER_INTERVAL_MILLISECONDS))
+                .TakeWhile(_ => State == TimerState.Running)
+                .Subscribe(seconds =>
+                {
+                    Time = (DateTime.Now - (DateTime)_timerStartTime).ToString();
+                },
+                () =>
+                {
+                    UpdateRecordWithEndTime();
+                    SetDafultValues();
+                });
         }
 
         private void SetStartTime()
         {
             if (HasPropertyErrors(nameof(StartTime)) || StartTime.Equals(string.Empty))
             {
-                if(_startTimeDateTime is null)
+                if(_timerStartTime is null)
                 {
-                    _startTimeDateTime = DateTime.Now;
+                    _timerStartTime = DateTime.Now;
                 }
                 return;
             }
-            _startTimeDateTime = DateTime.Parse(StartTime);
+            _timerStartTime = DateTime.Parse(StartTime);
         }
 
 
@@ -235,10 +238,10 @@ namespace TimaProject.ViewModels
             {
                 StartTime = DateTime.Now.ToString();
             }
-
-            StartTimer();
             State = TimerState.Running;
+
             CreateRecord();
+            StartTimer();
         }
 
         private void CreateRecord()
@@ -264,29 +267,23 @@ namespace TimaProject.ViewModels
         {
             if(State == TimerState.Running)
             {
-                StopTimer();
-                var updatedNote = _record! with
-                {
-                    EndTime = DateTime.Now,
-                };
-                _recordRepository.UpdateItem(updatedNote);
                 State = TimerState.NotRunning;
-
-                SetDafultValues();
             }
         }
 
-        private void StopTimer()
+        private void UpdateRecordWithEndTime()
         {
-            _dispatcherTimer!.Stop();
-            _dispatcherTimer.Tick -= SetTime;
+            var updatedNote = _record! with
+            {
+                EndTime = DateTime.Now,
+            };
+            _recordRepository.UpdateItem(updatedNote);
         }
 
         private void SetDafultValues()
         {
             _record = null;
-            _startTimeDateTime = null;
-            _dispatcherTimer = null;
+            _timerStartTime = null;
             Title = string.Empty;
             StartTime = string.Empty;
             EndTime = string.Empty;

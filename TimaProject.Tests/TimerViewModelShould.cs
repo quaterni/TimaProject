@@ -136,6 +136,7 @@ namespace TimaProject.Tests
 
             _sut.OnStartingTime();
             _sut.OnEndingTime();
+            Thread.Sleep(TimerViewModel.TIMER_INTERVAL_MILLISECONDS);
 
             _mockRepository.Verify(x => x.UpdateItem(It.IsAny<Models.Record>()), Times.Once);
         }
@@ -154,6 +155,8 @@ namespace TimaProject.Tests
             _sut.OnStartingTime();
 
             _sut.OnEndingTime();
+            Thread.Sleep(TimerViewModel.TIMER_INTERVAL_MILLISECONDS);
+
             Assert.Equal(string.Empty, _sut.Title);
             Assert.Equal(string.Empty, _sut.StartTime);
             Assert.Empty(_sut.EndTime);
