@@ -303,8 +303,20 @@ TimerCommand - команда запуска\остановки таймера
 
 - Если форма редактирует активный Record, то EndTime устанавливается на время открытия формы и недоступно для редактирования
 
+- TimeForm не должен применять значения если IsValid == false
 
+- Тестирование StartTime на значениях (правильных и не очень), должен также изменяться Time
+    - Time может быть некорректным
+    - EndTime может быть некорректным
+- Тестирование EndTime на значениях (правильных и не очень), должен также изменяться Time
+- Тестирование Time на значениях (правильных и не очень), должен также изменяться StartTime
+- Тестирование Date на значениях (правильных и не очень)
+- IsEndTimeEnabled - назначается EndTime как текущее время
+- IsEndTimeEnabled выбрасывает исключение при попытке назначить EndTime
+- IsEndTimeEndbled - устанавливает корректные значения для StartTime, Time, Date
 
+- Если EndTime < StartTime, изменение StartTime на корректные данные должно приводить к применению StartTime,EndTime,Time на source
+- Если EndTime < StartTime, изменение EndTime на корректные данные должно приводить к применению StartTime,EndTime,Time на source
 
 ### ProjectFormViewModel
 Тесты
@@ -352,12 +364,10 @@ UpdateItme(T item)
 - Имя IProjectName не должно быть пустым
 ### IRepository
 
-AddItem(T item)
-UpdateItme(T item)
-DeleteItme(T item)
-Contains(T item)
-GetItems(predicate)
-event RepositoryChanged
+- Projects должен обновляться когда в репозиторий добавили новый проект
+- Projects должен обновляться когда в репозиторий обновили проект
+- Projects должен обновляться когда в репозиторий удалили проект
+- Projects должен содержать проекты из репозитория при инициализации
 
 ### ProjeсtRepository
 ### ProjeсtRepository
@@ -399,13 +409,22 @@ Contains(T item)
 GetItems(predicate)
 event RepositoryChanged
 
-- AddItem должен вызываеть RepositoryChanged с добавленным объектом и операцией - Adding
-- AddItem не должен вызывать RepositoryChanged, если вышла ошибка
-- RemoveItem должен вызываеть RepositoryChanged с удаленным объектом и операцией - Removing
-- RemoveItem не должен вызывать RepositoryChanged, если объекта не было в репозитории
-- UpdateItem должен вызываеть RepositoryChanged с обновленным объектом и операцией - Updating
-- UpdateItem не должен вызывать RepositoryChanged, если объекта не было в репозитории
+### ProjeсtRepository
+Хранилище для проектов
 
+Имеет свойство Time, которое является разностью EndTime и StartTime 
+### RecordRepository
+Тесты
+- AddItem должен добавлять новый Record
+- AddItem выбрасывает исключение если Record с таким Id существует
+- UpdateItem должен обновлять Record новыми данными
+- UpdateItem выбрасывает исключение если Record с заданным Id не хранится
+- Contains проверяет Record по Guid
+- RemoveItem удаляет Record и возвращает true, иначе false
+- GetItems должен возвращать Record подходящие под предикат
+- AddItem вызывает событие по добавлениею элемента
+- UpdateItem вызывает событие по обновлению элемента
+- RemoveItem вызывает событие по удалению элемента
 
 
 
