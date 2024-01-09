@@ -9,24 +9,20 @@ using TimaProject.Models;
 
 namespace TimaProject.Repositories
 {
-    public class RecordRepository : IRecordRepository
+    public class RecordRepository : IRecordRepository, IDisposable
     {
-        private ulong st_idCounter;
-
         public List<Record> _records;
+        private readonly IRepository<Note> _noteRepository;
 
-        public RecordRepository()
+        public RecordRepository(IRepository<Note> noteRepository)
         {
             _records = new();
-            st_idCounter = (ulong)_records.Count();
+            _noteRepository = noteRepository;
+            _noteRepository.RepositoryChanged += OnNoteRepositoryChanged;
         }
 
         public event EventHandler<RepositoryChangedEventArgs<Record>>? RepositoryChanged;
 
-        public ulong GetNewId()
-        {
-            return ++st_idCounter;
-        }
 
         public void AddItem(Record record)
         {
@@ -35,6 +31,10 @@ namespace TimaProject.Repositories
                 throw new AddingNotUniqueItemException("Record already contains in repository.");
             }
             _records.Add(record);
+            foreach(var note in record.Notes)
+            {
+                _noteRepository.AddItem(note);
+            }
             OnRepositoryChanged(RepositoryChangedOperation.Add, record);
         }
 
@@ -82,11 +82,61 @@ namespace TimaProject.Repositories
         public bool RemoveItem(Record record)
         {
             var result = _records.Remove(record);
+            foreach(var note in record.Notes)
+            {
+                _noteRepository.RemoveItem(note);
+            }
             if (result)
             {
                 OnRepositoryChanged(RepositoryChangedOperation.Remove, record);
             }
             return result;
         }
+
+        public void Dispose()
+        {
+            _noteRepository.RepositoryChanged -= OnNoteRepositoryChanged;
+        }
+
+
+        private void OnNoteRepositoryChanged(object? sender, RepositoryChangedEventArgs<Note> e)
+        {
+            switch (e.Operation)
+            {
+                case RepositoryChangedOperation.Add:
+                    AddNote(e.Item);
+                    break;
+                case RepositoryChangedOperation.Update:
+                    UpdateNote(e.Item);
+                    break;
+                case RepositoryChangedOperation.Remove:
+                    RemoveNote(e.Item);
+                    break;
+            }
+        }
+
+        private void RemoveNote(Note note)
+        {
+            var record = _records.Where(record => record.Id.Equals(note.RecordId)).Single();
+            record.Notes.Remove(note);
+            UpdateItem(record);
+        }
+
+        private void UpdateNote(Note note)
+        {
+            var record = _records.Where(record => record.Id.Equals(note.RecordId)).Single();
+            var oldNote = record.Notes.Where(item => item.Id.Equals(note.Id)).Single();
+            record.Notes[record.Notes.IndexOf(oldNote)] = note;
+            UpdateItem(record);
+        }
+
+        private void AddNote(Note note)
+        {
+            var record = _records.Where(record => record.Id.Equals(note.RecordId)).Single();
+            record.Notes.Add(note);
+            UpdateItem(record);
+        }
+
+
     }
 }

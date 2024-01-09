@@ -50,6 +50,8 @@ namespace TimaProject
             services.AddSingleton<Func<Type, ViewModelBase>>(
                 s => type => (ViewModelBase)s.GetRequiredService(type));
 
+            services.AddSingleton<IRepository<Note>, NoteRepository>();
+
             services.AddSingleton<IRecordRepository, RecordRepository>();
 
             services.AddSingleton<IProjectRepository, ProjectRepository>();
