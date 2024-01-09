@@ -134,6 +134,10 @@ namespace TimaProject.ViewModels
 
         public ICommand OpenProjectFormCommand { get; }
 
+        public NoteFormViewModel NoteFormViewModel { get; }
+
+        public ListingNoteViewModel ListingNoteViewModel { get; }
+
         public EditableRecordViewModel(
             Record record,
             IRecordRepository recordRepository,
@@ -141,7 +145,9 @@ namespace TimaProject.ViewModels
             INavigationService projectFormNavigationService,
             TimeFormViewModelFactory timeFormFactory,
             ProjectFormViewModelFactory projectFormViewModelFactory,
-            AbstractValidator<ITimeBase> validator)
+            AbstractValidator<ITimeBase> validator,
+            NoteFormViewModelFactory noteFormViewModelFactory,
+            ListingNoteViewModelFactory listingNoteViewModelFactory)
         {
             if (record.IsActive)
             {
@@ -161,6 +167,10 @@ namespace TimaProject.ViewModels
 
             OpenProjectFormCommand = new OpenProjectFormCommand(this, projectFormViewModelFactory, projectFormNavigationService);
             OpenTimeFormCommand = new OpenTimeFormCommand(this, timeFormFactory, timeFormNavigationService);
+
+            NoteFormViewModel = noteFormViewModelFactory.Create(_record);
+            ListingNoteViewModel = listingNoteViewModelFactory.Create(note => note.RecordId.Equals(_record.Id));
+
 
             RemoveRecordCommand = new CommandCallback((x)=> RemoveRecord());
         }

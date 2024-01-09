@@ -71,6 +71,11 @@ namespace TimaProject
                     s.GetRequiredService<TimeValidator>(),
                     s.GetRequiredService<CloseModalService>()));
 
+            services.AddTransient<EditableNoteViewModelFactory>();
+
+            services.AddTransient<NoteFormViewModelFactory>();
+            services.AddTransient<ListingNoteViewModelFactory>();
+
             services.AddTransient(
                 s => new EditableRecordViewModelFactory(
                     s.GetRequiredService<IRecordRepository>(),
@@ -82,7 +87,9 @@ namespace TimaProject
                         s.GetRequiredService<OpenModalService>()),
                     s.GetRequiredService<TimeFormViewModelFactory>(),
                     s.GetRequiredService<ProjectFormViewModelFactory>(),
-                    s.GetRequiredService<TimeValidator>()));
+                    s.GetRequiredService<TimeValidator>(),
+                    s.GetRequiredService<NoteFormViewModelFactory>(),
+                    s.GetRequiredService<ListingNoteViewModelFactory>()));
 
             services.AddTransient(s => TimerViewModelFactory(s));
 

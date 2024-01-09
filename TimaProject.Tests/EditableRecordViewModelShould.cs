@@ -45,7 +45,9 @@ namespace TimaProject.Tests
                     _mockNavigationService.Object,
                     null,
                     null,
-                    _validator);
+                    _validator,
+                    new NoteFormViewModelFactory(new Mock<IRepository<Note>>().Object),
+                    new ListingNoteViewModelFactory(new Mock<IRepository<Note>>().Object, null));
         }
 
         [Fact]
