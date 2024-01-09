@@ -56,6 +56,7 @@ namespace TimaProject.ViewModels
             _text = string.Empty;
             AddNewNoteCommand = new CommandCallback(_ => AddNote());
             PropertyChanged += OnCanAddChanged;
+
         }
 
         private void OnCanAddChanged(object? sender, PropertyChangedEventArgs e)
@@ -74,10 +75,14 @@ namespace TimaProject.ViewModels
 
         protected override void Validate(string propertyName)
         {
-            if(propertyName == nameof(Text) && _text == string.Empty)
+            if(propertyName == nameof(Text))
             {
                 ClearErrors(nameof(Text));
-                AddError(nameof(Text), "Text must be not empty.");
+
+                if (string.IsNullOrEmpty(Text))
+                {
+                    AddError(nameof(Text), "Text must be not empty.");
+                }
             }
         }
     }
