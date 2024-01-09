@@ -6,5 +6,8 @@ using System.Threading.Tasks;
 
 namespace TimaProject.Models
 {
-    public record Note(string Text, ulong Id);
+    public record Note(string Text, Guid Id, Guid RecordId, DateTime Created)
+    {
+        public DateTime LastEdited { get; set; } = Created;
+    }
 }

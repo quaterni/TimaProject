@@ -37,11 +37,11 @@ namespace TimaProject.Repositories
         {
             if (Contains(item))
             {
-                throw new AddingNotUniqueItem("Project with same id exists");
+                throw new AddingNotUniqueItemException("Project with same id exists");
             }
             if (Contains(item.Name))
             {
-                throw new AddingNotUniqueItem("Project with same name exists");
+                throw new AddingNotUniqueItemException("Project with same name exists");
             }
             _projects.Add(item);
             OnRepositoryChanged(item, RepositoryChangedOperation.Add);

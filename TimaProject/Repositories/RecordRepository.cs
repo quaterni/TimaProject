@@ -32,7 +32,7 @@ namespace TimaProject.Repositories
         {
             if(_records.Find(t => t.Id == record.Id) is not null)
             {
-                throw new AddingNotUniqueItem("Record already contains in repository.");
+                throw new AddingNotUniqueItemException("Record already contains in repository.");
             }
             _records.Add(record);
             OnRepositoryChanged(RepositoryChangedOperation.Add, record);

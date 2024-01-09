@@ -82,13 +82,13 @@ namespace TimaProject.Tests
         [Fact]
         public void AddItem_ThrowException_WhereAddingProjectContains()
         {
-            Assert.Throws<AddingNotUniqueItem>(() => _sut.AddItem(_projects[0]));
+            Assert.Throws<AddingNotUniqueItemException>(() => _sut.AddItem(_projects[0]));
         }
 
         [Fact]
         public void AddItem_ThrowException_IfAddingProjectHaveNotUniqueName()
         {
-            Assert.Throws<AddingNotUniqueItem>(() => _sut.AddItem(new Project(_projects[0].Name, Guid.NewGuid())));
+            Assert.Throws<AddingNotUniqueItemException>(() => _sut.AddItem(new Project(_projects[0].Name, Guid.NewGuid())));
         }
 
         [Theory]
@@ -209,7 +209,7 @@ namespace TimaProject.Tests
             }
             else
             {
-                Assert.Throws<AddingNotUniqueItem>(() => _sut.AddItem(project));
+                Assert.Throws<AddingNotUniqueItemException>(() => _sut.AddItem(project));
                 Assert.False(_isRepositoryChangedRaised);
             }
         }

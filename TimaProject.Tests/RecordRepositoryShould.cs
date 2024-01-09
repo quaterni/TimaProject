@@ -39,7 +39,7 @@ namespace TimaProject.Tests
         public void ThrowNotUniqueItemException_WhenAddingRecordThatsContiansInRepository()
         {
 
-            var exception = Assert.Throws<AddingNotUniqueItem>(()=> _sut.AddItem(_recordInRepo));
+            var exception = Assert.Throws<AddingNotUniqueItemException>(()=> _sut.AddItem(_recordInRepo));
             Assert.Equal("Record already contains in repository.", exception.Message);
         }
 

@@ -8,17 +8,20 @@ class Record {
     + Notes : List<Note>
     + Date : DateOnly
     + Project : Project
-    + Id : long
+    + Id : Guid
 }
 
 class Project {
     + Name :string
-    + Id : int
+    + Id : Guid
 }
 
 class Note {
     + Text : string
-    + Id : int
+    + Id : Guid
+    + Created : DateTime
+    + LastEdited : DateTime
+    + RecordId : Guid
 }
 
 Record --> Project
