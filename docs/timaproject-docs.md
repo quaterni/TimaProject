@@ -398,11 +398,10 @@ EditableNoteViewModel
 
 Тесты
 - При изменении Text в NoteRepository вызывается Update с обновленной Note
+- Если Text пусто NoteRepository не обновляется
+- RemoveNoteCommand вызывает IRepository.Delete() с указанной заметкой
 
-- DeleteNote() вызывает IRepository.Delete() с указанной заметкой
-Проекты хранятся в репозитории проектов
-- OnRepositoryUpdate - при обновлении репозитория с указанной заметкой, обновляются text и Note
-ProjectForm позволяет выбрать проект для текущего Record. Record без проектов содержат специальный Project.Empty. ProjectForm позволяет добавлять, удалять и обновлять проекты.
+
 
 ### ListingRecordViewModel
 ListingRecordViewModel обращается к RecordListingStore, который содержит текущие список Record
