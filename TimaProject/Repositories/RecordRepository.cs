@@ -14,8 +14,11 @@ namespace TimaProject.Repositories
         public List<Record> _records;
         private readonly IRepository<Note> _noteRepository;
 
+        private bool _lock;
+
         public RecordRepository(IRepository<Note> noteRepository)
         {
+            _lock = false;
             _records = new();
             _noteRepository = noteRepository;
             _noteRepository.RepositoryChanged += OnNoteRepositoryChanged;
@@ -31,10 +34,12 @@ namespace TimaProject.Repositories
                 throw new AddingNotUniqueItemException("Record already contains in repository.");
             }
             _records.Add(record);
+            _lock = true;
             foreach(var note in record.Notes)
             {
                 _noteRepository.AddItem(note);
             }
+            _lock = false;
             OnRepositoryChanged(RepositoryChangedOperation.Add, record);
         }
 
@@ -81,11 +86,13 @@ namespace TimaProject.Repositories
 
         public bool RemoveItem(Record record)
         {
-            var result = _records.Remove(record);
+            _lock = true;
             foreach(var note in record.Notes)
             {
                 _noteRepository.RemoveItem(note);
             }
+            var result = _records.Remove(record);
+            _lock = false;
             if (result)
             {
                 OnRepositoryChanged(RepositoryChangedOperation.Remove, record);
@@ -101,6 +108,10 @@ namespace TimaProject.Repositories
 
         private void OnNoteRepositoryChanged(object? sender, RepositoryChangedEventArgs<Note> e)
         {
+            if (_lock)
+            {
+                return;
+            }
             switch (e.Operation)
             {
                 case RepositoryChangedOperation.Add:
