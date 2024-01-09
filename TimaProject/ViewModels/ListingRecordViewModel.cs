@@ -32,7 +32,6 @@ namespace TimaProject.ViewModels
 
         public ListingRecordViewModel(
             IRecordRepository recordRepository,
-
             EditableRecordViewModelFactory editableRecordViewModelFactory)
         {
             _records = new ObservableCollection<EditableRecordViewModel>();

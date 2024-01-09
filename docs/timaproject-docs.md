@@ -390,8 +390,7 @@ AddNote(Note)
 - AddNoteCommand добавляет Note с указанным текстом и текущей датой создания и редактирования и Id от Record
 - IsCanAdd false если Text - пустой, иначе true
 
-### ListingNoteViewModel
-ListingNoteViewModel
+
 
 ### EditableNoteViewModel
 EditableNoteViewModel 
@@ -401,7 +400,8 @@ EditableNoteViewModel
 - Если Text пусто NoteRepository не обновляется
 - RemoveNoteCommand вызывает IRepository.Delete() с указанной заметкой
 
-
+### ListingNoteViewModel
+- Notes должны состоять из заданных в конструкторе фильтра и отсортированы по дате создания
 
 ### ListingRecordViewModel
 ListingRecordViewModel обращается к RecordListingStore, который содержит текущие список Record
