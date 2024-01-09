@@ -33,6 +33,15 @@
             <DataTemplate DataType="{x:Type viewModels:ProjectFormViewModel}">
                 <views:ProjectFormView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:ListingNoteViewModel}">
+                <views:ListingNoteView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:NoteFormViewModel}">
+                <views:NoteFormView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:EditableNoteViewModel}">
+                <views:EditableNoteView/>
+            </DataTemplate>
         </Grid.Resources>
         <controls:ModalView DataContext="{Binding CurrentModalViewModel}" Panel.ZIndex="5"/>
         <ContentControl Content="{Binding CurrentViewModel}"/>

@@ -39,7 +39,22 @@
                     Command="{Binding OpenTimeFormCommand}"/>
         </Grid>
         <Grid Grid.Row="1">
-            <TextBlock Text="Здесь будут заметки"/>
+            <Expander Header="Заметки" 
+                      Foreground="White"
+                      IsExpanded="{Binding IsNoteExpanded}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <ContentControl Grid.Row="0"
+                        Content="{Binding ListingNoteViewModel}"/>
+                    <ContentControl Grid.Row="1"
+                                    Content="{Binding NoteFormViewModel}"/>
+
+                </Grid>
+            </Expander>
         </Grid>
     </Grid>
 </UserControl>

@@ -24,6 +24,15 @@ namespace TimaProject.ViewModels
         private Record _record;
         private readonly IRecordRepository _recordRepository;
 
+        private bool _isNoteExpanded;
+
+        public bool IsNoteExpanded
+        {
+            get { return _isNoteExpanded; }
+            set { SetValue(ref _isNoteExpanded, value); }
+        }
+
+
         public Record Record
         {
             get
@@ -164,6 +173,8 @@ namespace TimaProject.ViewModels
             Project = record.Project;
             PropertyChanged += OnRecordUpdated;
             _recordRepository.RepositoryChanged += OnRepositoryUpdated;
+
+            _isNoteExpanded = false;
 
             OpenProjectFormCommand = new OpenProjectFormCommand(this, projectFormViewModelFactory, projectFormNavigationService);
             OpenTimeFormCommand = new OpenTimeFormCommand(this, timeFormFactory, timeFormNavigationService);

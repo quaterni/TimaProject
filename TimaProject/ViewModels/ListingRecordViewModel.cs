@@ -55,6 +55,12 @@ namespace TimaProject.ViewModels
             {
                 recordViewModels = new List<EditableRecordViewModel>();
             }
+            foreach(var recordViewModel in recordViewModels)
+            {
+                var oldVM = _records.Where(item => item.Record.Id.Equals(recordViewModel.Record.Id)).FirstOrDefault();
+                recordViewModel.IsNoteExpanded = oldVM?.IsNoteExpanded ?? false;
+            }
+
             Records = new(recordViewModels);        
         }
 
