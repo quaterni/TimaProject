@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.7.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="System.Reactive" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TimaProject.DataAccess\TimaProject.DataAccess.csproj" />
+    <ProjectReference Include="..\TimaProject.Domain\TimaProject.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="ControlTools">
+      <HintPath>..\..\..\MyWpfTools\ControlTools\bin\Release\net6.0-windows\publish\ControlTools.dll</HintPath>
+    </Reference>
+    <Reference Include="MvvmTools">
+      <HintPath>..\..\..\MyWpfTools\MvvmTools\bin\Release\net6.0\publish\MvvmTools.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

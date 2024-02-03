@@ -1,0 +1,76 @@
+﻿<UserControl x:Class="TimaProject.Desctop.Views.TimeFormView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TimaProject.Desctop.Views"
+             xmlns:cliclable="clr-namespace:ControlTools.ClickableControls;assembly=ControlTools"
+             xmlns:convertors="clr-namespace:TimaProject.Desctop.Views.Convertors"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="200"
+             Foreground="Black"
+             Background="PowderBlue">
+    <UserControl.Resources>
+        <convertors:DateTimeToDateOnlyFormatString x:Key="DateTimeToDateOnlyFormatString"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0">
+            <TextBlock Text="StartTime"  />
+            <cliclable:ClickableTextBox
+                Text="{Binding StartTime,
+                    Mode=TwoWay,
+                    ValidatesOnDataErrors=True}"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1">
+            <TextBlock Text="EndTime"  />
+            <cliclable:ClickableTextBox
+                Text="{Binding EndTime,
+                    Mode=TwoWay,
+                    ValidatesOnDataErrors=True}"
+                IsEnabled="{Binding IsEndTimeEnabled}"/>
+        </StackPanel>
+        <StackPanel Grid.Row="2">
+            <TextBlock Text="Time"  />
+            <cliclable:ClickableTextBox
+                Text="{Binding Time,
+                    Mode=TwoWay,
+                    ValidatesOnDataErrors=True}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="3">
+            <TextBlock Text="Date"  />
+            <cliclable:ClickableContentControl x:Name="clickable">
+                <cliclable:ClickableContentControl.Header>
+                    <TextBlock Text="{Binding Date}"/>
+                </cliclable:ClickableContentControl.Header>
+                <cliclable:ClickableContentControl.ButtonStyle>
+                    <Style TargetType="Button">
+                        <Setter Property="Background" Value="Transparent"/>
+                    </Style>
+                </cliclable:ClickableContentControl.ButtonStyle>
+                <cliclable:ClickableContentControl.Content>
+                    <DatePicker LostFocus="DatePicker_LostFocus"
+                        SelectedDate="{
+                        Binding Date, 
+                        Mode=TwoWay, 
+                        Converter={StaticResource DateTimeToDateOnlyFormatString}}">
+                        
+                    </DatePicker>
+                </cliclable:ClickableContentControl.Content>
+                
+            </cliclable:ClickableContentControl>
+        </StackPanel>
+
+        <StackPanel Grid.Row="4">
+            <Button Command="{Binding CloseCommand}"
+                    Content="Close"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
