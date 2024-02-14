@@ -11,14 +11,11 @@ using TimaProject.Desctop.Commands;
 using TimaProject.Domain.Models;
 using TimaProject.DataAccess.Repositories;
 using TimaProject.Desctop.ViewModels.Factories;
+using TimaProject.Desctop.Interfaces.ViewModels;
 
 namespace TimaProject.Desctop.ViewModels
 {
-    public enum TimerState
-    {
-        NotRunning,
-        Running
-    }
+
 
     public class TimerViewModel : NotifyDataErrorViewModel, IEditRecord, IRecordViewModel
     {
@@ -203,6 +200,7 @@ namespace TimaProject.Desctop.ViewModels
         private void StartTimer()
         {
             SetStartTime();
+            // TODO: так делать нельзя, создай ITimerExecutor
             Observable
                 .Timer((DateTime)_timerStartTime!, TimeSpan.FromMilliseconds(TIMER_INTERVAL_MILLISECONDS))
                 .TakeWhile(_ => State == TimerState.Running)

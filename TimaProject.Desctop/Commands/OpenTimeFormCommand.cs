@@ -11,8 +11,8 @@ namespace TimaProject.Desctop.Commands
         private readonly IRecordViewModel _source;
         private readonly TimeFormViewModelFactory _factory;
         private readonly INavigationService _openTimeFormNavigationService;
-        private readonly bool _isEndTimeEnabled;
 
+        private readonly bool _isEndTimeEnabled;
 
         public OpenTimeFormCommand(
             IRecordViewModel source,
