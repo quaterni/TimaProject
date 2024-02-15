@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using TimaProject.Desctop.Interfaces.ViewModels;
 using TimaProject.Desctop.ViewModels;
 
 namespace TimaProject.Desctop.Views.Convertors

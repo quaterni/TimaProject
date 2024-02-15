@@ -8,7 +8,13 @@
     <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
   </PropertyGroup>
 
-  <ItemGroup>
+<ItemGroup>
+	<AssembleAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+		<_Parameter1>TimaProject.Desctop.Tests</_Parameter1>
+	</AssembleAttribute>
+</ItemGroup>
+
+<ItemGroup>
     <Compile Remove="Services\**" />
     <EmbeddedResource Remove="Services\**" />
     <None Remove="Services\**" />
@@ -16,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
     <PackageReference Include="FluentValidation" Version="11.7.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="System.Reactive" Version="6.0.0" />

@@ -7,10 +7,9 @@ using System.Windows.Input;
 
 namespace TimaProject.Desctop.Interfaces.ViewModels
 {
-    internal interface ITimeEditable
+    internal interface IDialog : IDisposable
     {
-        ICommand OpenTimeFormCommand { get; }
-        ITimeFormViewModel? TimeFormViewModel { get; }
-        bool IsTimeFormOpened { get; }
+        ICommand CloseCommand { get; }
+        event EventHandler Closed;
     }
 }

@@ -1,9 +1,11 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
+using TimaProject.Desctop.DTOs;
 
 namespace TimaProject.Desctop.Interfaces.ViewModels
 {
-    public interface IProjectFormViewModel
+    internal interface IProjectFormViewModel : IDialog
     {
         ObservableCollection<IProjectContainerViewModel> Projects { get; }
 
@@ -12,5 +14,7 @@ namespace TimaProject.Desctop.Interfaces.ViewModels
         bool CanAddNewProject { get; }
 
         ICommand AddNewProjectCommand { get; }
+
+        event EventHandler<ProjectDTO> ProjectSelected;
     }
 }

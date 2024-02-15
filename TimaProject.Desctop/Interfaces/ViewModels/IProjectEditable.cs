@@ -4,8 +4,8 @@ namespace TimaProject.Desctop.Interfaces.ViewModels
 {
     internal interface IProjectEditable
     {
-        ICommand OpenProjectCommand { get; }
-        IProjectFormViewModel ProjectFormViewModel { get; }
+        ICommand OpenProjectFormCommand { get; }
+        IProjectFormViewModel? ProjectFormViewModel { get; }
         bool IsProjectFormOpened { get; }
     }
 }

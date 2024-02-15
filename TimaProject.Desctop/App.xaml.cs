@@ -17,6 +17,8 @@ using TimaProject.Desctop.ViewModels;
 using TimaProject.Desctop.ViewModels.Containers;
 using TimaProject.Desctop.ViewModels.Factories;
 using TimaProject.Desctop.ViewModels.Validators;
+using TimaProject.Desctop.Interfaces.Factories;
+using TimaProject.Desctop.Interfaces.Services;
 
 
 namespace TimaProject.Desctop
@@ -113,14 +115,14 @@ namespace TimaProject.Desctop
         private TimerViewModel TimerViewModelFactory(IServiceProvider s)
         {
             return new TimerViewModel(
-                            s.GetRequiredService<IRecordRepository>(),
                             new CompositeNavigationService(ModalParameterizedNavigationService<TimeFormViewModel>(s),
                                                            s.GetRequiredService<OpenModalService>()),
                             new CompositeNavigationService(ModalParameterizedNavigationService<ProjectFormViewModel>(s),
                                                            s.GetRequiredService<OpenModalService>()),
-                            s.GetRequiredService<TimeFormViewModelFactory>(),
-                            s.GetRequiredService<ProjectFormViewModelFactory>(),
-                            s.GetRequiredService<TimeValidator>());
+                            s.GetRequiredService<ITimeFormViewModelFactory>(),
+                            s.GetRequiredService<IProjectFormViewModelFactory>(),
+                            s.GetRequiredService<IRecordService>(),
+                            s.GetRequiredService<ITimerExecutor>());
         }
 
         protected override void OnStartup(StartupEventArgs e)

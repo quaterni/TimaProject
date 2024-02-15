@@ -6,14 +6,21 @@ using System.Threading.Tasks;
 
 namespace TimaProject.Desctop.Interfaces.ViewModels
 {
-    internal interface IRecordViewModelBase
+    internal interface IRecordViewModelBase : ITimeEditable, IProjectEditable
     {
         string StartTime { get; set; }
+
         string EndTime { get; set; }
+
         string Time { get; set; }
+
         string Date { get; set; }
+
+        string Title { get; set; }
+
         string ProjectName { get; }
-        string ProjectId { get; }
+
+        Guid ProjectId { get; }
 
     }
 }
