@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace TimaProject.Desctop.ViewModels.Factories
 {
-    public class TimeFormViewModelFactory
+    internal class TimeFormViewModelFactory
     {
         private readonly AbstractValidator<ITimeBase> _validator;
         private readonly INavigationService _closeNavigationService;
@@ -22,11 +22,11 @@ namespace TimaProject.Desctop.ViewModels.Factories
 
         public TimeFormViewModel Create(IRecordViewModel recordViewModel, bool isEndTimeEnabled = true)
         {
-            return new TimeFormViewModel(
-                recordViewModel,
-                _validator,
-                _closeNavigationService,
-                isEndTimeEnabled: isEndTimeEnabled);
+            return null;
+            //return new TimeFormViewModel(
+            //    recordViewModel,
+            //    _validator,
+            //    canEndTimeEdit: isEndTimeEnabled);
         }
     }
 }

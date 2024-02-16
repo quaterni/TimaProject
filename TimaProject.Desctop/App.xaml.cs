@@ -79,20 +79,20 @@ namespace TimaProject.Desctop
             services.AddTransient<NoteFormViewModelFactory>();
             services.AddTransient<ListingNoteViewModelFactory>();
 
-            services.AddTransient(
-                s => new EditableRecordViewModelFactory(
-                    s.GetRequiredService<IRecordRepository>(),
-                    new CompositeNavigationService(
-                        ModalParameterizedNavigationService<TimeFormViewModel>(s),
-                        s.GetRequiredService<OpenModalService>()),
-                    new CompositeNavigationService(
-                        ModalParameterizedNavigationService<ProjectFormViewModel>(s),
-                        s.GetRequiredService<OpenModalService>()),
-                    s.GetRequiredService<TimeFormViewModelFactory>(),
-                    s.GetRequiredService<ProjectFormViewModelFactory>(),
-                    s.GetRequiredService<TimeValidator>(),
-                    s.GetRequiredService<NoteFormViewModelFactory>(),
-                    s.GetRequiredService<ListingNoteViewModelFactory>()));
+            //services.AddTransient(
+            //    s => new EditableRecordViewModelFactory(
+            //        s.GetRequiredService<IRecordRepository>(),
+            //        new CompositeNavigationService(
+            //            ModalParameterizedNavigationService<TimeFormViewModel>(s),
+            //            s.GetRequiredService<OpenModalService>()),
+            //        new CompositeNavigationService(
+            //            ModalParameterizedNavigationService<ProjectFormViewModel>(s),
+            //            s.GetRequiredService<OpenModalService>()),
+            //        s.GetRequiredService<TimeFormViewModelFactory>(),
+            //        s.GetRequiredService<ProjectFormViewModelFactory>(),
+            //        s.GetRequiredService<TimeValidator>(),
+            //        s.GetRequiredService<NoteFormViewModelFactory>(),
+            //        s.GetRequiredService<ListingNoteViewModelFactory>()));
 
             services.AddTransient(s => TimerViewModelFactory(s));
 
@@ -114,15 +114,16 @@ namespace TimaProject.Desctop
 
         private TimerViewModel TimerViewModelFactory(IServiceProvider s)
         {
-            return new TimerViewModel(
-                            new CompositeNavigationService(ModalParameterizedNavigationService<TimeFormViewModel>(s),
-                                                           s.GetRequiredService<OpenModalService>()),
-                            new CompositeNavigationService(ModalParameterizedNavigationService<ProjectFormViewModel>(s),
-                                                           s.GetRequiredService<OpenModalService>()),
-                            s.GetRequiredService<ITimeFormViewModelFactory>(),
-                            s.GetRequiredService<IProjectFormViewModelFactory>(),
-                            s.GetRequiredService<IRecordService>(),
-                            s.GetRequiredService<ITimerExecutor>());
+            throw new NotImplementedException();
+            //return new TimerViewModel(
+            //                new CompositeNavigationService(ModalParameterizedNavigationService<TimeFormViewModel>(s),
+            //                                               s.GetRequiredService<OpenModalService>()),
+            //                new CompositeNavigationService(ModalParameterizedNavigationService<ProjectFormViewModel>(s),
+            //                                               s.GetRequiredService<OpenModalService>()),
+            //                s.GetRequiredService<ITimeFormViewModelFactory>(),
+            //                s.GetRequiredService<IProjectFormViewModelFactory>(),
+            //                s.GetRequiredService<IRecordService>(),
+            //                s.GetRequiredService<ITimerExecutor>());
         }
 
         protected override void OnStartup(StartupEventArgs e)

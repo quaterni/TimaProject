@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace TimaProject.Desctop.DTOs
 {
-    internal record TimeDTO(string StartTime, string EndTime, string Time, string Date);
+    public record TimeDTO(string StartTime, string EndTime, string Time, string Date);
 }

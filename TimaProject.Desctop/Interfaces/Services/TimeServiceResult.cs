@@ -7,12 +7,12 @@ using TimaProject.Desctop.DTOs;
 
 namespace TimaProject.Desctop.Interfaces.Services
 {
-    enum SolvingResult
+    public enum SolvingResult
     {
         NoError,
         PropertyError,
         ComponentError
     }
 
-    internal record TimeServiceResult(SolvingResult Result, TimeDTO Value);
+    public record TimeServiceResult(SolvingResult Result, TimeDTO Value, string ErrorMessage = "");
 }

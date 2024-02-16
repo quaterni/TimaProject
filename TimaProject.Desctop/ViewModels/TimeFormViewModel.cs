@@ -1,42 +1,35 @@
-﻿using FluentValidation;
-using FluentValidation.Validators;
-using MvvmTools.Base;
-using MvvmTools.Navigation.Services;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+using System.ComponentModel.DataAnnotations;
 using System.Windows.Input;
-using TimaProject.Desctop.Commands;
+using TimaProject.Desctop.DTOs;
 using TimaProject.Desctop.Exceptions;
-using TimaProject.Domain.Models;
+using TimaProject.Desctop.Interfaces.Services;
+using TimaProject.Desctop.Interfaces.ViewModels;
 
 
 namespace TimaProject.Desctop.ViewModels
 {
-    public class TimeFormViewModel : NotifyDataErrorViewModel, ITimeBase
+    public class TimeFormViewModel : ObservableValidator, ITimeFormViewModel
     {
-        private IRecordViewModel _source;
+        private bool _lock;
 
-        private readonly AbstractValidator<ITimeBase> _validator;
+        private readonly ITimeService _timeService;
 
-        private readonly TimeSolver _solver;
+        private bool _canEndTimeEdit;
 
-        private bool _isEndTimeEnabled;
-
-        public bool IsEndTimeEnabled
+        public bool CanEndTimeEdit
         {
             get
             {
-                return _isEndTimeEnabled;
+                return _canEndTimeEdit;
             }
         }
 
         private string _endTime;
 
+        [CustomValidation(typeof(TimeFormViewModel), nameof(TimeValidation))]
         public string EndTime
         {
             get
@@ -45,17 +38,18 @@ namespace TimaProject.Desctop.ViewModels
             }
             set
             {
-                if (!IsEndTimeEnabled)
+                if (!CanEndTimeEdit)
                 {
                     throw new SettingDisableEndTimeException();
                 }
-                SetValue(ref _endTime, value);
+                SetProperty(ref _endTime, value, true);
 
             }
         }
 
         private string _time;
 
+        [CustomValidation(typeof(TimeFormViewModel), nameof(TimeValidation))]
         public string Time
         {
             get
@@ -64,12 +58,13 @@ namespace TimaProject.Desctop.ViewModels
             }
             set
             {
-                SetValue(ref _time, value);
+                SetProperty(ref _time, value, true);
             }
         }
 
         private string _startTime;
 
+        [CustomValidation(typeof(TimeFormViewModel), nameof(TimeValidation))]
         public string StartTime
         {
             get
@@ -78,12 +73,14 @@ namespace TimaProject.Desctop.ViewModels
             }
             set
             {
-                SetValue(ref _startTime, value);
+                SetProperty(ref _startTime, value, true);
             }
         }
 
+
         private string _date;
 
+        [CustomValidation(typeof(TimeFormViewModel), nameof(TimeValidation))]
         public string Date
         {
             get
@@ -92,92 +89,144 @@ namespace TimaProject.Desctop.ViewModels
             }
             set
             {
-                SetValue(ref _date, value);
+                SetProperty(ref _date, value, true);
+
             }
         }
+
+
+        private string _componentError;
+
+        [CustomValidation(typeof(TimeFormViewModel), nameof(ComponentErrorValidaton))]
+        public string ComponentError
+        {
+            get
+            {
+                return _componentError;
+            }
+            set
+            {
+                SetProperty(ref _componentError, value, true);
+            }
+        }
+
+        public event EventHandler<TimeDTO>? TimeSelected;
+
+        public event EventHandler<EventArgs>? Closed;
 
         public ICommand CloseCommand { get; }
 
         public TimeFormViewModel(
-            IRecordViewModel source,
-            AbstractValidator<ITimeBase> validator,
-            INavigationService closeForm,
-            bool isEndTimeEnabled = true)
+            TimeDTO timeDTO,
+            ITimeService timeService,
+            bool canEndTimeEdit = true)
         {
-            _solver = new TimeSolver(this, validator);
-            _endTime = isEndTimeEnabled ? source.EndTime : DateTime.Now.ToString();
-            _startTime = source.StartTime;
-            _time = source.Time;
-            _date = source.Date;
-            _source = source;
-            _validator = validator;
-            CloseCommand = new NavigationCommand(closeForm);
-            _isEndTimeEnabled = isEndTimeEnabled;
-            PropertyChanged += OnPropertyChanged;
+            _timeService = timeService;
+            _endTime = canEndTimeEdit ? timeDTO.EndTime : DateTime.Now.ToString();
+            _startTime = timeDTO.StartTime;
+            _time = timeDTO.Time;
+            _date = timeDTO.Date;
+            _canEndTimeEdit = canEndTimeEdit;
+            PropertyChanged += OnTimeValuesChanged;
         }
 
+        private void OnTimeValuesChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            switch(e.PropertyName)
+            {
+                case nameof(Time):
+                case nameof(StartTime): 
+                case nameof(EndTime):
+                case nameof(Date):
+                    if (!HasErrors)
+                    {
+                        SelectTime();
+                    }
+                    break;
+            }
+        }
+
+        private void SelectTime()
+        {
+            TimeSelected?.Invoke(this, new TimeDTO(StartTime, EndTime, Time, Date));
+        }
+
+        private TimeDTO CreateTimeDTO()
+        {
+            return new TimeDTO(_startTime, _endTime, _time, _date);
+        }
+
+        public static ValidationResult ComponentErrorValidaton(string error, ValidationContext context)
+        {
+            if (string.IsNullOrEmpty(error))
+            {
+                return ValidationResult.Success;
+            }
+            return new(error);
+        }
+
+
+        public static ValidationResult TimeValidation(string value, ValidationContext context)
+        {           
+            TimeFormViewModel instance = (TimeFormViewModel)context.ObjectInstance;
+            if (instance._lock)
+            {
+                return ValidationResult.Success;
+            }
+            string propertyName = context.DisplayName;
+            TimeServiceResult result = instance._timeService.Solve(
+                propertyName,
+                new TimeDTO(instance.StartTime, instance.EndTime, instance.Time, instance.Date));
+
+            if(result.Result == SolvingResult.PropertyError)
+            {
+                return new(result.ErrorMessage);
+            }
+            if(result.Result == SolvingResult.ComponentError)
+            {
+                instance.ComponentError = result.ErrorMessage;
+                return ValidationResult.Success;
+            }
+
+            instance.ComponentError = "";
+            instance._lock = true;
+            instance.StartTime = result.Value.StartTime;
+            instance.EndTime = result.Value.EndTime;
+            instance.Time = result.Value.Time;
+            instance.Date = result.Value.Date;
+            instance._lock = false;
+
+            return ValidationResult.Success;
+
+        }
 
 
         private void SetToSource(string propertyName)
         {
-            var properties = new string[] { nameof(StartTime), nameof(EndTime), nameof(Time), nameof(Date) };
+            //var properties = new string[] { nameof(StartTime), nameof(EndTime), nameof(Time), nameof(Date) };
 
-            if (!properties.Contains(propertyName))
-            {
-                return;
-            }
-            if (!_source.StartTime.Equals(StartTime))
-                _source.StartTime = StartTime;
+            //if (!properties.Contains(propertyName))
+            //{
+            //    return;
+            //}
+            //if (!_source.StartTime.Equals(StartTime))
+            //    _source.StartTime = StartTime;
 
-            if (!_source.EndTime.Equals(EndTime))
-                _source.EndTime = EndTime;
+            //if (!_source.EndTime.Equals(EndTime))
+            //    _source.EndTime = EndTime;
 
-            if (!_source.Time.Equals(Time))
-                _source.Time = Time;
+            //if (!_source.Time.Equals(Time))
+            //    _source.Time = Time;
 
-            if (!_source.Date.Equals(Date))
-                _source.Date = Date;
+            //if (!_source.Date.Equals(Date))
+            //    _source.Date = Date;
         }
 
-        public override void Dispose()
+        public void Dispose()
         {
-            PropertyChanged -= OnPropertyChanged;
-            base.Dispose();
+            PropertyChanged -= OnTimeValuesChanged;
         }
 
-        private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (HasErrors)
-            {
-                return;
-            }
-            if (e.PropertyName != null)
-            {
-                SetToSource(e.PropertyName);
-            }
-        }
 
-        protected override void Validate(string propertyName)
-        {
-            ClearErrors(nameof(EndTime));
-            ClearErrors(nameof(StartTime));
-            ClearErrors(nameof(Time));
-            ClearErrors(nameof(Date));
-            ClearAllErrors();
-
-            _solver.Solve(propertyName);
-
-            var validationResult = _validator.Validate(this);
-
-            if (validationResult.IsValid)
-            {
-                return;
-            }
-
-            foreach (var error in validationResult.Errors)
-            {
-                AddError(error.PropertyName, error.ErrorMessage);
-            }
-        }
     }
 }

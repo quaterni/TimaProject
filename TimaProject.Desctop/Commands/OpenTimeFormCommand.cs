@@ -6,7 +6,7 @@ using TimaProject.Desctop.ViewModels.Factories;
 
 namespace TimaProject.Desctop.Commands
 {
-    public class OpenTimeFormCommand : CommandBase
+    internal class OpenTimeFormCommand : CommandBase
     {
         private readonly IRecordViewModel _source;
         private readonly TimeFormViewModelFactory _factory;

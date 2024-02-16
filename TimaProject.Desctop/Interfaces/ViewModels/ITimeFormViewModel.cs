@@ -5,12 +5,14 @@ using TimaProject.Desctop.DTOs;
 
 namespace TimaProject.Desctop.Interfaces.ViewModels
 {
-    internal interface ITimeFormViewModel : IDialog
+    public interface ITimeFormViewModel : IDialog
     {
         string StartTime { get; set; }
         string EndTime { get; set; }
         string Date { get; set; }
         string Time { get; set; }
+        string ComponentError { get; set; }
+
         bool CanEndTimeEdit { get; }
         event EventHandler<TimeDTO> TimeSelected;
         

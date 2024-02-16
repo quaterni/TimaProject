@@ -7,7 +7,7 @@ using TimaProject.Desctop.DTOs;
 
 namespace TimaProject.Desctop.Interfaces.Services
 {
-    internal interface ITimeService
+    public interface ITimeService
     {
         TimeServiceResult Solve(string propertyName, TimeDTO timeDTO);
     }
