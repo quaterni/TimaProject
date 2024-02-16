@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows.Input;
 using TimaProject.Desctop.DTOs;
 
 namespace TimaProject.Desctop.Interfaces.ViewModels
 {
-    internal interface IProjectFormViewModel : IDialog
+    public interface IProjectFormViewModel : IDialog
     {
         ObservableCollection<IProjectContainerViewModel> Projects { get; }
 

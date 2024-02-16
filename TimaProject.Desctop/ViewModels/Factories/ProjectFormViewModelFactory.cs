@@ -10,30 +10,30 @@ using TimaProject.DataAccess.Repositories;
 
 namespace TimaProject.Desctop.ViewModels.Factories
 {
-    public class ProjectFormViewModelFactory
+    internal class ProjectFormViewModelFactory
     {
-        private readonly IProjectRepository _projectRepository;
-        private readonly AbstractValidator<IProjectName> _validator;
-        private readonly INavigationService _closeProjectFormNavigationService;
+        //private readonly IProjectRepository _projectRepository;
+        //private readonly AbstractValidator<IProjectName> _validator;
+        //private readonly INavigationService _closeProjectFormNavigationService;
 
-        public ProjectFormViewModelFactory(
-            IProjectRepository projectRepository,
-            AbstractValidator<IProjectName> validator,
-            INavigationService closeProjectFormNavigationService
-            )
-        {
-            _projectRepository = projectRepository;
-            _validator = validator;
-            _closeProjectFormNavigationService = closeProjectFormNavigationService;
-        }
+        //public ProjectFormViewModelFactory(
+        //    IProjectRepository projectRepository,
+        //    AbstractValidator<IProjectName> validator,
+        //    INavigationService closeProjectFormNavigationService
+        //    )
+        //{
+        //    _projectRepository = projectRepository;
+        //    _validator = validator;
+        //    _closeProjectFormNavigationService = closeProjectFormNavigationService;
+        //}
 
-        public ProjectFormViewModel Create(IRecordViewModel sourceRecord)
-        {
-            return new ProjectFormViewModel(
-                sourceRecord,
-                _projectRepository,
-                _validator,
-                _closeProjectFormNavigationService);
-        }
+        //public ProjectFormViewModel Create(IRecordViewModel sourceRecord)
+        //{
+        //    return new ProjectFormViewModel(
+        //        sourceRecord,
+        //        _projectRepository,
+        //        _validator,
+        //        _closeProjectFormNavigationService);
+        //}
     }
 }

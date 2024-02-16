@@ -1,176 +1,161 @@
 ﻿using FluentValidation;
 using MvvmTools.Base;
-using MvvmTools.Navigation.Services;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using TimaProject.Desctop.Commands;
-using TimaProject.Domain.Models;
-using TimaProject.DataAccess.Repositories;
-using TimaProject.Desctop.ViewModels.Containers;
-using TimaProject.Desctop.Exceptions;
-using TimaProject.Desctop.ViewModels.Factories;
-using TimaProject.DataAccess.Exceptions;
+using TimaProject.Desctop.Interfaces.ViewModels;
+using TimaProject.Desctop.DTOs;
+using TimaProject.Desctop.Interfaces.Services;
+using TimaProject.Desctop.Interfaces.Factories;
+using System.Collections;
+using FluentValidation.Results;
+using CommunityToolkit.Mvvm.Input;
 
 
 namespace TimaProject.Desctop.ViewModels
 {
-    public class ProjectFormViewModel : NotifyDataErrorViewModel, IProjectName
+    internal class ProjectFormViewModel : ViewModelBase, IProjectFormViewModel
     {
-        private readonly AbstractValidator<IProjectName> _validator;
+        private readonly IValidator<string> _nameValidator;
 
-        private readonly IProjectRepository _projectRepository;
+        private readonly IProjectService _projectService;
 
-        private readonly IRecordViewModel _source;
+        private readonly IProjectContainerFactory _projectContainerFactory;
 
-        private bool _isCanAdd;
+        private readonly Guid _selectedProjectId;
 
-        public bool IsCanAdd => _isCanAdd;
+        private string _newProjectName;
 
-        private string _name;
-
-        public string Name
+        public string NewProjectName
         {
             get
             {
-                return _name;
+                return _newProjectName;
             }
             set
             {
-                SetValue(ref _name, value);
+                SetValue(ref _newProjectName, value);
             }
         }
 
-        private ObservableCollection<ProjectContainerViewModel> _projects;
-
-        public ObservableCollection<ProjectContainerViewModel> Projects
-        {
-            get
-            {
-                return _projects;
-            }
-            set
-            {
-                SetValue(ref _projects, value);
-            }
-        }
-        public ICommand AddProjectCommand { get; }
-
-        public ICommand CloseProjectFormCommand { get; }
+        private Lazy<ObservableCollection<IProjectContainerViewModel>> _lazyProjects;
 
         public ICommand SelectProjectCommand { get; }
 
-
-        public event EventHandler<EventArgs>? Closed;
-
-        public ProjectFormViewModel(
-            IRecordViewModel sourceRecord,
-            IProjectRepository projectRepository,
-            AbstractValidator<IProjectName> validator,
-            INavigationService closeProjectFormNavigationService)
+        public ObservableCollection<IProjectContainerViewModel> Projects
         {
-            _name = string.Empty;
-            _source = sourceRecord;
-            _projectRepository = projectRepository;
-            _validator = validator;
-            _isCanAdd = false;
-            _projects = MakeListingProject();
-
-            CloseProjectFormCommand = new NavigationCommand(closeProjectFormNavigationService);
-            AddProjectCommand = new CommandCallback((e) => OnAddProjectCommand(e));
-            SelectProjectCommand = new CommandCallback(e => OnSelectProjectCommand(e));
-            PropertyChanged += OnIsCanAddChanged;
-            _projectRepository.RepositoryChanged += OnRepositoryChanged;
+            get
+            {
+                return _lazyProjects.Value;
+            }
         }
 
-        private void OnRepositoryChanged(object? sender, RepositoryChangedEventArgs<Project> e)
+        private bool _canAddNewProject;
+
+        public bool CanAddNewProject
         {
-            Projects = MakeListingProject();
+            get
+            {
+                return _canAddNewProject;
+            }
+            set
+            {
+                SetValue(ref _canAddNewProject, value);
+            }
+        }
+
+        public ICommand AddNewProjectCommand { get; }
+
+        public ICommand CloseCommand { get; }
+
+
+        public event EventHandler<EventArgs> Closed;
+
+        public event EventHandler<ProjectDTO> ProjectSelected;
+
+
+        public ProjectFormViewModel(
+            Guid selectedProjectId,
+            IValidator<string> nameValidator,
+            IProjectService projectService,
+            IProjectContainerFactory projectContainerFactory)
+        {
+            _selectedProjectId = selectedProjectId;
+            _newProjectName = string.Empty;
+            _nameValidator = nameValidator;
+            _projectService = projectService;
+            _projectContainerFactory = projectContainerFactory;
+            _lazyProjects = new Lazy<ObservableCollection<IProjectContainerViewModel>>(MakeListingProject);
+
+            AddNewProjectCommand = new CommandCallback(OnAddProjectCommand);
+            SelectProjectCommand = new CommandCallback(OnSelectProjectCommand);
+            CloseCommand = new RelayCommand(Close);
+            PropertyChanged += OnNewProjectNameChanged;
         }
 
         private void OnSelectProjectCommand(object? e)
         {
-            if (e is not ProjectContainerViewModel container)
+            if (e is not Guid projectId)
             {
-                throw new ArgumentException("Command parameter must be ProjectContainerViewModel type");
+                throw new ArgumentException("Command parameter must be project id");
             }
-            Project project = container.IsEmpty ? Project.Empty : container.Item!.Project;
+            var projectContainer = Projects.FirstOrDefault(p=> p.Id.Equals(projectId));
+            if (projectContainer is null)
+            {
+                throw new ArgumentException("Project Id not found");
+            }
+            var project = new ProjectDTO(projectContainer.Name, projectContainer.Id, projectContainer.IsEmpty);
             SetProjectToSource(project);
         }
 
-        public override void Dispose()
+
+
+        private ObservableCollection<IProjectContainerViewModel> MakeListingProject()
         {
-            _projectRepository.RepositoryChanged -= OnRepositoryChanged;
-            PropertyChanged -= OnIsCanAddChanged;
-            base.Dispose();
+            var result = _projectService
+                .GetProjects()
+                .Select(p => _projectContainerFactory.Create(p, p.Id.Equals(_selectedProjectId)))
+                .OrderBy(p=> p.Name)
+                .ToList();
+            result.Insert(0, _projectContainerFactory.CreateEmpty(_selectedProjectId.Equals(Guid.Empty)));
+            return new ObservableCollection<IProjectContainerViewModel>(result);
         }
 
-
-        private ObservableCollection<ProjectContainerViewModel> MakeListingProject()
+        private void OnNewProjectNameChanged(object? sender, PropertyChangedEventArgs e)
         {
-            var result = new ObservableCollection<ProjectContainerViewModel>
+            if(e.PropertyName is nameof(NewProjectName))
             {
-                new ProjectContainerViewModel(null, true, _source.Project.Equals(Project.Empty))
-            };
-            var projects = _projectRepository.GetItems((e) => true).OrderBy(x => x.Name);
-            foreach (var project in projects)
-            {
-                result.Add(new ProjectContainerViewModel(
-                    new EditableProjectViewModel(project, _projectRepository, _validator),
-                    false,
-                    _source.Project.Equals(project)));
-            }
-            return result;
-        }
-
-        private void OnIsCanAddChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(Name))
-            {
-                _isCanAdd = !HasErrors;
-                OnPropertyChanged(nameof(IsCanAdd));
+                ValidationResult result = _nameValidator.Validate(NewProjectName);
+                CanAddNewProject = result.IsValid;
             }
         }
+
 
         private void OnAddProjectCommand(object? e)
         {
-            if (!IsCanAdd)
-            {
-                throw new AddingInvalidProjectException();
-            }
-            var project = new Project(Name, Guid.NewGuid());
-            _projectRepository.AddItem(project);
-            SetProjectToSource(project);
+            var projectDTO = new ProjectDTO(NewProjectName, Guid.NewGuid(), false);
+            _projectService.AddProject(projectDTO);
+            SetProjectToSource(projectDTO);
         }
 
 
-        protected void SetProjectToSource(Project project)
+        protected void SetProjectToSource(ProjectDTO project)
         {
-            _source.Project = project;
-            CloseProjectFormCommand.Execute(null);
+            ProjectSelected?.Invoke(this, project);
+            Close();
         }
 
-        protected override void Validate(string propertyName)
+        private void Close()
         {
-            ClearAllErrors();
-            var validationResult = _validator.Validate(this);
-            if (validationResult.IsValid)
-            {
-                return;
-            }
-            foreach (var error in validationResult.Errors)
-            {
-                if (error is null)
-                {
-                    continue;
-                }
-                AddError(error.PropertyName, error.ErrorMessage);
-            }
+            Closed?.Invoke(this, EventArgs.Empty);
+        }
+
+        public IEnumerable GetErrors(string? propertyName)
+        {
+            throw new NotImplementedException();
         }
     }
 }

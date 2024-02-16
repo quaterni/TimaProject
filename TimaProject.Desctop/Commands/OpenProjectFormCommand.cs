@@ -10,7 +10,7 @@ using TimaProject.Desctop.ViewModels.Factories;
 
 namespace TimaProject.Desctop.Commands
 {
-    public class OpenProjectFormCommand : CommandBase
+    internal class OpenProjectFormCommand : CommandBase
     {
         private readonly IRecordViewModel _source;
         private readonly ProjectFormViewModelFactory _factory;
@@ -28,7 +28,7 @@ namespace TimaProject.Desctop.Commands
 
         public override void Execute(object? parameter)
         {
-            _openProjectFormNavigationService.Navigate(_factory.Create(_source));
+            //_openProjectFormNavigationService.Navigate(_factory.Create(_source));
         }
     }
 }

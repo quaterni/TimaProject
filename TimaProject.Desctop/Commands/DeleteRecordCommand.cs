@@ -8,7 +8,7 @@ using TimaProject.Desctop.ViewModels;
 
 namespace TimaProject.Desctop.Commands
 {
-    public class DeleteRecordCommand : CommandBase
+    internal class DeleteRecordCommand : CommandBase
     {
         private readonly EditableRecordViewModel _editableRecordViewModel;
 

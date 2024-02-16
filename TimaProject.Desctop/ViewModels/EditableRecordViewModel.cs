@@ -15,7 +15,7 @@ using TimaProject.Desctop.ViewModels.Factories;
 
 namespace TimaProject.Desctop.ViewModels
 {
-    public class EditableRecordViewModel : NotifyDataErrorViewModel, IRecordViewModel, IEditRecord
+    internal class EditableRecordViewModel : NotifyDataErrorViewModel, IRecordViewModel, IEditRecord
     {
         private readonly AbstractValidator<ITimeBase> _validator;
 

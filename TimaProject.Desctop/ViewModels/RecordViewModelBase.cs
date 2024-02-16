@@ -13,7 +13,7 @@ using TimaProject.Desctop.ViewModels.Factories;
 
 namespace TimaProject.Desctop.ViewModels
 {
-    internal class RecordViewModelBase : ViewModelBase, IRecordViewModelBase
+    internal abstract class RecordViewModelBase : ViewModelBase, IRecordViewModelBase
     {
         private string _startTime;
 

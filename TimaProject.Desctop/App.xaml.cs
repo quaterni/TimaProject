@@ -62,11 +62,11 @@ namespace TimaProject.Desctop
 
             services.AddSingleton<IDateStore, TodayDateStore>();
 
-            services.AddTransient<ProjectFormViewModelFactory>(
-                s=> new ProjectFormViewModelFactory(
-                        s.GetRequiredService<IProjectRepository>(),
-                        s.GetRequiredService<AbstractValidator<IProjectName>>(),
-                        s.GetRequiredService<CloseModalService>()));
+            //services.AddTransient<ProjectFormViewModelFactory>(
+            //    s=> new ProjectFormViewModelFactory(
+            //            s.GetRequiredService<IProjectRepository>(),
+            //            s.GetRequiredService<AbstractValidator<IProjectName>>(),
+            //            s.GetRequiredService<CloseModalService>()));
 
 
             services.AddTransient(

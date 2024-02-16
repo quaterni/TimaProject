@@ -10,7 +10,7 @@ using TimaProject.Desctop.Stores;
 
 namespace TimaProject.Desctop.ViewModels
 {
-    public class ListingRecordViewModel : ViewModelBase
+    internal class ListingRecordViewModel : ViewModelBase
     {
         private readonly EditableRecordViewModelFactory _editableRecordViewModelFactory;
 

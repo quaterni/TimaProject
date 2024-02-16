@@ -12,12 +12,12 @@ using TimaProject.Desctop.Interfaces.ViewModels;
 using TimaProject.Desctop.ViewModels;
 using Xunit;
 
-namespace TimaProject.Desctop.Tests
+namespace TimaProject.Desctop.Tests.ViewModels
 {
     public class RecordViewModelBaseShould
     {
         private readonly RecordViewModelBase _sut;
-        private readonly Mock<RecordViewModelBase> _mockSut;
+        private readonly Mock<RecordViewModelBase> _sutMock;
 
         private readonly Mock<ITimeFormViewModelFactory> _mockTimeFormFactory;
         private readonly Mock<IProjectFormViewModelFactory> _mockProjectFormFactory;
@@ -30,8 +30,9 @@ namespace TimaProject.Desctop.Tests
             _mockProjectFormFactory = new Mock<IProjectFormViewModelFactory>();
             _mockProjectForm = new Mock<IProjectFormViewModel>();
             _mockTimeForm = new Mock<ITimeFormViewModel>();
-            _mockSut = new Mock<RecordViewModelBase>(_mockTimeFormFactory.Object, _mockProjectFormFactory.Object);
-            _sut = _mockSut.Object;
+            _sutMock = new Mock<RecordViewModelBase>(_mockTimeFormFactory.Object, _mockProjectFormFactory.Object);
+            _sut = _sutMock.Object;
+
 
             _mockProjectFormFactory
                 .Setup(s => s.Create(_sut.ProjectId))
@@ -65,7 +66,7 @@ namespace TimaProject.Desctop.Tests
 
             _sut.OpenProjectFormCommand.Execute(null);
 
-            _mockProjectFormFactory.Verify(s=> s.Create(_sut.ProjectId), Times.Once());
+            _mockProjectFormFactory.Verify(s => s.Create(_sut.ProjectId), Times.Once());
         }
 
         [Fact]
@@ -97,7 +98,7 @@ namespace TimaProject.Desctop.Tests
         {
             _sut.OpenProjectFormCommand.Execute(null);
 
-            _mockProjectForm.VerifyAdd(s => s.Closed += It.IsAny<EventHandler>(), Times.Once);
+            _mockProjectForm.VerifyAdd(s => s.Closed += It.IsAny<EventHandler<EventArgs>>(), Times.Once);
         }
 
         [Fact]
@@ -137,8 +138,7 @@ namespace TimaProject.Desctop.Tests
         {
             _sut.OpenTimeFormCommand.Execute(null);
 
-            _mockTimeForm.VerifyAdd(s => s.Closed += It.IsAny<EventHandler>(), Times.Once);
+            _mockTimeForm.VerifyAdd(s => s.Closed += It.IsAny<EventHandler<EventArgs>>(), Times.Once);
         }
-
     }
 }

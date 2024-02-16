@@ -7,9 +7,9 @@ using System.Windows.Input;
 
 namespace TimaProject.Desctop.Interfaces.ViewModels
 {
-    internal interface IDialog : IDisposable
+    public interface IDialog : IDisposable
     {
         ICommand CloseCommand { get; }
-        event EventHandler Closed;
+        event EventHandler<EventArgs> Closed;
     }
 }

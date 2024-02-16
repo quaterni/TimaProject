@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace TimaProject.Desctop.DTOs
 {
-    internal record ProjectDTO(string Name, Guid Id, bool IsEmpty);
+    public record ProjectDTO(string Name, Guid Id, bool IsEmpty);
 }

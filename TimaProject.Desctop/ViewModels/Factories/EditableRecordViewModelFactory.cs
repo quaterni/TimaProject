@@ -10,7 +10,7 @@ using TimaProject.Desctop.ViewModels.Validators;
 
 namespace TimaProject.Desctop.ViewModels.Factories
 {
-    public class EditableRecordViewModelFactory
+    internal class EditableRecordViewModelFactory
     {
         private readonly IRecordRepository recordRepository;
         private readonly INavigationService timeFromNavigationService;
