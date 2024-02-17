@@ -1,29 +1,26 @@
-﻿using FluentValidation;
-using MvvmTools.Base;
-using MvvmTools.Navigation.Services;
-using System;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Reactive.Linq;
+﻿using System.ComponentModel;
 using System.Windows.Input;
-using System.Windows.Threading;
 using TimaProject.Desctop.Commands;
-using TimaProject.Domain.Models;
-using TimaProject.DataAccess.Repositories;
-using TimaProject.Desctop.ViewModels.Factories;
 using TimaProject.Desctop.Interfaces.ViewModels;
-using System.Runtime.CompilerServices;
 using TimaProject.Desctop.Interfaces.Factories;
 using TimaProject.Desctop.Interfaces.Services;
-[assembly: InternalsVisibleToAttribute("TimaProject.Desctop.Tests")]
+using System;
+using CommunityToolkit.Mvvm.Input;
+using TimaProject.Desctop.DTOs;
+using System.Linq;
+
 
 
 namespace TimaProject.Desctop.ViewModels
 {
     internal class TimerViewModel : RecordViewModelBase, ITimerViewModel
     {
-        private readonly ITimerExecutor _timerExecutor;
+        private ITimerExecutor? _timerExecutor;
+        private readonly ITimerExecutorFactory _timerExecutorFactory;
         private readonly IRecordService _recordService;
+        private readonly IDateReportService _dateReportService;
+
+        private Guid? _recordId;
 
         private TimerState _state;
 
@@ -42,66 +39,64 @@ namespace TimaProject.Desctop.ViewModels
         public ICommand TimerCommand { get; }
 
         public TimerViewModel(
-            INavigationService timeFormNavigationService,
-            INavigationService projectFormNavigationService,
             ITimeFormViewModelFactory timeFormFactory,
             IProjectFormViewModelFactory projectFormViewModelFactory,
             IRecordService recordService,
-            ITimerExecutor timerExecutor) : base(timeFormFactory, projectFormViewModelFactory)
+            ITimerExecutorFactory timerExecutorFactory,
+            IDateReportService dateReportService) : base(timeFormFactory, projectFormViewModelFactory)
         {
             State = TimerState.NotRunning;
+            Time = TimeSpan.Zero.ToString();
+            _recordService = recordService;
+            _timerExecutorFactory = timerExecutorFactory;
+            _dateReportService = dateReportService;
 
-            //OpenTimeFormCommand = new OpenTimeFormCommand(this, timeFormFactory, timeFormNavigationService, isEndTimeEnabled: false);
-            //OpenProjectFormCommand = new OpenProjectFormCommand(this, projectFormViewModelFactory, projectFormNavigationService);
 
-            TimerCommand = new TimerCommand(this);
+            TimerCommand = new RelayCommand(OnTimerCommand);
+            PropertyChanged += OnStartTimeChanged;
             PropertyChanged += OnRecordUpdated;
+            
         }
 
         private void OnRecordUpdated(object? sender, PropertyChangedEventArgs e)
         {
-            //if (_record is null)
-            //{
-            //    return;
-            //}
+            string[] properties = [
+                nameof(StartTime),
+                nameof(Title),
+                nameof(ProjectName),
+                nameof(ProjectId),
+                nameof(Date)
+            ];
+            if (properties.Contains(e.PropertyName) 
+                && State == TimerState.Running 
+                && _recordId is not null)
+            {
+                UpdateRecord(true);
+            }
+        }
 
-            //foreach (var error in GetErrors(e.PropertyName))
-            //{
-            //    if (error is not null)
-            //    {
-            //        return;
-            //    }
-            //}
-            //switch (e.PropertyName)
-            //{
-            //    case nameof(Title):
-            //        {
-            //            _record = _record with { Title = Title };
-            //            _recordRepository.UpdateItem(_record);
-            //            break;
-            //        }
-            //    case nameof(Project):
-            //        {
-            //            _record = _record with { Project = Project };
-            //            _recordRepository.UpdateItem(_record);
-            //            break;
-            //        }
-            //    case nameof(StartTime):
-            //        {
-            //            var startTime = DateTime.Parse(StartTime);
-            //            SetStartTime();
-            //            _record = _record with { StartTime = startTime };
-            //            _recordRepository.UpdateItem(_record);
-            //            break;
-            //        }
-            //    case nameof(Date):
-            //        {
-            //            var date = DateOnly.Parse(Date);
-            //            _record = _record with { Date = date };
-            //            _recordRepository.UpdateItem(_record);
-            //            break;
-            //        }
-            //}
+        private void UpdateRecord(bool isActive)
+        {
+            _recordService.UpdateRecord(
+                new RecordDTO(StartTime, Title, _recordId!.Value)
+                {
+                    EndTime = EndTime,
+                    Date = Date,
+                    ProjectId = ProjectId,
+                    ProjectName = ProjectName,
+                    IsActive = isActive
+                });
+        }
+
+        private void OnStartTimeChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if(State == TimerState.Running 
+                && e.PropertyName == nameof(StartTime)
+                && _timerExecutor is not null
+                && DateTime.TryParse(StartTime, out var startingTime))
+            {
+                _timerExecutor.StartTime = startingTime;
+            }
         }
 
 
@@ -118,45 +113,75 @@ namespace TimaProject.Desctop.ViewModels
             //_timerStartTime = DateTime.Parse(StartTime);
         }
 
-
-
-        public void OnStartingTime()
+        private void OnTimerCommand()
         {
-        //    if (HasPropertyErrors(nameof(StartTime)) || StartTime.Equals(string.Empty))
-        //    {
-        //        StartTime = DateTime.Now.ToString();
-        //    }
-        //    State = TimerState.Running;
 
-        //    CreateRecord();
-        //    StartTimer();
+            switch (State)
+            {
+                case TimerState.Running:
+                    StopTimer();
+                    break;
+                case TimerState.NotRunning:
+                    StartTimer();
+                    break;
+            }
+        }
+
+        public void StartTimer()
+        {
+            _timerExecutor = _timerExecutorFactory.Create();
+            if (!DateTime.TryParse(StartTime, out var startingTime))
+            {
+                startingTime = _timerExecutor.CurrentTime();
+                StartTime = startingTime.ToString();
+            }
+            
+            _timerExecutor.StartTime = startingTime;
+            _timerExecutor.Tick += OnTimerTick;
+            _timerExecutor.Start();
+
+            State = TimerState.Running;
+
+            CreateRecord();
+        }
+
+        private void OnTimerTick(object? sender, TimeSpan e)
+        {
+            Time = e.ToString();
         }
 
         private void CreateRecord()
         {
-            //var title = HasPropertyErrors(nameof(Title)) ? string.Empty : Title;
-            //var project = Project;
-            //var startTime = HasPropertyErrors(nameof(StartTime)) ?
-            //                    DateTime.Now : DateTime.Parse(StartTime);
-            //var date = HasPropertyErrors(nameof(Date))
-            //           || Date.Equals(string.Empty) ?
-            //            DateOnly.FromDateTime(DateTime.Today) : DateOnly.Parse(Date);
-            //var record = new Record(startTime, date, Guid.NewGuid())
-            //{
-            //    Project = project,
-            //    Title = title,
-            //};
-
-            //_record = record;
-            //_recordRepository.AddItem(record);
+            if(!DateOnly.TryParse(Date, out _))
+            {
+                Date = _dateReportService.CurrentDate().ToString();
+            }
+            _recordId = Guid.NewGuid();
+            _recordService.AddRecord(
+                new RecordDTO(StartTime, Title, _recordId.Value)
+                {
+                    Date = Date,
+                    ProjectId = ProjectId,
+                    ProjectName = ProjectName
+                });
         }
 
-        public void OnEndingTime()
+        public void StopTimer()
         {
-            if (State == TimerState.Running)
-            {
-                State = TimerState.NotRunning;
-            }
+            State = TimerState.NotRunning;
+            EndTime = _timerExecutor!.CurrentTime().ToString();
+            UpdateRecord(false);
+
+            _recordId = null;
+            _timerExecutor.Dispose();
+            _timerExecutor = null;
+            StartTime = string.Empty;
+            EndTime = string.Empty;
+            Time = TimeSpan.Zero.ToString();
+            Date = string.Empty;
+            Title = string.Empty;
+            ProjectId = Guid.Empty;
+            ProjectName = string.Empty;
         }
 
 

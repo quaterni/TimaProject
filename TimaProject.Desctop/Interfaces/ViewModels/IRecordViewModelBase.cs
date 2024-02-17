@@ -12,7 +12,7 @@ namespace TimaProject.Desctop.Interfaces.ViewModels
 
         string EndTime { get; set; }
 
-        string Time { get; set; }
+        string Time { get; }
 
         string Date { get; set; }
 

@@ -1,7 +1,7 @@
 using System.Runtime.CompilerServices;
 using System.Windows;
 
-[assembly: InternalsVisibleTo("TimeProject.Tests")]
+[assembly: InternalsVisibleTo("TimaProject.Desctop.Tests")]
 
 [assembly: ThemeInfo(
     ResourceDictionaryLocation.None, //where theme specific resource dictionaries are located

@@ -51,7 +51,7 @@ namespace TimaProject.Desctop.ViewModels
             {
                 return _time;
             }
-            set
+            protected set
             {
                 SetValue(ref _time, value);
             }
@@ -93,7 +93,7 @@ namespace TimaProject.Desctop.ViewModels
             {
                 return _projectName;
             }
-            set
+            protected set
             {
                 SetValue(ref _projectName, value);
             }
@@ -107,7 +107,7 @@ namespace TimaProject.Desctop.ViewModels
             {
                 return _projectId;
             }
-            private set
+            protected set
             {
                 SetValue(ref _projectId, value);
             }

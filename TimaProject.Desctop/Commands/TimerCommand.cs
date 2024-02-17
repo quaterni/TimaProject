@@ -20,14 +20,7 @@ namespace TimaProject.Desctop.Commands
 
         public override void Execute(object? parameter)
         {
-            if (_timerViewModel.State == TimerState.Running)
-            {
-                _timerViewModel.OnEndingTime();
-            }
-            else
-            {
-                _timerViewModel.OnStartingTime();
-            }
+
         }
     }
 }

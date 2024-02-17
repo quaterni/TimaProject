@@ -26,20 +26,5 @@ namespace TimaProject.Desctop.Views
             InitializeComponent();
         }
 
-        private void TimerControl_TimeStarted(object sender, RoutedPropertyChangedEventArgs<DateTime> e)
-        {
-            if(DataContext is TimerViewModel vm)
-            {
-                vm.OnStartingTime();
-            }
-        }
-
-        private void TimerControl_TimeStopped(object sender, RoutedPropertyChangedEventArgs<Tuple<DateTime, DateTime>> e)
-        {
-            if (DataContext is TimerViewModel vm)
-            {
-                vm.OnEndingTime();
-            }
-        }
     }
 }

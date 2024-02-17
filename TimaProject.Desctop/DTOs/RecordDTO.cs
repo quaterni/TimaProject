@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace TimaProject.Desctop.DTOs
 {
-    internal record RecordDTO(string StartTime, string Title, Guid RecordId, Guid ProjectId, bool IsActive)
+    public record RecordDTO(string StartTime, string Title, Guid RecordId)
     {
-        public string? EndTime { get; set; }
-        public string? Date { get; set; }
-        public string? ProjectName { get; set; }
+        public bool IsActive { get; init; }
+        public Guid ProjectId { get; init; } = Guid.Empty;
+        public string? EndTime { get; init; }
+        public string Date { get; init; }
+        public string ProjectName { get; init; }
     }
 }

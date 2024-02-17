@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace TimaProject.Desctop.Interfaces.Services
 {
-    internal interface ITimerExecutor
+    internal interface ITimerExecutor : IDisposable
     {
         void Start();
         DateTime StartTime { get; set; }
+        DateTime CurrentTime();
         event EventHandler<TimeSpan> Tick;
     }
 }
