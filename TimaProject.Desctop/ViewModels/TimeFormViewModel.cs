@@ -169,10 +169,7 @@ namespace TimaProject.Desctop.ViewModels
         public static ValidationResult TimeValidation(string value, ValidationContext context)
         {           
             TimeFormViewModel instance = (TimeFormViewModel)context.ObjectInstance;
-            if (instance._lock)
-            {
-                return ValidationResult.Success;
-            }
+
             string propertyName = context.DisplayName;
             TimeServiceResult result = instance._timeService.Solve(
                 propertyName,
@@ -185,6 +182,11 @@ namespace TimaProject.Desctop.ViewModels
             if(result.Result == SolvingResult.ComponentError)
             {
                 instance.ComponentError = result.ErrorMessage;
+                return ValidationResult.Success;
+            }
+
+            if (instance._lock)
+            {
                 return ValidationResult.Success;
             }
 
