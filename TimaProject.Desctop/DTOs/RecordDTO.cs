@@ -13,5 +13,6 @@ namespace TimaProject.Desctop.DTOs
         public string? EndTime { get; init; }
         public string Date { get; init; }
         public string ProjectName { get; init; }
+        public string? Time {get; init;}
     }
 }

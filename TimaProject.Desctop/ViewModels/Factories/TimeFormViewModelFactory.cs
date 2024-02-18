@@ -20,13 +20,5 @@ namespace TimaProject.Desctop.ViewModels.Factories
             _closeNavigationService = closeNavigationService;
         }
 
-        public TimeFormViewModel Create(IRecordViewModel recordViewModel, bool isEndTimeEnabled = true)
-        {
-            return null;
-            //return new TimeFormViewModel(
-            //    recordViewModel,
-            //    _validator,
-            //    canEndTimeEdit: isEndTimeEnabled);
-        }
     }
 }

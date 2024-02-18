@@ -10,9 +10,9 @@ namespace TimaProject.Desctop.Commands
 {
     internal class DeleteRecordCommand : CommandBase
     {
-        private readonly EditableRecordViewModel _editableRecordViewModel;
+        private readonly RecordViewModel _editableRecordViewModel;
 
-        public DeleteRecordCommand(EditableRecordViewModel editableRecordViewModel)
+        public DeleteRecordCommand(RecordViewModel editableRecordViewModel)
         {
             _editableRecordViewModel = editableRecordViewModel;
         }

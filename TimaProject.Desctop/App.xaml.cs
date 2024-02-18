@@ -100,8 +100,6 @@ namespace TimaProject.Desctop
 
             services.AddTransient(
                 s => new ListingRecordViewModel(
-                    s.GetRequiredService<IRecordRepository>(),
-                    s.GetRequiredService<EditableRecordViewModelFactory>()
                 ));
 
             services.AddTransient<TimerLayoutViewModel>(

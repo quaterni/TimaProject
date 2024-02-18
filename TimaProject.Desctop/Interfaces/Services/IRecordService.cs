@@ -12,5 +12,7 @@ namespace TimaProject.Desctop.Interfaces.Services
         void AddRecord(RecordDTO record);
 
         void UpdateRecord(RecordDTO record);
+
+        bool DeleteRecord(Guid recordId);
     }
 }
