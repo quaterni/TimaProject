@@ -38,7 +38,7 @@
             <DataTemplate DataType="{x:Type viewModels:NoteFormViewModel}">
                 <views:NoteFormView/>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type viewModels:EditableNoteViewModel}">
+            <DataTemplate DataType="{x:Type viewModels:NoteViewModel}">
                 <views:EditableNoteView/>
             </DataTemplate>
         </Grid.Resources>

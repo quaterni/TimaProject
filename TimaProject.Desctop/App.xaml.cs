@@ -74,10 +74,9 @@ namespace TimaProject.Desctop
                     s.GetRequiredService<TimeValidator>(),
                     s.GetRequiredService<CloseModalService>()));
 
-            services.AddTransient<EditableNoteViewModelFactory>();
 
             services.AddTransient<NoteFormViewModelFactory>();
-            services.AddTransient<ListingNoteViewModelFactory>();
+
 
             //services.AddTransient(
             //    s => new EditableRecordViewModelFactory(

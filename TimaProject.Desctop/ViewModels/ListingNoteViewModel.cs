@@ -8,53 +8,52 @@ using System.Threading.Tasks;
 using TimaProject.Domain.Models;
 using TimaProject.DataAccess.Repositories;
 using TimaProject.Desctop.ViewModels.Factories;
+using TimaProject.Desctop.Interfaces.ViewModels;
+using CommunityToolkit.Mvvm.ComponentModel;
+using TimaProject.Desctop.Interfaces.Services;
+using TimaProject.Desctop.Interfaces.Factories;
 
 namespace TimaProject.Desctop.ViewModels
 {
-    public class ListingNoteViewModel : ViewModelBase
+    public class ListingNoteViewModel : ObservableObject, IListingNoteViewModel
     {
-        private readonly Func<Note, bool> _noteFilter;
-        private readonly IRepository<Note> _noteRepository;
-        private readonly EditableNoteViewModelFactory _editableNoteFactory;
-        private ObservableCollection<EditableNoteViewModel> _notes;
+        private readonly Guid _recordId;
 
+        private readonly INoteService _noteService;
 
-        public ObservableCollection<EditableNoteViewModel> Notes
+        private readonly INoteViewModelFactory _noteViewModelFactory;
+
+        private Lazy<ObservableCollection<INoteViewModel>> _lazyNotes;
+
+        public ObservableCollection<INoteViewModel> Notes
         {
             get
             {
-                return _notes;
+                return _lazyNotes.Value;
             }
-            set
-            {
-                SetValue(ref _notes, value);
-            }
-        }
 
+        }
 
         public ListingNoteViewModel(
-            Func<Note, bool> noteFilter,
-            IRepository<Note> noteRepository,
-            EditableNoteViewModelFactory editableNoteFactory
+            Guid recordId, 
+            INoteService noteService, 
+            INoteViewModelFactory noteViewModelFactory
             )
         {
-            _notes = new ObservableCollection<EditableNoteViewModel>();
-            _editableNoteFactory = editableNoteFactory;
-            _noteFilter = noteFilter;
-            _noteRepository = noteRepository;
-            _editableNoteFactory = editableNoteFactory;
-            _noteRepository.RepositoryChanged += OnListingChanged;
-            OnListingChanged(this, EventArgs.Empty);
+            _recordId = recordId;
+            _noteService = noteService;
+            _noteViewModelFactory = noteViewModelFactory;
+
+            _lazyNotes = new Lazy<ObservableCollection<INoteViewModel>>(GetNotes);
         }
 
-        private void OnListingChanged(object? sender, EventArgs e)
+        private ObservableCollection<INoteViewModel> GetNotes()
         {
-            var editableNotes = _noteRepository
-                .GetItems(_noteFilter)
-                .OrderBy(note => note.Created)
-                .Select(note => _editableNoteFactory.Create(note))
-                .ToList();
-            Notes = new ObservableCollection<EditableNoteViewModel>(editableNotes);
+            return new ObservableCollection<INoteViewModel>(
+                _noteService.GetNotes(_recordId)
+                .OrderBy(n => n.Created)
+                .Select(n=> _noteViewModelFactory.Create(n))
+                .ToList());
         }
     }
 }

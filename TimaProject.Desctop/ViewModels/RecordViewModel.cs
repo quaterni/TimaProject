@@ -84,7 +84,7 @@ namespace TimaProject.Desctop.ViewModels
         }
 
 
-
+        // TODO: improve it
         private void OnRecordUpdated(object? sender, PropertyChangedEventArgs e)
         {
             string[] properties = [

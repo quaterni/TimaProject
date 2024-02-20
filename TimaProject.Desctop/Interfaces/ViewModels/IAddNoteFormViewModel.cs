@@ -4,7 +4,7 @@ namespace TimaProject.Desctop.Interfaces.ViewModels
 {
     public interface IAddNoteFormViewModel
     {
-        string Name { get; set; }
+        string Text { get; set; }
         ICommand AddNoteCommand { get; }
         bool CanAdd { get; }
     }
