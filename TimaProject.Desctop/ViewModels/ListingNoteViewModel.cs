@@ -1,13 +1,6 @@
-﻿using MvvmTools.Base;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TimaProject.Domain.Models;
-using TimaProject.DataAccess.Repositories;
-using TimaProject.Desctop.ViewModels.Factories;
 using TimaProject.Desctop.Interfaces.ViewModels;
 using CommunityToolkit.Mvvm.ComponentModel;
 using TimaProject.Desctop.Interfaces.Services;

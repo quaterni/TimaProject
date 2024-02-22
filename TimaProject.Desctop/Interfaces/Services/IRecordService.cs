@@ -7,12 +7,35 @@ using TimaProject.Desctop.DTOs;
 
 namespace TimaProject.Desctop.Interfaces.Services
 {
-    internal interface IRecordService
+    public enum Operation
     {
-        void AddRecord(RecordDTO record);
+        Add,
+        Update,
+        Delete
+    }
 
-        void UpdateRecord(RecordDTO record);
+    public class EntityChangedEventArgs<TEntity> : EventArgs
+    {
+        public EntityChangedEventArgs(Operation operation, TEntity value)
+        {
+            Operation = operation;
+            Value = value;
+        }
+
+        public Operation Operation { get; }
+        public TEntity Value { get; }
+    }
+
+    public interface IRecordService
+    {
+        void AddRecord(RecordDto record);
+
+        void UpdateRecord(RecordDto record);
 
         bool DeleteRecord(Guid recordId);
+
+        IEnumerable<RecordDto> GetRecords();
+
+        event EventHandler<EntityChangedEventArgs<RecordDto>> RecordChanged;
     }
 }

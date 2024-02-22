@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace TimaProject.Desctop.Interfaces.ViewModels
 {
-    internal interface IRecordViewModel : IRecordViewModelBase
+    public interface IRecordViewModel : IRecordViewModelBase
     {
         Guid Id { get; }
         ICommand DeleteRecordCommand { get; }

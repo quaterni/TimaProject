@@ -78,7 +78,7 @@ namespace TimaProject.Desctop.ViewModels
         private void UpdateRecord(bool isActive)
         {
             _recordService.UpdateRecord(
-                new RecordDTO(StartTime, Title, _recordId!.Value)
+                new RecordDto(StartTime, Title, _recordId!.Value)
                 {
                     EndTime = EndTime,
                     Date = Date,
@@ -158,7 +158,7 @@ namespace TimaProject.Desctop.ViewModels
             }
             _recordId = Guid.NewGuid();
             _recordService.AddRecord(
-                new RecordDTO(StartTime, Title, _recordId.Value)
+                new RecordDto(StartTime, Title, _recordId.Value)
                 {
                     Date = Date,
                     ProjectId = ProjectId,

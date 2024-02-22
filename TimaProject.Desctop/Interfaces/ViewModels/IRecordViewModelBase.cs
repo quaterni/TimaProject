@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TimaProject.Desctop.Interfaces.ViewModels
 {
-    internal interface IRecordViewModelBase : ITimeEditable, IProjectEditable
+    public interface IRecordViewModelBase : ITimeEditable, IProjectEditable
     {
         string StartTime { get; set; }
 

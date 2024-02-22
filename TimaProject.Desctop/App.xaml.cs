@@ -4,21 +4,10 @@ using MvvmTools.Base;
 using MvvmTools.Navigation.Services;
 using MvvmTools.Navigation.Stores;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
-using TimaProject.Domain.Models;
-using TimaProject.DataAccess.Repositories;
-using TimaProject.Desctop.Stores;
 using TimaProject.Desctop.ViewModels;
 using TimaProject.Desctop.ViewModels.Containers;
-using TimaProject.Desctop.ViewModels.Factories;
-using TimaProject.Desctop.ViewModels.Validators;
-using TimaProject.Desctop.Interfaces.Factories;
-using TimaProject.Desctop.Interfaces.Services;
+
 
 
 namespace TimaProject.Desctop
@@ -34,48 +23,48 @@ namespace TimaProject.Desctop
         {
             IServiceCollection services = new ServiceCollection();
 
-            services.AddSingleton<NavigationStore>();
-            services.AddSingleton<ModalStore>();
+            //services.AddSingleton<NavigationStore>();
+            //services.AddSingleton<ModalStore>();
 
 
-            services.AddTransient<CloseModalService>();
-            services.AddTransient<OpenModalService>();
+            //services.AddTransient<CloseModalService>();
+            //services.AddTransient<OpenModalService>();
 
-            services.AddTransient<TimeValidator>();
-            services.AddTransient<AbstractValidator<IProjectName> ,ProjectNameValidator >();
+            //services.AddTransient<TimeValidator>();
+            //services.AddTransient<AbstractValidator<IProjectName> ,ProjectNameValidator >();
 
-            services.AddSingleton<MainWindow>(
-                s => new MainWindow()
-                {
-                    DataContext = new MainViewModel(s.GetRequiredService<NavigationStore>(), s.GetRequiredService<ModalStore>())
-                });
+            //services.AddSingleton<MainWindow>(
+            //    s => new MainWindow()
+            //    {
+            //        DataContext = new MainViewModel(s.GetRequiredService<NavigationStore>(), s.GetRequiredService<ModalStore>())
+            //    });
 
-            services.AddSingleton<Func<Type, ViewModelBase>>(
-                s => type => (ViewModelBase)s.GetRequiredService(type));
+            //services.AddSingleton<Func<Type, ViewModelBase>>(
+            //    s => type => (ViewModelBase)s.GetRequiredService(type));
 
-            services.AddSingleton<IRepository<Note>, NoteRepository>();
+            //services.AddSingleton<IRepository<Note>, NoteRepository>();
 
-            services.AddSingleton<IRecordRepository, RecordRepository>();
+            //services.AddSingleton<IRecordRepository, RecordRepository>();
 
-            services.AddSingleton<IProjectRepository, ProjectRepository>();
-
-
-            services.AddSingleton<IDateStore, TodayDateStore>();
-
-            //services.AddTransient<ProjectFormViewModelFactory>(
-            //    s=> new ProjectFormViewModelFactory(
-            //            s.GetRequiredService<IProjectRepository>(),
-            //            s.GetRequiredService<AbstractValidator<IProjectName>>(),
-            //            s.GetRequiredService<CloseModalService>()));
+            //services.AddSingleton<IProjectRepository, ProjectRepository>();
 
 
-            services.AddTransient(
-                s => new TimeFormViewModelFactory(
-                    s.GetRequiredService<TimeValidator>(),
-                    s.GetRequiredService<CloseModalService>()));
+            //services.AddSingleton<IDateStore, TodayDateStore>();
+
+            ////services.AddTransient<ProjectFormViewModelFactory>(
+            ////    s=> new ProjectFormViewModelFactory(
+            ////            s.GetRequiredService<IProjectRepository>(),
+            ////            s.GetRequiredService<AbstractValidator<IProjectName>>(),
+            ////            s.GetRequiredService<CloseModalService>()));
 
 
-            services.AddTransient<NoteFormViewModelFactory>();
+            //services.AddTransient(
+            //    s => new TimeFormViewModelFactory(
+            //        s.GetRequiredService<TimeValidator>(),
+            //        s.GetRequiredService<CloseModalService>()));
+
+
+            //services.AddTransient<NoteFormViewModelFactory>();
 
 
             //services.AddTransient(
@@ -97,14 +86,14 @@ namespace TimaProject.Desctop
 
 
 
-            services.AddTransient(
-                s => new ListingRecordViewModel(
-                ));
+            //services.AddTransient(
+            //    s => new ListingRecordViewModel(
+            //    ));
 
-            services.AddTransient<TimerLayoutViewModel>(
-                s => new TimerLayoutViewModel(
-                    s.GetRequiredService<TimerViewModel>(),
-                    s.GetRequiredService<ListingRecordViewModel>()));
+            //services.AddTransient<TimerLayoutViewModel>(
+            //    s => new TimerLayoutViewModel(
+            //        s.GetRequiredService<TimerViewModel>(),
+            //        s.GetRequiredService<ListingRecordViewModel>()));
 
             _serviceProvider = services.BuildServiceProvider();
         }

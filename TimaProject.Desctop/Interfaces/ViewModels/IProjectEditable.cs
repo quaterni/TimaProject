@@ -2,7 +2,7 @@
 
 namespace TimaProject.Desctop.Interfaces.ViewModels
 {
-    internal interface IProjectEditable
+    public interface IProjectEditable
     {
         ICommand OpenProjectFormCommand { get; }
         IProjectFormViewModel? ProjectFormViewModel { get; }

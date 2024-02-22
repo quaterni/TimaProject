@@ -1,64 +1,134 @@
-﻿using MvvmTools.Base;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System;
 using System.Linq;
-using TimaProject.Desctop.ViewModels.Factories;
-using TimaProject.Domain.Models;
-using TimaProject.DataAccess.Repositories;
-using TimaProject.Desctop.Stores;
+using TimaProject.Desctop.Interfaces.Factories;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Collections;
+using TimaProject.Desctop.Interfaces.ViewModels;
+using TimaProject.Desctop.Interfaces.Services;
+using TimaProject.Desctop.DTOs;
 
 namespace TimaProject.Desctop.ViewModels
 {
-    internal class ListingRecordViewModel : ViewModelBase
+    public class ListingRecordViewModel : ObservableObject, IListingRecordViewModel
     {
-        //private readonly EditableRecordViewModelFactory _editableRecordViewModelFactory;
+        private readonly IRecordViewModelFactory _recordViewModelFactory;
+        private readonly IRecordService _recordService;
+        private readonly IDateReportService _dateReportService;
 
-        //private IRecordRepository _recordRepository;
+        private readonly Lazy<ObservableGroupedCollection<DateContainer, IRecordViewModel>> _lazyRecords;
 
-        //private ObservableCollection<RecordViewModel> _records;
-
-        //public ObservableCollection<RecordViewModel> Records
-        //{
-        //    get
-        //    {
-        //        return _records;
-        //    }
-        //    set
-        //    {
-        //        SetValue(ref _records, value);
-        //    }
-        //}
-
-        public ListingRecordViewModel()
+        public ObservableGroupedCollection<DateContainer, IRecordViewModel> Records
         {
-
+            get
+            {
+                return _lazyRecords.Value;
+            }
         }
 
-        //private void OnListingChanged(object? sender, EventArgs e)
-        //{
-        //    var recordViewModels = _recordRepository
-        //        .GetItems(x => !x.IsActive)
-        //        .OrderByDescending(x => x.EndTime)
-        //        .Select(record => _editableRecordViewModelFactory.Create(record))
-        //        .ToList();
-        //    if (recordViewModels is null)
-        //    {
-        //        recordViewModels = new List<RecordViewModel>();
-        //    }
-        //    foreach (var recordViewModel in recordViewModels)
-        //    {
-        //        var oldVM = _records.Where(item => item.Record.Id.Equals(recordViewModel.Record.Id)).FirstOrDefault();
-        //        recordViewModel.IsNoteExpanded = oldVM?.IsNoteExpanded ?? false;
-        //    }
 
-        //    Records = new(recordViewModels);
-        //}
+        public ListingRecordViewModel(
+            IRecordViewModelFactory recordViewModelFactory,
+            IRecordService recordService,
+            IDateReportService dateReportService)
+        {
+            _recordViewModelFactory = recordViewModelFactory;
+            _recordService = recordService;
+            _dateReportService = dateReportService;
 
-        //public override void Dispose()
-        //{
-        //    _recordRepository.RepositoryChanged -= OnListingChanged;
-        //    base.Dispose();
-        //}
+            _lazyRecords = new Lazy<ObservableGroupedCollection<DateContainer, IRecordViewModel>>(CreateRecords);
+            _recordService.RecordChanged += OnRecordChanged;
+        }
+
+        private void OnRecordChanged(object? sender, EntityChangedEventArgs<RecordDto> e)
+        {
+            switch (e.Operation)
+            {
+                case Operation.Add:
+                    AddRecord(e.Value);
+                    break;
+                case Operation.Update:
+                    UpdateRecord(e.Value);
+                    break;
+                case Operation.Delete:
+                    DeleteRecord(e.Value);
+                    break;
+            }
+        }
+
+        private void DeleteRecord(RecordDto value)
+        {
+            if (value.EndTime is null)
+            {
+                return;
+            }
+            foreach (var group in Records)
+            {
+                var changedValue = group.FirstOrDefault(x => x.Id == value.RecordId);
+                if (changedValue is not null)
+                {
+                    int index = group.IndexOf(changedValue);
+                    group.Remove(changedValue);
+                }
+            }
+        }
+
+        private void UpdateRecord(RecordDto value)
+        {
+            if (value.EndTime is null)
+            {
+                return;
+            }
+            foreach (var group in Records)
+            {
+                var changedValue = group.FirstOrDefault(x => x.Id == value.RecordId);
+                if (changedValue is not null)
+                {
+                    int index = group.IndexOf(changedValue);
+                    group.Remove(changedValue);
+                    group.Insert(index, _recordViewModelFactory.Create(value));
+                }
+            }
+        }
+
+        private void AddRecord(RecordDto value)
+        {
+            if(value.EndTime is null)
+            {
+                return;
+            }
+            foreach(var group in Records)
+            {
+                if(group.Key.Date.ToString() == value.Date)
+                {
+                    int index = group.Count();
+                    foreach(var record in group)
+                    {
+                        var dt1 = DateTime.Parse(record.EndTime);
+                        var dt2 = DateTime.Parse(value.EndTime);
+                        if(dt2 > dt1)
+                        {
+                            index = group.IndexOf(record);
+                        }
+                    }
+                    group.Insert(index, _recordViewModelFactory.Create(value));
+                }
+            }
+        }
+
+        private ObservableGroupedCollection<DateContainer, IRecordViewModel> CreateRecords()
+        {
+            var groups = _recordService
+                .GetRecords()
+                .Select(x => _recordViewModelFactory.Create(x))
+                .GroupBy(x =>
+                {
+                    var date = DateOnly.Parse(x.Date);
+                    var hours = _dateReportService.GetTimeAmountPerDate(date);
+                    return new DateContainer(date, hours);
+                })
+                .OrderByDescending(x => x.Key.Date)
+                .Select(x => new ObservableGroup<DateContainer, IRecordViewModel>(x));
+            return new ObservableGroupedCollection<DateContainer, IRecordViewModel>(groups);
+        }
     }
 }

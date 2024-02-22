@@ -1,15 +1,9 @@
 ﻿using Xunit;
 using TimaProject.Desctop.ViewModels;
-using TimaProject.Domain.Models;
-using TimaProject.DataAccess.Repositories;
-using TimaProject.Desctop.ViewModels.Factories;
-using MvvmTools.Navigation.Services;
 using Moq;
-using TimaProject.Desctop.ViewModels.Validators;
 using TimaProject.Desctop.DTOs;
 using TimaProject.Desctop.Interfaces.Factories;
 using FluentAssertions;
-using AutoFixture;
 using TimaProject.Desctop.Interfaces.ViewModels;
 using TimaProject.Desctop.Interfaces.Services;
 
@@ -18,11 +12,11 @@ namespace TimaProject.Desctop.Tests.ViewModels
     public class RecordViewModelShould
     {
         
-        private static RecordDTO s_record
+        private static RecordDto s_record
         {
             get
             {
-                return new RecordDTO("2024-02-15T10:45", "MyRecord", new Guid("588a836c-ec2c-4489-9a76-760bb99fedd6"))
+                return new RecordDto("2024-02-15T10:45", "MyRecord", new Guid("588a836c-ec2c-4489-9a76-760bb99fedd6"))
                 {
                     Date = "2024-02-15",
                     EndTime = "2024-02-15T16:11:49",

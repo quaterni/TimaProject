@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace TimaProject.Desctop.Interfaces.ViewModels
 {
-    internal interface ITimeEditable
+    public interface ITimeEditable
     {
         ICommand OpenTimeFormCommand { get; }
         ITimeFormViewModel? TimeFormViewModel { get; }

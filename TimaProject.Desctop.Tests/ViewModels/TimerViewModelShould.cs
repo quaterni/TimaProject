@@ -1,15 +1,5 @@
 ﻿using Moq;
-using MvvmTools.Navigation.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TimaProject.Domain.Models;
-using TimaProject.DataAccess.Repositories;
-using TimaProject.Desctop.Stores;
 using TimaProject.Desctop.ViewModels;
-using TimaProject.Desctop.ViewModels.Validators;
 using Xunit;
 using TimaProject.Desctop.Interfaces.ViewModels;
 using TimaProject.Desctop.Interfaces.Factories;
@@ -134,15 +124,15 @@ namespace TimaProject.Desctop.Tests.ViewModels
         }
 
         [Theory, MemberData(nameof(AddingRecords))]
-        public void WhenTimerStarted_AddNewRecord(RecordDTO recordDTO, RecordDTO resultDTO)
+        public void WhenTimerStarted_AddNewRecord(RecordDto recordDTO, RecordDto resultDTO)
         {
             _sut.StartTime = recordDTO.StartTime;
             _sut.Title = recordDTO.Title;
             _sut.Date = recordDTO.Date;
 
             _mockRecordService
-                .Setup(s => s.AddRecord(It.IsAny<RecordDTO>()))
-                .Callback<RecordDTO>(r =>
+                .Setup(s => s.AddRecord(It.IsAny<RecordDto>()))
+                .Callback<RecordDto>(r =>
                 {
                     r.StartTime.Should().Be(resultDTO.StartTime);
                     r.Date.Should().Be(resultDTO.Date);
@@ -152,15 +142,15 @@ namespace TimaProject.Desctop.Tests.ViewModels
             _sut.TimerCommand.Execute(null);
 
             _mockRecordService
-                .Verify(s=> s.AddRecord(It.IsAny<RecordDTO>()), Times.Once);
+                .Verify(s=> s.AddRecord(It.IsAny<RecordDto>()), Times.Once);
         }
 
         public static IEnumerable<object[]> AddingRecords()
         {
             yield return new object[]
             {
-                new RecordDTO("", "", Guid.Empty),
-                new RecordDTO(s_CurrentTime.ToString(), "", Guid.Empty)
+                new RecordDto("", "", Guid.Empty),
+                new RecordDto(s_CurrentTime.ToString(), "", Guid.Empty)
                 {
                     Date = s_CurrentDate.ToString()
                 }
@@ -168,12 +158,12 @@ namespace TimaProject.Desctop.Tests.ViewModels
 
             yield return new object[]
             {
-                new RecordDTO("2024-02-07T23:45", "My Title", Guid.Empty)
+                new RecordDto("2024-02-07T23:45", "My Title", Guid.Empty)
                 {
                     Date="2024-02-16",
                     ProjectName = "MyProject"
                 },
-                new RecordDTO("2024-02-07T23:45", "My Title", Guid.Empty)
+                new RecordDto("2024-02-07T23:45", "My Title", Guid.Empty)
                 {
                     Date="2024-02-16",
                     ProjectName = "MyProject"
@@ -254,7 +244,7 @@ namespace TimaProject.Desctop.Tests.ViewModels
 
             _mockRecordService
                 .Verify(
-                    s => s.UpdateRecord(It.IsAny<RecordDTO>()), 
+                    s => s.UpdateRecord(It.IsAny<RecordDto>()), 
                     Times.Exactly(3));
         }
 
@@ -274,8 +264,8 @@ namespace TimaProject.Desctop.Tests.ViewModels
             _sut.StartTime = new Fixture().Create<DateTime>().ToString();
             _sut.TimerCommand.Execute(null);
             _mockRecordService
-                .Setup(s => s.UpdateRecord(It.IsAny<RecordDTO>()))
-                .Callback<RecordDTO>(r =>
+                .Setup(s => s.UpdateRecord(It.IsAny<RecordDto>()))
+                .Callback<RecordDto>(r =>
                 {
                     DateTime.Parse(r.EndTime)
                         .Should()

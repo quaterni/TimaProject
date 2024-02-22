@@ -1,15 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using MvvmTools.Base;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using TimaProject.Desctop.DTOs;
 using TimaProject.Desctop.Interfaces.Factories;
 using TimaProject.Desctop.Interfaces.ViewModels;
-using TimaProject.Desctop.ViewModels.Factories;
 
 namespace TimaProject.Desctop.ViewModels
 {

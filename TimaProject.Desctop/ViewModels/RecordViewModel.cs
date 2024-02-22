@@ -1,17 +1,7 @@
-﻿using FluentValidation;
-using MvvmTools.Base;
-using MvvmTools.Navigation.Services;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using TimaProject.Desctop.Commands;
-using TimaProject.Domain.Models;
-using TimaProject.DataAccess.Repositories;
-using TimaProject.Desctop.ViewModels.Factories;
 using TimaProject.Desctop.Interfaces.ViewModels;
 using TimaProject.Desctop.DTOs;
 using TimaProject.Desctop.Interfaces.Factories;
@@ -45,7 +35,7 @@ namespace TimaProject.Desctop.ViewModels
         public ICommand DeleteRecordCommand { get; }
 
         public RecordViewModel(
-            RecordDTO record,
+            RecordDto record,
             ITimeFormViewModelFactory timeFormFactory,
             IProjectFormViewModelFactory projectFormViewModelFactory,
             IAddNoteFormFactory noteFormViewModelFactory,
@@ -105,7 +95,7 @@ namespace TimaProject.Desctop.ViewModels
         private void UpdateRecord()
         {
             _recordService.UpdateRecord(
-                new RecordDTO(StartTime, Title, Id)
+                new RecordDto(StartTime, Title, Id)
                 {
                     EndTime = EndTime,
                     Date = Date,
