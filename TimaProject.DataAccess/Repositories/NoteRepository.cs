@@ -45,6 +45,11 @@ namespace TimaProject.DataAccess.Repositories
             return _notes.Where(filterPredicate);
         }
 
+        public IEnumerable<Note> GetItems(Guid recordId)
+        {
+            return _notes.Where(n=> n.RecordId == recordId);
+        }
+
         public bool RemoveItem(Note item)
         {
             var result = _notes.Remove(item);
@@ -54,6 +59,14 @@ namespace TimaProject.DataAccess.Repositories
             }
             return result;
         }
+
+        private Note? GetItem(Guid id)
+        {
+            return _notes.FirstOrDefault(x => x.Id == id);
+        }
+
+        public bool DeleteNote(Guid id) => RemoveItem(GetItem(id));
+
 
         public void UpdateItem(Note item)
         {
