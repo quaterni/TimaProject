@@ -21,7 +21,7 @@ namespace TimaProject.Desctop.Tests.ViewModels
         private readonly Mock<IRecordService> _mockRecordService;
         private readonly Mock<ITimerExecutorFactory> _mockTimerExecutorFactory;
         private readonly Mock<ITimerExecutor> _mockTimerExecutor;
-        private readonly Mock<IDateReportService> _mockDateReportService;
+        private readonly Mock<IDateService> _mockDateReportService;
 
         private static readonly DateTime s_CurrentTime = new Fixture().Create<DateTime>();
         private static readonly DateOnly s_CurrentDate = DateOnly.FromDateTime(s_CurrentTime);
@@ -33,7 +33,7 @@ namespace TimaProject.Desctop.Tests.ViewModels
             _mockRecordService = new Mock<IRecordService>();
             _mockTimerExecutorFactory = new Mock<ITimerExecutorFactory>();
             _mockTimerExecutor = new Mock<ITimerExecutor>();
-            _mockDateReportService = new Mock<IDateReportService>();
+            _mockDateReportService = new Mock<IDateService>();
 
             _sut = new TimerViewModel(
                 _mockTimeFormViewModelFactory.Object,

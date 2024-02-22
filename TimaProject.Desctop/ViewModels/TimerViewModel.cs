@@ -18,7 +18,7 @@ namespace TimaProject.Desctop.ViewModels
         private ITimerExecutor? _timerExecutor;
         private readonly ITimerExecutorFactory _timerExecutorFactory;
         private readonly IRecordService _recordService;
-        private readonly IDateReportService _dateReportService;
+        private readonly IDateService _dateReportService;
 
         private Guid? _recordId;
 
@@ -43,7 +43,7 @@ namespace TimaProject.Desctop.ViewModels
             IProjectFormViewModelFactory projectFormViewModelFactory,
             IRecordService recordService,
             ITimerExecutorFactory timerExecutorFactory,
-            IDateReportService dateReportService) : base(timeFormFactory, projectFormViewModelFactory)
+            IDateService dateReportService) : base(timeFormFactory, projectFormViewModelFactory)
         {
             State = TimerState.NotRunning;
             Time = TimeSpan.Zero.ToString();

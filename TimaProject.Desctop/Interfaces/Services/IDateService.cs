@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TimaProject.Desctop.Interfaces.Services
 {
-    public interface IDateReportService
+    public interface IDateService
     {
         DateOnly CurrentDate();
         TimeSpan GetTimeAmountPerDate(DateOnly date);

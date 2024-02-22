@@ -18,13 +18,13 @@ namespace TimaProject.Desctop.Tests.ViewModels
         private readonly Mock<IRecordViewModelFactory> _mockFactory;
 
         private readonly Mock<IRecordService> _mockRecordService;
-        private readonly Mock<IDateReportService> _mockDateService;
+        private readonly Mock<IDateService> _mockDateService;
 
         public ListingRecordViewModelShould()
         {
             _mockFactory = new Mock<IRecordViewModelFactory>();
             _mockRecordService = new Mock<IRecordService>();
-            _mockDateService = new Mock<IDateReportService>();
+            _mockDateService = new Mock<IDateService>();
 
             _sut = new ListingRecordViewModel(
                 _mockFactory.Object,

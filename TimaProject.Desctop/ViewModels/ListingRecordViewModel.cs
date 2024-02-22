@@ -13,7 +13,7 @@ namespace TimaProject.Desctop.ViewModels
     {
         private readonly IRecordViewModelFactory _recordViewModelFactory;
         private readonly IRecordService _recordService;
-        private readonly IDateReportService _dateReportService;
+        private readonly IDateService _dateReportService;
 
         private readonly Lazy<ObservableGroupedCollection<DateContainer, IRecordViewModel>> _lazyRecords;
 
@@ -29,7 +29,7 @@ namespace TimaProject.Desctop.ViewModels
         public ListingRecordViewModel(
             IRecordViewModelFactory recordViewModelFactory,
             IRecordService recordService,
-            IDateReportService dateReportService)
+            IDateService dateReportService)
         {
             _recordViewModelFactory = recordViewModelFactory;
             _recordService = recordService;
