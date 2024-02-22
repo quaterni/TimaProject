@@ -5,13 +5,15 @@ VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimaProject.Desctop", "TimaProject.Desctop\TimaProject.Desctop.csproj", "{792B07BB-0C20-4965-9F5F-47B35E3915D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimaProject.Domain", "TimaProject.Domain\TimaProject.Domain.csproj", "{DD339FDF-DCFE-4785-8B07-45B58AA6149B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimaProject.Domain", "TimaProject.Domain\TimaProject.Domain.csproj", "{DD339FDF-DCFE-4785-8B07-45B58AA6149B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimaProject.DataAccess", "TimaProject.DataAccess\TimaProject.DataAccess.csproj", "{946FB7A2-8E54-43E4-ADC7-B7E1C7143BA2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimaProject.DataAccess", "TimaProject.DataAccess\TimaProject.DataAccess.csproj", "{946FB7A2-8E54-43E4-ADC7-B7E1C7143BA2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimaProject.DataAccess.Tests", "TimaProject.DataAccess.Tests\TimaProject.DataAccess.Tests.csproj", "{7290FB36-1AC6-4A3A-8A0F-FFA6F7944F6F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimaProject.DataAccess.Tests", "TimaProject.DataAccess.Tests\TimaProject.DataAccess.Tests.csproj", "{7290FB36-1AC6-4A3A-8A0F-FFA6F7944F6F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimaProject.Desctop.Tests", "TimaProject.Desctop.Tests\TimaProject.Desctop.Tests.csproj", "{6C31E1FD-BCFD-4563-A685-C75E8EC308C6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimaProject.LocalController", "TimaProject.LocalController\TimaProject.LocalController.csproj", "{AC374168-3BD4-4D37-894E-E943075538AC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{6C31E1FD-BCFD-4563-A685-C75E8EC308C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C31E1FD-BCFD-4563-A685-C75E8EC308C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C31E1FD-BCFD-4563-A685-C75E8EC308C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC374168-3BD4-4D37-894E-E943075538AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC374168-3BD4-4D37-894E-E943075538AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC374168-3BD4-4D37-894E-E943075538AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC374168-3BD4-4D37-894E-E943075538AC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

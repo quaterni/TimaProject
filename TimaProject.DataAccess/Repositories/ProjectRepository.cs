@@ -75,6 +75,11 @@ namespace TimaProject.DataAccess.Repositories
             return result;
         }
 
+        public Project? GetProject(Guid id)
+        {
+            return _projects.FirstOrDefault(x=> x.Id == id);
+        }
+
         public bool Contains(Project item)
         {
             return _projects.Contains(item);

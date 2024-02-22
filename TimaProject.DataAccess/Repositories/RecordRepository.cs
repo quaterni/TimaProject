@@ -61,6 +61,11 @@ namespace TimaProject.DataAccess.Repositories
             return _records.Where(wherePredicate);
         }
 
+        private Record? GetItem(Guid id)
+        {
+            return _records.FirstOrDefault(t => t.Id == id);
+        }
+
         private void OnRepositoryChanged(RepositoryChangedOperation operation, Record record)
         {
             RepositoryChanged?.Invoke(this, new RepositoryChangedEventArgs<Record>(record, operation));
@@ -99,6 +104,8 @@ namespace TimaProject.DataAccess.Repositories
             }
             return result;
         }
+
+        public bool DeleteItem(Guid id) => RemoveItem(GetItem(id));
 
         public void Dispose()
         {

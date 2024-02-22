@@ -22,8 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TimaProject.DataAccess\TimaProject.DataAccess.csproj" />
-    <ProjectReference Include="..\TimaProject.Domain\TimaProject.Domain.csproj" />
+    <ProjectReference Include="..\TimaProject.LocalController\TimaProject.LocalController.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,10 +32,6 @@
     <Reference Include="MvvmTools">
       <HintPath>..\..\..\MyWpfTools\MvvmTools\bin\Release\net6.0\publish\MvvmTools.dll</HintPath>
     </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Factories\" />
   </ItemGroup>
 
 </Project>

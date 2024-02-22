@@ -14,7 +14,7 @@ namespace TimaProject.Domain.Models
 
         public Project Project { get; init; } = Project.Empty;
 
-        public List<Note> Notes { get; } = new List<Note>();
+        public List<Note> Notes { get; init; } = new List<Note>();
 
         public bool IsActive => EndTime is null;
 
