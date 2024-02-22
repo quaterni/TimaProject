@@ -89,5 +89,10 @@ namespace TimaProject.DataAccess.Repositories
         {
             return _projects.Where((project) => filterPredicate(project) && !project.Equals(Project.Empty));
         }
+
+        public IEnumerable<Project> GetItems()
+        {
+            return _projects;
+        }
     }
 }
