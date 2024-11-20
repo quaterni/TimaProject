@@ -32,7 +32,7 @@ namespace TimaProject.Desctop.ViewModels
             }
             set
             {
-                SetValue(ref _state, value);
+                SetProperty(ref _state, value);
             }
         }
 
@@ -162,7 +162,8 @@ namespace TimaProject.Desctop.ViewModels
                 {
                     Date = Date,
                     ProjectId = ProjectId,
-                    ProjectName = ProjectName
+                    ProjectName = ProjectName,
+                    IsActive = true
                 });
         }
 
@@ -173,6 +174,7 @@ namespace TimaProject.Desctop.ViewModels
             UpdateRecord(false);
 
             _recordId = null;
+            _timerExecutor.Tick -= OnTimerTick;
             _timerExecutor.Dispose();
             _timerExecutor = null;
             StartTime = string.Empty;

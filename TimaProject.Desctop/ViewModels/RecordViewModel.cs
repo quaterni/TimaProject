@@ -19,7 +19,7 @@ namespace TimaProject.Desctop.ViewModels
         public bool IsNoteExpanded
         {
             get { return _isNoteExpanded; }
-            set { SetValue(ref _isNoteExpanded, value); }
+            set { SetProperty(ref _isNoteExpanded, value); }
         }
 
         private Lazy<IAddNoteFormViewModel> _lazyAddNoteViewModel;

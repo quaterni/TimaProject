@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using MvvmTools.Base;
 using System;
 using System.Windows.Input;
@@ -8,7 +9,7 @@ using TimaProject.Desctop.Interfaces.ViewModels;
 
 namespace TimaProject.Desctop.ViewModels
 {
-    internal abstract class RecordViewModelBase : ViewModelBase, IRecordViewModelBase
+    internal abstract class RecordViewModelBase : ObservableObject, IRecordViewModelBase
     {
         private string _startTime;
 
@@ -20,7 +21,7 @@ namespace TimaProject.Desctop.ViewModels
             }
             set
             {
-                SetValue(ref  _startTime, value);
+                SetProperty(ref  _startTime, value);
             }
         }
 
@@ -34,7 +35,7 @@ namespace TimaProject.Desctop.ViewModels
             }
             set
             {
-                SetValue(ref _endTime, value);
+                SetProperty(ref _endTime, value);
             }
         }
 
@@ -48,7 +49,7 @@ namespace TimaProject.Desctop.ViewModels
             }
             protected set
             {
-                SetValue(ref _time, value);
+                SetProperty(ref _time, value);
             }
         }
 
@@ -62,7 +63,7 @@ namespace TimaProject.Desctop.ViewModels
             }
             set
             {
-                SetValue(ref _title, value);
+                SetProperty(ref _title, value);
             }
         }
 
@@ -76,7 +77,7 @@ namespace TimaProject.Desctop.ViewModels
             }
             set
             {
-                SetValue(ref _date, value);
+                SetProperty(ref _date, value);
             }
         }
 
@@ -90,7 +91,7 @@ namespace TimaProject.Desctop.ViewModels
             }
             protected set
             {
-                SetValue(ref _projectName, value);
+                SetProperty(ref _projectName, value);
             }
         }
 
@@ -104,7 +105,7 @@ namespace TimaProject.Desctop.ViewModels
             }
             protected set
             {
-                SetValue(ref _projectId, value);
+                SetProperty(ref _projectId, value);
             }
         }
 
@@ -120,7 +121,7 @@ namespace TimaProject.Desctop.ViewModels
             }
             set
             {
-                SetValue(ref _timeFormViewModel, value);
+                SetProperty(ref _timeFormViewModel, value);
                 OnPropertyChanged(nameof(IsTimeFormOpened));
             }
         }
@@ -152,8 +153,8 @@ namespace TimaProject.Desctop.ViewModels
             }
             set
             {
-                SetValue(ref _projectFormViewModel, value);
-                OnPropertyChanged(nameof(IsTimeFormOpened));
+                SetProperty(ref _projectFormViewModel, value);
+                OnPropertyChanged(nameof(IsProjectFormOpened));
 
             }
         }
@@ -193,9 +194,9 @@ namespace TimaProject.Desctop.ViewModels
 
         private void OnTimeFormCreating(ITimeFormViewModelFactory timeFormViewModelFactory)
         {
-            _timeFormViewModel = timeFormViewModelFactory.Create(new TimeDTO(StartTime, EndTime, Time, Date));
-            _timeFormViewModel.TimeSelected += OnTimeSelected;
-            _timeFormViewModel.Closed += OnTimeFormClosed;
+            TimeFormViewModel = timeFormViewModelFactory.Create(new TimeDTO(StartTime, EndTime, Time, Date));
+            TimeFormViewModel.TimeSelected += OnTimeSelected;
+            TimeFormViewModel.Closed += OnTimeFormClosed;
         }
 
         private void OnTimeFormClosed(object? sender, EventArgs e)
@@ -212,13 +213,15 @@ namespace TimaProject.Desctop.ViewModels
             StartTime = e.StartTime;
             EndTime = e.EndTime;
             Time = e.Time;
+            Date = e.Date;
         }
 
         private void OnProjectFormCreating(IProjectFormViewModelFactory projectFormViewModelFactory)
         {
-            _projectFormViewModel = projectFormViewModelFactory.Create(_projectId);
-            _projectFormViewModel.ProjectSelected += OnProjectSelected;
-            _projectFormViewModel.Closed += OnProjectFromClosed;
+            var s = projectFormViewModelFactory.Create(_projectId);
+            ProjectFormViewModel = s;
+            ProjectFormViewModel.ProjectSelected += OnProjectSelected;
+            ProjectFormViewModel.Closed += OnProjectFromClosed;
         }
 
         private void OnProjectFromClosed(object? sender, EventArgs e)
@@ -235,7 +238,5 @@ namespace TimaProject.Desctop.ViewModels
             ProjectName = e.Name;
             ProjectId = e.Id;
         }
-
-
     }
 }

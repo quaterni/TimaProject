@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -128,6 +129,13 @@ namespace TimaProject.Desctop.ViewModels
             _date = timeDTO.Date;
             _canEndTimeEdit = canEndTimeEdit;
             PropertyChanged += OnTimeValuesChanged;
+
+            CloseCommand = new RelayCommand(OnClose);
+        }
+
+        private void OnClose()
+        {
+            Closed?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnTimeValuesChanged(object? sender, PropertyChangedEventArgs e)
@@ -193,7 +201,10 @@ namespace TimaProject.Desctop.ViewModels
             instance.ComponentError = "";
             instance._lock = true;
             instance.StartTime = result.Value.StartTime;
-            instance.EndTime = result.Value.EndTime;
+            if (instance.CanEndTimeEdit)
+            {
+                instance.EndTime = result.Value.EndTime;
+            }
             instance.Time = result.Value.Time;
             instance.Date = result.Value.Date;
             instance._lock = false;
@@ -203,26 +214,6 @@ namespace TimaProject.Desctop.ViewModels
         }
 
 
-        private void SetToSource(string propertyName)
-        {
-            //var properties = new string[] { nameof(StartTime), nameof(EndTime), nameof(Time), nameof(Date) };
-
-            //if (!properties.Contains(propertyName))
-            //{
-            //    return;
-            //}
-            //if (!_source.StartTime.Equals(StartTime))
-            //    _source.StartTime = StartTime;
-
-            //if (!_source.EndTime.Equals(EndTime))
-            //    _source.EndTime = EndTime;
-
-            //if (!_source.Time.Equals(Time))
-            //    _source.Time = Time;
-
-            //if (!_source.Date.Equals(Date))
-            //    _source.Date = Date;
-        }
 
         public void Dispose()
         {

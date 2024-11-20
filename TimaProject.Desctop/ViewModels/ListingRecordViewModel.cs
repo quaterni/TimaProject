@@ -52,7 +52,9 @@ namespace TimaProject.Desctop.ViewModels
                 case Operation.Delete:
                     DeleteRecord(e.Value);
                     break;
+
             }
+            OnPropertyChanged(nameof(Records));
         }
 
         private void DeleteRecord(RecordDto value)
@@ -72,6 +74,7 @@ namespace TimaProject.Desctop.ViewModels
             }
         }
 
+        // TODO: adding group violate order
         private void UpdateRecord(RecordDto value)
         {
             if (value.EndTime is null)
@@ -80,14 +83,22 @@ namespace TimaProject.Desctop.ViewModels
             }
             foreach (var group in Records)
             {
-                var changedValue = group.FirstOrDefault(x => x.Id == value.RecordId);
-                if (changedValue is not null)
+                if (group.Key.Date.ToString() == value.Date)
                 {
-                    int index = group.IndexOf(changedValue);
-                    group.Remove(changedValue);
-                    group.Insert(index, _recordViewModelFactory.Create(value));
+                    var changedValue = group.FirstOrDefault(x => x.Id == value.RecordId);
+                    if (changedValue is not null)
+                    {
+                        int index = group.IndexOf(changedValue);
+                        group.Remove(changedValue);
+                        group.Insert(index, _recordViewModelFactory.Create(value));
+                        return;
+                    }
+                    group.Add(_recordViewModelFactory.Create(value));
+                    return;
                 }
             }
+            Records.AddGroup(CreateContainer(value)).Add(_recordViewModelFactory.Create(value));
+
         }
 
         private void AddRecord(RecordDto value)
@@ -111,8 +122,16 @@ namespace TimaProject.Desctop.ViewModels
                         }
                     }
                     group.Insert(index, _recordViewModelFactory.Create(value));
+                    return;
                 }
             }
+            Records.AddGroup(CreateContainer(value)).Add(_recordViewModelFactory.Create(value));
+        }
+
+        private DateContainer CreateContainer(RecordDto record)
+        {
+            var date = DateOnly.Parse(record.Date);
+            return new DateContainer(date, _dateReportService.GetTimeAmountPerDate(date));
         }
 
         private ObservableGroupedCollection<DateContainer, IRecordViewModel> CreateRecords()
@@ -126,7 +145,7 @@ namespace TimaProject.Desctop.ViewModels
                     var hours = _dateReportService.GetTimeAmountPerDate(date);
                     return new DateContainer(date, hours);
                 })
-                .OrderByDescending(x => x.Key.Date)
+                .OrderBy(x => x.Key.Date)
                 .Select(x => new ObservableGroup<DateContainer, IRecordViewModel>(x));
             return new ObservableGroupedCollection<DateContainer, IRecordViewModel>(groups);
         }
