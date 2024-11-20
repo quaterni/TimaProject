@@ -7,7 +7,7 @@ using TimaProject.Desctop.Interfaces.Factories;
 using TimaProject.Desctop.Interfaces.Services;
 using TimaProject.Desctop.Services;
 
-namespace TimaProject.Desctop.Factories
+namespace TimaProject.Desctop.Services.Factories
 {
     internal class TimerExecutorFactory : ITimerExecutorFactory
     {

@@ -5,6 +5,7 @@ using System.Reactive.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using TimaProject.Desctop.Interfaces.Services;
 
 namespace TimaProject.Desctop.Services
@@ -40,10 +41,10 @@ namespace TimaProject.Desctop.Services
             Task.Run(() =>
             {
                 Observable
-                .Timer(StartTime)
+                .Timer(StartTime, TimeSpan.FromMilliseconds(200))
                 .Subscribe(ticks =>
                 {
-                    Tick?.Invoke(this, DateTime.Now - StartTime);
+                   Tick?.Invoke(this, DateTime.Now - StartTime);
                 });
             },
             _cts.Token);
