@@ -1,14 +1,15 @@
 ﻿using MvvmTools.Base;
+using TimaProject.Desctop.Interfaces.ViewModels;
 
 namespace TimaProject.Desctop.ViewModels.Containers
 {
     internal class TimerLayoutViewModel : ViewModelBase
     {
-        public ViewModelBase TimerViewModel { get; }
+        public ITimerViewModel TimerViewModel { get; }
 
-        public ViewModelBase CurrentViewModel { get; }
+        public IListingRecordViewModel CurrentViewModel { get; }
 
-        public TimerLayoutViewModel(ViewModelBase timerViewModel, ViewModelBase currentViewModel)
+        public TimerLayoutViewModel(ITimerViewModel timerViewModel, IListingRecordViewModel currentViewModel)
         {
 
             TimerViewModel = timerViewModel;
