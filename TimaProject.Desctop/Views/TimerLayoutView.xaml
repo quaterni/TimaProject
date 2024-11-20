@@ -12,7 +12,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Background="#272B34">
+        <Grid Grid.Row="0">
             <ContentControl  Content="{Binding TimerViewModel}"/>
         </Grid>
 

@@ -183,7 +183,7 @@ namespace TimaProject.Desctop.ViewModels
             _time = string.Empty;
             _date = string.Empty;
             _title = string.Empty;
-            _projectName = string.Empty;
+            _projectName = "Empty";
             _projectId = Guid.Empty;
 
             OpenProjectFormCommand = new RelayCommand(

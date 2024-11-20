@@ -5,8 +5,17 @@ using MvvmTools.Navigation.Services;
 using MvvmTools.Navigation.Stores;
 using System;
 using System.Windows;
+using TimaProject.Desctop.DTOs;
+using TimaProject.Desctop.Interfaces.Factories;
+using TimaProject.Desctop.Interfaces.Services;
+using TimaProject.Desctop.Interfaces.ViewModels;
+using TimaProject.Desctop.LocalServices;
+using TimaProject.Desctop.Services;
+using TimaProject.Desctop.Services.Factories;
+using TimaProject.Desctop.Validators;
 using TimaProject.Desctop.ViewModels;
 using TimaProject.Desctop.ViewModels.Containers;
+using TimaProject.Desctop.ViewModels.Factories;
 
 
 
@@ -23,77 +32,71 @@ namespace TimaProject.Desctop
         {
             IServiceCollection services = new ServiceCollection();
 
-            //services.AddSingleton<NavigationStore>();
-            //services.AddSingleton<ModalStore>();
+
+            services.AddTransient<ITimerExecutorFactory, TimerExecutorFactory>();
+            services.AddTransient<ITimeService, TimeService>();
+            services.AddTransient<IRecordService, RecordService>();
+            services.AddTransient<IProjectService, ProjectService>();
+            services.AddTransient<INoteService, NoteService>();
+            services.AddTransient<IDateService, DateService>();
+            services.AddTransient<IValidator<string>, ProjectNameValidator>();
+            services.AddTransient<IValidator<TimeDTO>, TimeValidator>();
+
+            services.AddTransient<IProjectContainerFactory, ProjectContainerFactory>();
+            services.AddTransient<IProjectFormViewModelFactory, ProjectFormViewModelFactory>();
+
+            services.AddTransient<ITimerViewModel, TimerViewModel>(s =>
+                new TimerViewModel(
+                    new TimeFormFactory(s.GetRequiredService<ITimeService>(), false),
+                    s.GetRequiredService<IProjectFormViewModelFactory>(),
+                    s.GetRequiredService<IRecordService>(),
+                    s.GetRequiredService<ITimerExecutorFactory>(),
+                    s.GetRequiredService<IDateService>())
+            );
+
+            services.AddTransient<IAddNoteFormFactory, AddNoteFormViewModelFactory>();
+
+            services.AddTransient<INoteViewModelFactory, NoteViewModelFactory>();
+
+            services.AddTransient<IListingNoteViewModelFactory, ListingNoteViewModelFactory>();
+
+            services.AddTransient<IRecordViewModelFactory, RecordViewModelFactory>(s=>
+                new RecordViewModelFactory(
+                    s.GetRequiredService<IAddNoteFormFactory>(),
+                    s.GetRequiredService<IListingNoteViewModelFactory>(),
+                    new TimeFormFactory(s.GetRequiredService<ITimeService>(), true),
+                    s.GetRequiredService<IProjectFormViewModelFactory>(),
+                    s.GetRequiredService<IRecordService>()));
 
 
-            //services.AddTransient<CloseModalService>();
-            //services.AddTransient<OpenModalService>();
+            services.AddTransient<IListingRecordViewModel, ListingRecordViewModel>();
 
-            //services.AddTransient<TimeValidator>();
-            //services.AddTransient<AbstractValidator<IProjectName> ,ProjectNameValidator >();
-
-            //services.AddSingleton<MainWindow>(
-            //    s => new MainWindow()
-            //    {
-            //        DataContext = new MainViewModel(s.GetRequiredService<NavigationStore>(), s.GetRequiredService<ModalStore>())
-            //    });
-
-            //services.AddSingleton<Func<Type, ViewModelBase>>(
-            //    s => type => (ViewModelBase)s.GetRequiredService(type));
-
-            //services.AddSingleton<IRepository<Note>, NoteRepository>();
-
-            //services.AddSingleton<IRecordRepository, RecordRepository>();
-
-            //services.AddSingleton<IProjectRepository, ProjectRepository>();
+            services.AddSingleton<NavigationStore>();
+            services.AddSingleton<ModalStore>();
 
 
-            //services.AddSingleton<IDateStore, TodayDateStore>();
-
-            ////services.AddTransient<ProjectFormViewModelFactory>(
-            ////    s=> new ProjectFormViewModelFactory(
-            ////            s.GetRequiredService<IProjectRepository>(),
-            ////            s.GetRequiredService<AbstractValidator<IProjectName>>(),
-            ////            s.GetRequiredService<CloseModalService>()));
+            services.AddTransient<CloseModalService>();
+            services.AddTransient<OpenModalService>();
 
 
-            //services.AddTransient(
-            //    s => new TimeFormViewModelFactory(
-            //        s.GetRequiredService<TimeValidator>(),
-            //        s.GetRequiredService<CloseModalService>()));
-
-
-            //services.AddTransient<NoteFormViewModelFactory>();
-
-
-            //services.AddTransient(
-            //    s => new EditableRecordViewModelFactory(
-            //        s.GetRequiredService<IRecordRepository>(),
-            //        new CompositeNavigationService(
-            //            ModalParameterizedNavigationService<TimeFormViewModel>(s),
-            //            s.GetRequiredService<OpenModalService>()),
-            //        new CompositeNavigationService(
-            //            ModalParameterizedNavigationService<ProjectFormViewModel>(s),
-            //            s.GetRequiredService<OpenModalService>()),
-            //        s.GetRequiredService<TimeFormViewModelFactory>(),
-            //        s.GetRequiredService<ProjectFormViewModelFactory>(),
-            //        s.GetRequiredService<TimeValidator>(),
-            //        s.GetRequiredService<NoteFormViewModelFactory>(),
-            //        s.GetRequiredService<ListingNoteViewModelFactory>()));
-
-            services.AddTransient(s => TimerViewModelFactory(s));
+            services.AddSingleton<MainWindow>(
+                s => new MainWindow()
+                {
+                    DataContext = new StartWindow(null, s.GetRequiredService<TimerLayoutViewModel>())
+               });
 
 
 
-            //services.AddTransient(
-            //    s => new ListingRecordViewModel(
-            //    ));
+            services.AddSingleton<Func<Type, ViewModelBase>>(
+                s => type => (ViewModelBase)s.GetRequiredService(type));
 
-            //services.AddTransient<TimerLayoutViewModel>(
-            //    s => new TimerLayoutViewModel(
-            //        s.GetRequiredService<TimerViewModel>(),
-            //        s.GetRequiredService<ListingRecordViewModel>()));
+
+
+
+            services.AddTransient<TimerLayoutViewModel>(
+                s => new TimerLayoutViewModel(
+                    s.GetRequiredService<ITimerViewModel>(),
+                    s.GetRequiredService<IListingRecordViewModel>()));
 
             _serviceProvider = services.BuildServiceProvider();
         }
@@ -114,7 +117,7 @@ namespace TimaProject.Desctop
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            NavigationServiceFactory<TimerLayoutViewModel>(_serviceProvider).Navigate(null);
+            //NavigationServiceFactory<TimerLayoutViewModel>(_serviceProvider).Navigate(null);
             MainWindow = _serviceProvider.GetRequiredService<MainWindow>();
             MainWindow.Show();
             base.OnStartup(e);
@@ -127,14 +130,14 @@ namespace TimaProject.Desctop
                 serviceProvider.GetRequiredService<Func<Type, ViewModelBase>>());
         }
 
-        private NavigationService<ViewModelBase, TViewModel> TimerLayoutNavigationServiceFactory<TViewModel>(IServiceProvider serviceProvider) where TViewModel : ViewModelBase
-        {
-            return new NavigationService<ViewModelBase, TViewModel>(
-                serviceProvider.GetRequiredService<NavigationStore>(),
-                (t)=> new TimerLayoutViewModel(
-                    serviceProvider.GetRequiredService<TimerViewModel>(),
-                    (TViewModel)serviceProvider.GetRequiredService(t)));
-        }
+        //private NavigationService<ViewModelBase, TViewModel> TimerLayoutNavigationServiceFactory<TViewModel>(IServiceProvider serviceProvider) where TViewModel : ViewModelBase
+        //{
+        //    return new NavigationService<ViewModelBase, TViewModel>(
+        //        serviceProvider.GetRequiredService<NavigationStore>(),
+        //        (t)=> new TimerLayoutViewModel(
+        //            serviceProvider.GetRequiredService<TimerViewModel>(),
+        //            (TViewModel)serviceProvider.GetRequiredService(t)));
+        //}
 
         private NavigationService<ModalViewModel, TViewModel> ModalNavigationServiceFactory<TViewModel>(IServiceProvider service) where TViewModel : ViewModelBase
         {

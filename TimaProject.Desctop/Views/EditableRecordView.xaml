@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:TimaProject.Desctop.Views"
              xmlns:clickable="clr-namespace:ControlTools.ClickableControls;assembly=ControlTools"
              mc:Ignorable="d" 
+             xmlns:m="http://materialdesigninxaml.net/winfx/xaml/themes"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.ContextMenu>
         <ContextMenu>
@@ -24,17 +25,19 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <clickable:ClickableTextBox 
+            <TextBox 
+                Style="{StaticResource MaterialDesignTextBox}"
+                m:HintAssist.Hint="Add title"
                 Text="{Binding 
                     Title,
-                    Mode=TwoWay}"/>
+                    Mode=TwoWay}"
+                />
             <Button Grid.Column="1"
-                    Width="80"
-                    Command="{Binding OpenProjectFormCommand}">
-                <local:ProjectView DataContext="{Binding Project}"/>
+                    Command="{Binding OpenProjectFormCommand}"
+                    Content="{Binding ProjectName}">
+               
             </Button>
             <Button Grid.Column="2"
-                    Width="80"
                     Content="{Binding Time}"
                     Command="{Binding OpenTimeFormCommand}"/>
         </Grid>
@@ -51,7 +54,7 @@
                     <ContentControl Grid.Row="0"
                         Content="{Binding ListingNoteViewModel}"/>
                     <ContentControl Grid.Row="1"
-                                    Content="{Binding NoteFormViewModel}"/>
+                                    Content="{Binding AddNoteFormViewModel}"/>
 
                 </Grid>
             </Expander>

@@ -7,7 +7,10 @@
              xmlns:cliclable="clr-namespace:ControlTools.ClickableControls;assembly=ControlTools"
              xmlns:convertors="clr-namespace:TimaProject.Desctop.Views.Convertors"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="200"
+             d:DesignHeight="300" d:DesignWidth="250"
+             MinWidth="250"
+             MinHeight="300"
+             Padding="30 20"
              Foreground="Black"
              Background="PowderBlue">
     <UserControl.Resources>
@@ -23,22 +26,22 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0">
             <TextBlock Text="StartTime"  />
-            <cliclable:ClickableTextBox
+            <TextBox
                 Text="{Binding StartTime,
                     Mode=TwoWay,
                     ValidatesOnDataErrors=True}"/>
         </StackPanel>
         <StackPanel Grid.Row="1">
             <TextBlock Text="EndTime"  />
-            <cliclable:ClickableTextBox
+            <TextBox
                 Text="{Binding EndTime,
                     Mode=TwoWay,
                     ValidatesOnDataErrors=True}"
-                IsEnabled="{Binding IsEndTimeEnabled}"/>
+                IsEnabled="{Binding CanEndTimeEdit}"/>
         </StackPanel>
         <StackPanel Grid.Row="2">
             <TextBlock Text="Time"  />
-            <cliclable:ClickableTextBox
+            <TextBox
                 Text="{Binding Time,
                     Mode=TwoWay,
                     ValidatesOnDataErrors=True}"/>
@@ -46,26 +49,15 @@
 
         <StackPanel Grid.Row="3">
             <TextBlock Text="Date"  />
-            <cliclable:ClickableContentControl x:Name="clickable">
-                <cliclable:ClickableContentControl.Header>
-                    <TextBlock Text="{Binding Date}"/>
-                </cliclable:ClickableContentControl.Header>
-                <cliclable:ClickableContentControl.ButtonStyle>
-                    <Style TargetType="Button">
-                        <Setter Property="Background" Value="Transparent"/>
-                    </Style>
-                </cliclable:ClickableContentControl.ButtonStyle>
-                <cliclable:ClickableContentControl.Content>
-                    <DatePicker LostFocus="DatePicker_LostFocus"
+
+                <DatePicker
                         SelectedDate="{
                         Binding Date, 
                         Mode=TwoWay, 
                         Converter={StaticResource DateTimeToDateOnlyFormatString}}">
                         
-                    </DatePicker>
-                </cliclable:ClickableContentControl.Content>
-                
-            </cliclable:ClickableContentControl>
+               </DatePicker>
+
         </StackPanel>
 
         <StackPanel Grid.Row="4">

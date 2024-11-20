@@ -25,9 +25,5 @@ namespace TimaProject.Desctop.Views
             InitializeComponent();
         }
 
-        private void DatePicker_LostFocus(object sender, RoutedEventArgs e)
-        {
-            clickable.IsContentVisable = false;
-        }
     }
 }

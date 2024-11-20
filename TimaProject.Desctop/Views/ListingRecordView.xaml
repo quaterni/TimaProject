@@ -17,26 +17,28 @@
                 </CollectionViewSource>
             </Grid.Resources>
             <ItemsControl Background="Transparent"
-                      ItemsSource="{Binding Source={StaticResource notes}}">
-                <ItemsControl.GroupStyle>
-                    <GroupStyle>
-                        <GroupStyle.ContainerStyle>
-                            <Style TargetType="{x:Type GroupItem}">
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate>
-                                            <GroupBox Margin="10" Header="{Binding Name}">
-                                                <GroupBox.Content>
-                                                    <ItemsPresenter />
-                                                </GroupBox.Content>
-                                            </GroupBox>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </GroupStyle.ContainerStyle>
-                    </GroupStyle>
-                </ItemsControl.GroupStyle>
+                      ItemsSource="{Binding Records}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Expander>
+                            <Expander.Header>
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Date:" FontSize="16"/>
+                                        <TextBlock Margin="10 0"  Text="{Binding Key.Date}" FontSize="16"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Total time:"/>
+                                        <TextBlock Margin="10 0" Text="{Binding Key.Hours}"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Expander.Header>
+                            <ItemsControl ItemsSource="{Binding}" Margin="30">
+
+                            </ItemsControl>
+                        </Expander>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
             </ItemsControl>
         </Grid>
 

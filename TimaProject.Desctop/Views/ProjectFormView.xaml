@@ -5,7 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TimaProject.Desctop.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             xmlns:m="http://materialdesigninxaml.net/winfx/xaml/themes"
+             d:DesignHeight="450" d:DesignWidth="400"
+             MaxHeight="450"
+             MaxWidth="400"
+     >
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
@@ -23,7 +27,7 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Button Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.SelectProjectCommand}"
-                            CommandParameter="{Binding}">
+                            CommandParameter="{Binding Id}">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}">
                                 <Setter Property="Template">
@@ -46,28 +50,30 @@
                                 <Style TargetType="{x:Type Grid}">
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Path=IsSelected}" Value="True">
-                                            <Setter Property="Background" Value="Purple"/>
+                                            <Setter Property="Background" Value="Coral"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </Grid.Style>
                             <Grid Visibility="{Binding
-                            Path=IsEmpty, 
-                            Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <TextBlock Text="Empty"/>
+                        Path=IsEmpty, 
+                        Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <TextBlock Text="Empty" Margin="10"/>
                             </Grid>
                             <Grid>
                                 <Grid.Style>
                                     <Style TargetType="{x:Type Grid}">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding Path=IsEmpty}" Value="True">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Setter Property="Visibility" Value="Hidden"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
                                 </Grid.Style>
-                                <TextBlock Text="{Binding Path=Item.Name}" />
+                                <TextBlock Text="{Binding Path=Name}" Margin="10"/>
                             </Grid>
+
+
                         </Grid>
                     </Button>
 
@@ -77,17 +83,23 @@
         </ItemsControl>
 
         <Grid Grid.Row="2">
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            <TextBlock Text="Add new project"/>
-            <StackPanel Grid.Row="1" Orientation="Horizontal">
-                <TextBox Text="{Binding Name}" Width="100"/>
-                <Button Content="Add project"
-                        Command="{Binding AddProjectCommand}"
-                        IsEnabled="{Binding IsCanAdd}"/>
-            </StackPanel>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBox Padding="10 0"             
+                VerticalAlignment="Center"
+                Style="{StaticResource MaterialDesignTextBox}"
+                m:HintAssist.Hint="Add new project"
+                Text="{Binding NewProjectName, UpdateSourceTrigger=PropertyChanged}" 
+                    
+                    />
+            <Grid Grid.Column="1" Margin="20">
+                <Button DockPanel.Dock="Right"
+                    Content="Add project"
+                        Command="{Binding AddNewProjectCommand}"
+                        IsEnabled="{Binding CanAddNewProject}"/>
+            </Grid>
 
         </Grid>
     </Grid>

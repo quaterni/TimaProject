@@ -147,7 +147,7 @@ namespace TimaProject.Desctop.ViewModels
 
         private void OnTimerTick(object? sender, TimeSpan e)
         {
-            Time = e.ToString();
+            Time = e.ToString(@"hh\:mm\:ss");
         }
 
         private void CreateRecord()
@@ -183,23 +183,7 @@ namespace TimaProject.Desctop.ViewModels
             Date = string.Empty;
             Title = string.Empty;
             ProjectId = Guid.Empty;
-            ProjectName = string.Empty;
+            ProjectName = "Empty";
         }
-
-
-        //protected override void Validate(string propertyName)
-        //{
-        //    ClearAllErrors();
-        //    var validationResult = _validator.Validate(this);
-        //    if (validationResult.IsValid)
-        //    {
-        //        return;
-        //    }
-        //    foreach (var error in validationResult.Errors)
-        //    {
-        //        AddError(error.PropertyName, error.ErrorMessage);
-        //    }
-
-        //}
     }
 }

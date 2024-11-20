@@ -92,7 +92,7 @@ namespace TimaProject.DataAccess.Repositories
 
         public IEnumerable<Project> GetItems()
         {
-            return _projects;
+            return _projects.Where((project) => !project.Equals(Project.Empty));
         }
     }
 }

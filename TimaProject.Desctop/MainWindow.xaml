@@ -3,46 +3,49 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TimaProject"
+        xmlns:local="clr-namespace:TimaProject.Desctop"
         xmlns:controls="clr-namespace:ControlTools;assembly=ControlTools"
+        xmlns:m="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:viewModels="clr-namespace:TimaProject.Desctop.ViewModels"
         xmlns:containers="clr-namespace:TimaProject.Desctop.ViewModels.Containers"
         xmlns:views="clr-namespace:TimaProject.Desctop.Views"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="500"
-        Background="#20242B"
-        Foreground="White">
-    <Grid>
-        <Grid.Resources>
-            <DataTemplate DataType="{x:Type viewModels:ListingRecordViewModel}">
-                <views:ListingRecordView/>
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type viewModels:TimerViewModel}">
-                <views:TimerView/>
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type containers:TimerLayoutViewModel}">
-                <views:TimerLayoutView/>
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type viewModels:TimeFormViewModel}">
-                <views:TimeFormView/>
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type viewModels:RecordViewModel}">
-                <views:EditableRecordView/>
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type viewModels:ProjectFormViewModel}">
-                <views:ProjectFormView/>
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type viewModels:ListingNoteViewModel}">
-                <views:ListingNoteView/>
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type viewModels:NoteFormViewModel}">
-                <views:NoteFormView/>
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type viewModels:NoteViewModel}">
-                <views:EditableNoteView/>
-            </DataTemplate>
-        </Grid.Resources>
+        Title="MainWindow" Height="450" Width="500">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type viewModels:ListingRecordViewModel}">
+            <views:ListingRecordView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:TimerViewModel}">
+            <views:TimerView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type containers:TimerLayoutViewModel}">
+            <views:TimerLayoutView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:TimeFormViewModel}">
+            <views:TimeFormView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:RecordViewModel}">
+            <views:EditableRecordView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:ProjectFormViewModel}">
+            <views:ProjectFormView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:ListingNoteViewModel}">
+            <views:ListingNoteView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:NoteFormViewModel}">
+            <views:NoteFormView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:NoteViewModel}">
+            <views:EditableNoteView/>
+        </DataTemplate>
+    </Window.Resources>
+    <m:DialogHost CloseOnClickAway="True">
+        <Grid>
+
         <controls:ModalView DataContext="{Binding CurrentModalViewModel}" Panel.ZIndex="5"/>
         <ContentControl Content="{Binding CurrentViewModel}"/>
+       
     </Grid>
+    </m:DialogHost>
 </Window>

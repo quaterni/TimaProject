@@ -36,7 +36,7 @@ namespace TimaProject.Desctop.ViewModels.Containers
 
         public ProjectContainerViewModel(bool isSelected)
         {
-            Name = string.Empty;
+            Name = "Empty";
             Id = Guid.Empty;
             IsEmpty = true;
             IsSelected = isSelected;

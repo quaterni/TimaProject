@@ -11,8 +11,9 @@
         <Grid.RowDefinitions>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <clickable:ClickableTextBox Grid.Row="0"
-                                     Text="{Binding Text, Mode=TwoWay}"/>
+        <TextBox Grid.Row="0"
+                 Style="{StaticResource MaterialDesignFilledTextBox}"
+                 Text="{Binding Text, Mode=TwoWay}"/>
         <Grid.ContextMenu>
             <ContextMenu>
                 <MenuItem Header="Remove note" 
