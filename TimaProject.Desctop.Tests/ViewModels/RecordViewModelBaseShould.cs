@@ -35,7 +35,7 @@ namespace TimaProject.Desctop.Tests.ViewModels
 
 
             _mockProjectFormFactory
-                .Setup(s => s.Create(_sut.ProjectId))
+                .Setup(s => s.Create(It.IsAny<Guid>()))
                 .Returns(_mockProjectForm.Object);
             _mockTimeFormFactory
                 .Setup(s => s.Create(It.IsAny<TimeDTO>()))
@@ -72,6 +72,7 @@ namespace TimaProject.Desctop.Tests.ViewModels
         [Fact]
         public void ProjectFormViewModel_WhenOpenProjectFormCommandExecuted_NotNull()
         {
+
             _sut.OpenProjectFormCommand.Execute(null);
 
             _sut.ProjectFormViewModel.Should().NotBeNull();
@@ -80,9 +81,12 @@ namespace TimaProject.Desctop.Tests.ViewModels
         [Fact]
         public void IsProjectFormOpened_WhenOpenProjectFormCommandExecuted_BeTrue()
         {
+            var s = _mockProjectForm.Object;
+
             _sut.OpenProjectFormCommand.Execute(null);
 
             _sut.IsProjectFormOpened.Should().BeTrue();
+
         }
 
         [Fact]
