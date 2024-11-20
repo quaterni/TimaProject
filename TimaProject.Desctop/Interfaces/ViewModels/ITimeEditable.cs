@@ -11,6 +11,6 @@ namespace TimaProject.Desctop.Interfaces.ViewModels
     {
         ICommand OpenTimeFormCommand { get; }
         ITimeFormViewModel? TimeFormViewModel { get; }
-        bool IsTimeFormOpened { get; }
+        bool IsTimeFormOpened { get; set; }
     }
 }

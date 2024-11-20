@@ -6,6 +6,6 @@ namespace TimaProject.Desctop.Interfaces.ViewModels
     {
         ICommand OpenProjectFormCommand { get; }
         IProjectFormViewModel? ProjectFormViewModel { get; }
-        bool IsProjectFormOpened { get; }
+        bool IsProjectFormOpened { get; set; }
     }
 }
