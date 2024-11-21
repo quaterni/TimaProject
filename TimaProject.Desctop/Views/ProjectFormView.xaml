@@ -1,0 +1,106 @@
+﻿<UserControl x:Class="TimaProject.Desctop.Views.ProjectFormView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TimaProject.Desctop.Views"
+             mc:Ignorable="d" 
+             xmlns:m="http://materialdesigninxaml.net/winfx/xaml/themes"
+             d:DesignHeight="450" d:DesignWidth="400"
+             MaxHeight="450"
+             MaxWidth="400"
+     >
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Projects:"/>
+
+        <ItemsControl Grid.Row="1"
+                      ItemsSource="{Binding Projects}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Button Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.SelectProjectCommand}"
+                            CommandParameter="{Binding Id}">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate>
+                                            <Border>
+                                                <ContentPresenter 
+                                                    Content="{Binding Path=Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"
+                                                    HorizontalAlignment="Stretch"
+                                                    VerticalAlignment="Stretch"/>
+
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                        <Grid>
+                            <Grid.Style>
+                                <Style TargetType="{x:Type Grid}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=IsSelected}" Value="True">
+                                            <Setter Property="Background" Value="Coral"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                            <Grid Visibility="{Binding
+                        Path=IsEmpty, 
+                        Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <TextBlock Text="Empty" Margin="10"/>
+                            </Grid>
+                            <Grid>
+                                <Grid.Style>
+                                    <Style TargetType="{x:Type Grid}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=IsEmpty}" Value="True">
+                                                <Setter Property="Visibility" Value="Hidden"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Grid.Style>
+                                <TextBlock Text="{Binding Path=Name}" Margin="10"/>
+                            </Grid>
+
+
+                        </Grid>
+                    </Button>
+
+                    
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBox Padding="10 0"             
+                VerticalAlignment="Center"
+                Style="{StaticResource MaterialDesignTextBox}"
+                m:HintAssist.Hint="Add new project"
+                Text="{Binding NewProjectName, UpdateSourceTrigger=PropertyChanged}" 
+                    
+                    />
+            <Grid Grid.Column="1" Margin="20">
+                <Button DockPanel.Dock="Right"
+                    Content="Add project"
+                        Command="{Binding AddNewProjectCommand}"
+                        IsEnabled="{Binding CanAddNewProject}"/>
+            </Grid>
+
+        </Grid>
+    </Grid>
+</UserControl>

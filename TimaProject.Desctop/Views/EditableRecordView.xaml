@@ -1,0 +1,63 @@
+﻿<UserControl x:Class="TimaProject.Desctop.Views.EditableRecordView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TimaProject.Desctop.Views"
+             xmlns:clickable="clr-namespace:ControlTools.ClickableControls;assembly=ControlTools"
+             mc:Ignorable="d" 
+             xmlns:m="http://materialdesigninxaml.net/winfx/xaml/themes"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="Delete"
+                      Command="{Binding RemoveRecordCommand}"/>
+        </ContextMenu>
+    </UserControl.ContextMenu>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBox 
+                Style="{StaticResource MaterialDesignTextBox}"
+                m:HintAssist.Hint="Add title"
+                Text="{Binding 
+                    Title,
+                    Mode=TwoWay}"
+                />
+            <Button Grid.Column="1"
+                    Command="{Binding OpenProjectFormCommand}"
+                    Content="{Binding ProjectName}">
+               
+            </Button>
+            <Button Grid.Column="2"
+                    Content="{Binding Time}"
+                    Command="{Binding OpenTimeFormCommand}"/>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Expander Header="Заметки" 
+                      Foreground="White"
+                      IsExpanded="{Binding IsNoteExpanded}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <ContentControl Grid.Row="0"
+                        Content="{Binding ListingNoteViewModel}"/>
+                    <ContentControl Grid.Row="1"
+                                    Content="{Binding AddNoteFormViewModel}"/>
+
+                </Grid>
+            </Expander>
+        </Grid>
+    </Grid>
+</UserControl>
